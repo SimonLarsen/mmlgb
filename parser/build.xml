@@ -1,0 +1,14 @@
+<project name="mmlgb" default="jar">
+	<target name="compile">
+		<mkdir dir="build" />
+		<javac srcdir="src" destdir="build" includeantruntime="false" />
+	</target>
+
+	<target name="jar" depends="compile">
+		<jar destfile="MMLGB.jar" basedir="build">
+			<manifest>
+				<attribute name="Main-Class" value="io.github.simonlarsen.mmlgb.MMLGB" />
+			</manifest>
+		</jar>
+	</target>
+</project>
