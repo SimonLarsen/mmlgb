@@ -1,89 +1,12 @@
 #ifndef NOTES_H
 #define NOTES_H
 
-#define HAS_LENGTH 128U
-#define FIRST_OCTAVE 3U
+#define FIRST_OCTAVE 2U
 
-/*
-enum E_NOTE {
-	NOTE_C3,
-	NOTE_Cs3,
-	NOTE_D3,
-	NOTE_Ds3,
-	NOTE_E3,
-	NOTE_F3,
-	NOTE_Fs3,
-	NOTE_G3,
-	NOTE_Gs3,
-	NOTE_A3,
-	NOTE_As3,
-	NOTE_B3,
-	0U, 0U, 0U, 0U,
-	NOTE_C4,
-	NOTE_Cs4,
-	NOTE_D4,
-	NOTE_Ds4,
-	NOTE_E4,
-	NOTE_F4,
-	NOTE_Fs4,
-	NOTE_G4,
-	NOTE_Gs4,
-	NOTE_A4,
-	NOTE_As4,
-	NOTE_B4,
-	0U, 0U, 0U, 0U,
-	NOTE_C5,
-	NOTE_Cs5,
-	NOTE_D5,
-	NOTE_Ds5,
-	NOTE_E5,
-	NOTE_F5,
-	NOTE_Fs5,
-	NOTE_G5,
-	NOTE_Gs5,
-	NOTE_A5,
-	NOTE_As5,
-	NOTE_B5,
-	0U, 0U, 0U, 0U,
-	NOTE_C6,
-	NOTE_Cs6,
-	NOTE_D6,
-	NOTE_Ds6,
-	NOTE_E6,
-	NOTE_F6,
-	NOTE_Fs6,
-	NOTE_G6,
-	NOTE_Gs6,
-	NOTE_A6,
-	NOTE_As6,
-	NOTE_B6,
-	0U, 0U, 0U, 0U,
-	NOTE_C7,
-	NOTE_Cs7,
-	NOTE_D7,
-	NOTE_Ds7,
-	NOTE_E7,
-	NOTE_F7,
-	NOTE_Fs7,
-	NOTE_G7,
-	NOTE_Gs7,
-	NOTE_A7,
-	NOTE_As7,
-	NOTE_B7,
-	NOTE_C8,
-	NOTE_Cs8,
-	NOTE_D8,
-	NOTE_Ds8,
-	NOTE_E8,
-	NOTE_F8,
-	NOTE_Fs8,
-	NOTE_G8,
-	NOTE_Gs8,
-	NOTE_A8,
-	NOTE_As8,
-	NOTE_B8
-};
-*/
+#define CHN1_OFFSET	2
+#define CHN2_OFFSET	3
+#define CHN3_OFFSET	4
+#define CHN4_OFFSET	5
 
 enum E_CMD {
 	T_C,

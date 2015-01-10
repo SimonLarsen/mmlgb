@@ -14,51 +14,65 @@ const UBYTE length_frames[] = {
 	 0U,  0U,  0U,  0U,  0U,  0U,  0U, 2U
 };
 
-const UBYTE song[4][] = {
-	{
-		T_OCTAVE, 4U,
-		T_LENGTH, 4U,
-		T_C,
-		T_C,
-		T_C,
-		T_D,
-		T_E,
-		T_E,
-		T_LENGTH, 2U,
-		T_E,
-		T_LENGTH, 4U,
-		T_D,
-		T_D,
-		T_D,
-		T_E,
-		T_LENGTH, 2U,
-		T_C,
-		T_C,
-		T_EOF
-	},
-	{
-		T_OCTAVE, 3U,
-		T_LENGTH, 2U,
-		T_C,
-		T_C,
-		T_C,
-		T_C,
-		T_G,
-		T_G,
-		T_G,
-		T_G,
-		T_EOF
-	},
-	{ T_EOF },
-	{ T_EOF }
+const UBYTE song[] = {
+// Meta data
+//  Modulo
+	150U,
+//  Speed
+	6U,
+
+// Offsets
+	6U,
+	30U,
+	43U,
+	44U,
+// Channel 1
+	T_OCTAVE, 4U,
+	T_LENGTH, 4U,
+	T_C,
+	T_C,
+	T_C,
+	T_D,
+	T_E,
+	T_E,
+	T_LENGTH, 2U,
+	T_E,
+	T_LENGTH, 4U,
+	T_D,
+	T_D,
+	T_D,
+	T_E,
+	T_LENGTH, 2U,
+	T_C,
+	T_C,
+	T_EOF,
+// Channel 2
+	T_OCTAVE, 3U,
+	T_LENGTH, 2U,
+	T_C,
+	T_C,
+	T_C,
+	T_C,
+	T_OCT_DOWN,
+	T_G,
+	T_G,
+	T_OCT_UP,
+	T_C,
+	T_C,
+	T_EOF,
+// Channel 3
+	T_EOF,
+// Channel 4
+	T_EOF
 };
 
-UBYTE mus_octave[4], mus_length[4], mus_wait[4];
-UBYTE *mus_song[4], *mus_data[4];
+UBYTE mus_octave1, mus_octave2, mus_octave3, mus_octave4;
+UBYTE mus_length1, mus_length2, mus_length3, mus_length4;
+UBYTE mus_wait1, mus_wait2, mus_wait3, mus_wait4;
+UBYTE *mus_song1, *mus_song2, *mus_song3, *mus_song4;
+UBYTE *mus_data1, *mus_data2, *mus_data3, *mus_data4;
 
 void mus_init() {
-	UBYTE i;
-
 	NR52_REG = 0x80U; // Enable sound
 	NR51_REG = 0xFFU;
 
@@ -68,66 +82,117 @@ void mus_init() {
 	NR21_REG = B8(10000000);
 	NR22_REG = B8(11110100);
 
-	for(i = 0U; i != 4U; ++i) {
-		mus_wait[i] = 0U;
-		mus_octave[i] = 4U;
-		mus_length[i] = 4U;
-
-		mus_data[i] = mus_song[i] = &song[i][0];
-	}
+	// Setup data
+	mus_data1 = mus_song1 = song + song[CHN1_OFFSET];
+	mus_data2 = mus_song2 = song + song[CHN2_OFFSET];
+	mus_data3 = mus_song3 = song + song[CHN3_OFFSET];
+	mus_data4 = mus_song4 = song + song[CHN4_OFFSET];
+	mus_wait1 = mus_wait2 = mus_wait3 = mus_wait4 = 0U;
+	mus_octave1 = mus_octave2 = mus_octave3 = mus_octave4 = 4U;
+	mus_length1 = mus_length2 = mus_length3 = mus_length4 = 4U;
 }
 
 void mus_update() {
-	UBYTE i, note, run;
+	mus_update1();
+	mus_update2();
+}
+
+void mus_update1() {
+	UBYTE note;
 	UWORD frequency;
 
-	for(i = 0U; i != 1U; ++i) {
-		if(mus_wait[i]) {
-			mus_wait[i]--;
-			if(mus_wait[i]) {
-				continue;
-			}
+	if(mus_wait1) {
+		mus_wait1--;
+		if(mus_wait1) {
+			return;
 		}
+	}
 
-		run = 1U;
-		while(run) {
-			note = *mus_data[i];
-			mus_data[i]++;
+	while(1U) {
+		note = *mus_data1;
+		mus_data1++;
 
-			switch(note) {
-				case T_REST:
-					NR13_REG = 0U;
-					NR14_REG = 0x80U;
-					mus_wait[i] = length_frames[mus_length[i]];
-					run = 0U;
-					break;
-				case T_LENGTH:
-					mus_length[i] = *mus_data[i];
-					mus_data[i]++;
-					break;
-				case T_OCTAVE:
-					mus_octave[i] = *mus_data[i];
-					mus_data[i]++;
-					break;
-				case T_OCT_UP:
-					mus_octave[i]++;
-					break;
-				case T_OCT_DOWN:
-					mus_octave[i]++;
-					break;
-				case T_VOL:
-					break;
-				case T_EOF:
-					mus_data[i] = mus_song[i];
-					break;
-				default:
-					frequency = freq[((mus_octave[i]-FIRST_OCTAVE) << 4) + note];
-					NR13_REG = (UBYTE)frequency;
-					NR14_REG = 0x80U | (frequency >> 8);
-					mus_wait[i] = length_frames[mus_length[i]];
-					run = 0U;
-					break;
-			}
+		switch(note) {
+			case T_REST:
+				NR13_REG = 0U;
+				NR14_REG = 0x80U;
+				mus_wait1 = length_frames[mus_length1];
+				return;
+			case T_LENGTH:
+				mus_length1 = *mus_data1;
+				mus_data1++;
+				break;
+			case T_OCTAVE:
+				mus_octave1 = *mus_data1;
+				mus_data1++;
+				break;
+			case T_OCT_UP:
+				mus_octave1++;
+				break;
+			case T_OCT_DOWN:
+				mus_octave1--;
+				break;
+			case T_VOL:
+				break;
+			case T_EOF:
+				mus_data1 = song + song[CHN1_OFFSET];
+				return;
+			default:
+				frequency = freq[((mus_octave1-FIRST_OCTAVE) << 4) + note];
+				NR13_REG = (UBYTE)frequency;
+				NR14_REG = 0x80U | (frequency >> 8);
+				mus_wait1 = length_frames[mus_length1];
+				return;
+		}
+	}
+}
+
+void mus_update2() {
+	UBYTE note;
+	UWORD frequency;
+
+	if(mus_wait2) {
+		mus_wait2--;
+		if(mus_wait2) {
+			return;
+		}
+	}
+
+	while(1U) {
+		note = *mus_data2;
+		mus_data2++;
+
+		switch(note) {
+			case T_REST:
+				NR23_REG = 0U;
+				NR24_REG = 0x80U;
+				mus_wait2 = length_frames[mus_length2];
+				return;
+			case T_LENGTH:
+				mus_length2 = *mus_data2;
+				mus_data2++;
+				break;
+			case T_OCTAVE:
+				mus_octave2 = *mus_data2;
+				mus_data2++;
+				break;
+			case T_OCT_UP:
+				mus_octave2++;
+				break;
+			case T_OCT_DOWN:
+				mus_octave2--;
+				break;
+			case T_VOL:
+				break;
+			case T_EOF:
+				mus_data2 = song + song[CHN2_OFFSET];
+				return;
+			default:
+				frequency = freq[((mus_octave2-FIRST_OCTAVE) << 4) + note];
+				NR23_REG = (UBYTE)frequency;
+				NR24_REG = 0x80U | (frequency >> 8);
+				mus_wait2 = length_frames[mus_length2];
+				return;
 		}
 	}
 }
