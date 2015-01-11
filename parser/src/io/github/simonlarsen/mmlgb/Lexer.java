@@ -1,0 +1,99 @@
+package io.github.simonlarsen.mmlgb;
+
+import java.util.ArrayList;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+
+public  class Lexer {
+	public static enum TokenType {
+		COMMENT(";.*\\n?"),
+		NUMBER("[0-9]+"),
+		NOTE("[cdefgab]"),
+		COMMAND("[ro<>lv]"),
+		MACRO("@w"),
+		ASSIGN("="),
+		LCURLY("\\{"),
+		RCURLY("\\}"),
+		COMMA(","),
+		NEWLINE("\\n"),
+		WHITESPACE("[ \\t\\f\\r]+");
+
+		public final String pattern;
+
+		private TokenType(String pattern) {
+			this.pattern = pattern;
+		}
+	}
+
+	public static class Token {
+		public TokenType type;
+		public String data;
+
+		public Token(TokenType type, String data) {
+			this.type = type;
+			this.data = data;
+		}
+
+		public String toString() {
+			return String.format("(%s, %s)", type.name(), data);
+		}
+	}
+
+	public static ArrayList<Token> lex(String input) {
+		ArrayList<Token> tokens = new ArrayList<Token>();
+
+		StringBuilder patternsBuffer = new StringBuilder();
+		for(TokenType tokenType : TokenType.values()) {
+			patternsBuffer.append(String.format("|(?<%s>%s)", tokenType.name(), tokenType.pattern));
+		}
+		Pattern tokenPatterns = Pattern.compile(new String(patternsBuffer.substring(1)));
+
+		Matcher matcher = tokenPatterns.matcher(input);
+		while(matcher.find()) {
+			if(matcher.group(TokenType.COMMENT.name()) != null) {
+				continue;
+			}
+			else if(matcher.group(TokenType.NUMBER.name()) != null) {
+				tokens.add(new Token(TokenType.NUMBER, matcher.group(TokenType.NUMBER.name())));
+				continue;
+			}
+			else if(matcher.group(TokenType.NOTE.name()) != null) {
+				tokens.add(new Token(TokenType.NOTE, matcher.group(TokenType.NOTE.name())));
+				continue;
+			}
+			else if(matcher.group(TokenType.COMMAND.name()) != null) {
+				tokens.add(new Token(TokenType.COMMAND, matcher.group(TokenType.COMMAND.name())));
+				continue;
+			}
+			else if(matcher.group(TokenType.MACRO.name()) != null) {
+				tokens.add(new Token(TokenType.MACRO, matcher.group(TokenType.MACRO.name())));
+				continue;
+			}
+			else if(matcher.group(TokenType.NEWLINE.name()) != null) {
+				tokens.add(new Token(TokenType.NEWLINE, matcher.group(TokenType.NEWLINE.name())));
+				continue;
+			}
+			else if(matcher.group(TokenType.ASSIGN.name()) != null) {
+				tokens.add(new Token(TokenType.ASSIGN, matcher.group(TokenType.ASSIGN.name())));
+				continue;
+			}
+			else if(matcher.group(TokenType.LCURLY.name()) != null) {
+				tokens.add(new Token(TokenType.LCURLY, matcher.group(TokenType.LCURLY.name())));
+				continue;
+			}
+			else if(matcher.group(TokenType.RCURLY.name()) != null) {
+				tokens.add(new Token(TokenType.RCURLY, matcher.group(TokenType.RCURLY.name())));
+				continue;
+			}
+			else if(matcher.group(TokenType.COMMA.name()) != null) {
+				tokens.add(new Token(TokenType.COMMA, matcher.group(TokenType.COMMA.name())));
+				continue;
+			}
+			else if(matcher.group(TokenType.WHITESPACE.name()) != null) {
+				continue;
+			}
+		}
+
+		return tokens;
+	}
+}
