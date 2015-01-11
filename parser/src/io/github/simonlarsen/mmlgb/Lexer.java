@@ -1,5 +1,6 @@
 package io.github.simonlarsen.mmlgb;
 
+import java.util.List;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
@@ -9,6 +10,7 @@ public  class Lexer {
 		COMMENT(";.*\\n?"),
 		NUMBER("[0-9]+"),
 		NOTE("[cdefgab]"),
+		CHANNEL("[ABCD]"),
 		COMMAND("[ro<>lv]"),
 		MACRO("@w"),
 		ASSIGN("="),
@@ -16,7 +18,8 @@ public  class Lexer {
 		RCURLY("\\}"),
 		COMMA(","),
 		NEWLINE("\\n"),
-		WHITESPACE("[ \\t\\f\\r]+");
+		WHITESPACE("[ \\t\\f\\r]+"),
+		EOF("");
 
 		public final String pattern;
 
@@ -39,8 +42,8 @@ public  class Lexer {
 		}
 	}
 
-	public static ArrayList<Token> lex(String input) {
-		ArrayList<Token> tokens = new ArrayList<Token>();
+	public static List<Token> lex(String input) {
+		List<Token> tokens = new ArrayList<Token>();
 
 		StringBuilder patternsBuffer = new StringBuilder();
 		for(TokenType tokenType : TokenType.values()) {
@@ -59,6 +62,10 @@ public  class Lexer {
 			}
 			else if(matcher.group(TokenType.NOTE.name()) != null) {
 				tokens.add(new Token(TokenType.NOTE, matcher.group(TokenType.NOTE.name())));
+				continue;
+			}
+			else if(matcher.group(TokenType.CHANNEL.name()) != null) {
+				tokens.add(new Token(TokenType.CHANNEL, matcher.group(TokenType.CHANNEL.name())));
 				continue;
 			}
 			else if(matcher.group(TokenType.COMMAND.name()) != null) {
@@ -93,6 +100,8 @@ public  class Lexer {
 				continue;
 			}
 		}
+
+		tokens.add(new Token(TokenType.EOF, ""));
 
 		return tokens;
 	}

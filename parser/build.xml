@@ -1,7 +1,7 @@
 <project name="mmlgb" default="jar">
 	<target name="compile">
 		<mkdir dir="build" />
-		<javac srcdir="src" destdir="build" includeantruntime="false" />
+		<javac srcdir="src" destdir="build" includeantruntime="false" debug="true" />
 	</target>
 
 	<target name="jar" depends="compile">
