@@ -9,9 +9,12 @@ public  class Lexer {
 	public static enum TokenType {
 		COMMENT(";.*\\n?"),
 		NUMBER("[0-9]+"),
-		NOTE("[cdefgab]"),
 		CHANNEL("[ABCD]"),
+		NOTE("[cdefgab]"),
+		SHARP("[\\#\\+]"),
+		FLAT("-"),
 		COMMAND("[ro<>lv]"),
+		DOT("\\."),
 		MACRO("@w"),
 		ASSIGN("="),
 		LCURLY("\\{"),
@@ -60,16 +63,28 @@ public  class Lexer {
 				tokens.add(new Token(TokenType.NUMBER, matcher.group(TokenType.NUMBER.name())));
 				continue;
 			}
-			else if(matcher.group(TokenType.NOTE.name()) != null) {
-				tokens.add(new Token(TokenType.NOTE, matcher.group(TokenType.NOTE.name())));
-				continue;
-			}
 			else if(matcher.group(TokenType.CHANNEL.name()) != null) {
 				tokens.add(new Token(TokenType.CHANNEL, matcher.group(TokenType.CHANNEL.name())));
 				continue;
 			}
+			else if(matcher.group(TokenType.NOTE.name()) != null) {
+				tokens.add(new Token(TokenType.NOTE, matcher.group(TokenType.NOTE.name())));
+				continue;
+			}
+			else if(matcher.group(TokenType.SHARP.name()) != null) {
+				tokens.add(new Token(TokenType.SHARP, matcher.group(TokenType.SHARP.name())));
+				continue;
+			}
+			else if(matcher.group(TokenType.FLAT.name()) != null) {
+				tokens.add(new Token(TokenType.FLAT, matcher.group(TokenType.FLAT.name())));
+				continue;
+			}
 			else if(matcher.group(TokenType.COMMAND.name()) != null) {
 				tokens.add(new Token(TokenType.COMMAND, matcher.group(TokenType.COMMAND.name())));
+				continue;
+			}
+			else if(matcher.group(TokenType.DOT.name()) != null) {
+				tokens.add(new Token(TokenType.DOT, matcher.group(TokenType.DOT.name())));
 				continue;
 			}
 			else if(matcher.group(TokenType.MACRO.name()) != null) {

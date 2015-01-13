@@ -13,5 +13,9 @@ public class MMLGB {
 
 		Parser parser = new Parser(tokens);
 		Song song = parser.parse();
+
+		for(Integer i : song.getData()) {
+			System.out.println(i + "U,");
+		}
 	}
 }

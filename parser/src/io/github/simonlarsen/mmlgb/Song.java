@@ -22,6 +22,10 @@ public class Song {
 		waveData.add(data);
 	}
 
+	public void addData(int chan, int value) {
+		channel.get(chan).add(value);
+	}
+
 	public List<Integer> getData() {
 		List<Integer> data = new ArrayList<Integer>();
 
@@ -29,7 +33,7 @@ public class Song {
 		data.add(modulo);
 		data.add(ticks);
 
-		int chan1Start = 2;
+		int chan1Start = 6;
 		int chan2Start = chan1Start + channel.get(0).size();
 		int chan3Start = chan2Start + channel.get(1).size();
 		int chan4Start = chan3Start + channel.get(2).size();

@@ -15,52 +15,23 @@ const UBYTE length_frames[] = {
 };
 
 const UBYTE song[] = {
-// Meta data
-//  Modulo
-	150U,
-//  Speed
-	6U,
+0U,
+0U,
+6U,
+13U,
+14U,
+15U,
+0U,
+2U,
+12U,
+4U,
+12U,
+5U,
+18U,
+18U,
+18U,
+18U,
 
-// Offsets
-	6U,
-	27U,
-	40U,
-	41U,
-// Channel 1
-	T_OCTAVE, 4U,
-	T_LENGTH, 4U,
-	T_C,
-	T_C,
-	T_C,
-	T_D,
-	T_E,
-	T_E,
-	T_E | MUS_HAS_LENGTH, 2U,
-	T_D,
-	T_D,
-	T_D,
-	T_E,
-	T_C | MUS_HAS_LENGTH, 2U,
-	T_C | MUS_HAS_LENGTH, 2U,
-	T_EOF,
-// Channel 2
-	T_OCTAVE, 3U,
-	T_LENGTH, 2U,
-	T_C,
-	T_C,
-	T_C,
-	T_C,
-	T_OCT_DOWN,
-	T_G,
-	T_G,
-	T_OCT_UP,
-	T_C,
-	T_C,
-	T_EOF,
-// Channel 3
-	T_EOF,
-// Channel 4
-	T_EOF
 };
 
 UBYTE mus_octave1, mus_octave2, mus_octave3, mus_octave4;
@@ -110,11 +81,6 @@ void mus_update1() {
 		mus_data1++;
 
 		switch(note) {
-			case T_REST:
-				NR13_REG = 0U;
-				NR14_REG = 0x80U;
-				mus_wait1 = length_frames[mus_length1];
-				return;
 			case T_LENGTH:
 				mus_length1 = *mus_data1;
 				mus_data1++;
@@ -143,7 +109,11 @@ void mus_update1() {
 				else {
 					mus_wait1 = length_frames[mus_length1];
 				}
-				frequency = freq[((mus_octave1-FIRST_OCTAVE) << 4) + note];
+				if(note == T_REST) {
+					frequency = 0U;
+				} else {
+					frequency = freq[((mus_octave1-FIRST_OCTAVE) << 4) + note];
+				}
 				NR13_REG = (UBYTE)frequency;
 				NR14_REG = 0x80U | (frequency >> 8);
 				return;
@@ -167,11 +137,6 @@ void mus_update2() {
 		mus_data2++;
 
 		switch(note) {
-			case T_REST:
-				NR23_REG = 0U;
-				NR24_REG = 0x80U;
-				mus_wait2 = length_frames[mus_length2];
-				return;
 			case T_LENGTH:
 				mus_length2 = *mus_data2;
 				mus_data2++;
@@ -200,7 +165,11 @@ void mus_update2() {
 				else {
 					mus_wait2 = length_frames[mus_length2];
 				}
-				frequency = freq[((mus_octave2-FIRST_OCTAVE) << 4) + note];
+				if(note == T_REST) {
+					frequency = 0U;
+				} else {
+					frequency = freq[((mus_octave2-FIRST_OCTAVE) << 4) + note];
+				}
 				NR23_REG = (UBYTE)frequency;
 				NR24_REG = 0x80U | (frequency >> 8);
 				return;
