@@ -9,6 +9,28 @@ public class Song {
 	private List<WaveData> waveData;
 	private List<List<Integer>> channel;
 
+	public enum CMD {
+		T_C,
+		T_Cs,
+		T_D,
+		T_Ds,
+		T_E,
+		T_F,
+		T_Fs,
+		T_G,
+		T_Gs,
+		T_A2,
+		T_As,
+		T_B,
+		T_REST,
+		T_LENGTH,
+		T_OCTAVE,
+		T_OCT_UP,
+		T_OCT_DOWN,
+		T_VOL,
+		T_EOF
+	};
+
 	public Song() {
 		waveData = new ArrayList<WaveData>();
 
@@ -24,6 +46,14 @@ public class Song {
 
 	public void addData(int chan, int value) {
 		channel.get(chan).add(value);
+	}
+
+	public void addData(boolean[] active, int value) {
+		for(int i = 0; i < 4; ++i) {
+			if(active[i]) {
+				channel.get(i).add(value);
+			}
+		}
 	}
 
 	public List<Integer> getData() {

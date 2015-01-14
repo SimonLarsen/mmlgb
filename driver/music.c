@@ -109,6 +109,7 @@ void mus_update1() {
 				else {
 					mus_wait1 = length_frames[mus_length1];
 				}
+				// TODO: Handle 
 				if(note == T_REST) {
 					frequency = 0U;
 				} else {

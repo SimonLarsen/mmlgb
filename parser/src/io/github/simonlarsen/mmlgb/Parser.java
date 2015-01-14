@@ -12,28 +12,6 @@ public class Parser {
 	private static final String[] CHANNEL_NAMES = {"A","B","C","D"};
 	private static final String[] NOTE_NAMES = {"c","cs","d","ds","e","f","fs","g","gs","a","as","b"};
 
-	private enum E_CMD {
-		T_C,
-		T_Cs,
-		T_D,
-		T_Ds,
-		T_E,
-		T_F,
-		T_Fs,
-		T_G,
-		T_Gs,
-		T_A2,
-		T_As,
-		T_B,
-		T_REST,
-		T_LENGTH,
-		T_OCTAVE,
-		T_OCT_UP,
-		T_OCT_DOWN,
-		T_VOL,
-		T_EOF
-	};
-
 	public Parser(List<Lexer.Token> tokens) {
 		this.tokens = tokens;
 
@@ -54,7 +32,7 @@ public class Parser {
 		}
 
 		for(int i = 0; i < 4; ++i) {
-			song.addData(i, E_CMD.T_EOF.ordinal());
+			song.addData(i, Song.CMD.T_EOF.ordinal());
 		}
 
 		return song;
@@ -98,37 +76,58 @@ public class Parser {
 				if(note == -1) note = 11;
 				else if(note == 12) note = 0;
 
-				int length = parseLength();
+				int length = parseLength(false);
 
 				// Emit data
-				for(int i = 0; i < 4; ++i) {
-					if(active[i]) {
-						if(length == 0) {
-							song.addData(i, note);
-						} else {
-							song.addData(i, note | 0x80);
-							song.addData(i, length);
-						}
-					}
+				if(length == 0) {
+					song.addData(active, note);
+				} else {
+					song.addData(active, note | 0x80);
+					song.addData(active, length);
 				}
 			}
 			else if(next.type == Lexer.TokenType.COMMAND) {
 				if(next.data.equals("r")) {
 					eat();
 
-					int length = parseLength();
+					int length = parseLength(false);
 
 					// Emit data
-					for(int i = 0; i < 4; ++i) {
-						if(active[i]) {
-							if(length == 0) {
-								song.addData(i, E_CMD.T_REST.ordinal());
-							} else {
-								song.addData(i, E_CMD.T_REST.ordinal() | 0x80);
-								song.addData(i, length);
-							}
-						}
+					if(length == 0) {
+						song.addData(active, Song.CMD.T_REST.ordinal());
+					} else {
+						song.addData(active, Song.CMD.T_REST.ordinal() | 0x80);
+						song.addData(active, length);
 					}
+				}
+				else if(next.data.equals("o")) {
+					eat();
+
+					if(next.type != Lexer.TokenType.NUMBER) {
+						throw new ParserException("Expected number after octave command.");
+					}
+
+					int octave = Integer.parseInt(next.data);
+					eat();
+
+					song.addData(active, Song.CMD.T_OCTAVE.ordinal());
+					song.addData(active, octave);
+				}
+				else if(next.data.equals("<")) {
+					eat();
+					song.addData(active, Song.CMD.T_OCT_DOWN.ordinal());
+				}
+				else if(next.data.equals(">")) {
+					eat();
+					song.addData(active, Song.CMD.T_OCT_UP.ordinal());
+				}
+				else if(next.data.equals("l")) {
+					eat();
+
+					int length = parseLength(true);
+
+					song.addData(active, Song.CMD.T_LENGTH.ordinal());
+					song.addData(active, length);
 				}
 			}
 			else {
@@ -137,17 +136,19 @@ public class Parser {
 		}
 	}
 
-	private int parseLength() throws ParserException {
+	private int parseLength(boolean required) throws ParserException {
 		int length = 0;
 		// Length
 		if(next.type == Lexer.TokenType.NUMBER) {
 			length = Integer.parseInt(next.data);
 			eat();
+		} else if(required) {
+			throw new ParserException("Expected note length.");
 		}
 
 		// TODO: Add dotted notes
 
-		return 0;
+		return length;
 	}
 
 	private void eat(Lexer.TokenType expected, String message) throws ParserException {
