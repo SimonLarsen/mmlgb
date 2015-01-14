@@ -69,6 +69,7 @@ public class Parser {
 		// Parse samples
 		int samples[] = new int[32];
 		for(int i = 0; i < 32; ++i) {
+			while(next.type == Lexer.TokenType.NEWLINE) eat();
 			if(next.type != Lexer.TokenType.NUMBER) {
 				throw new ParserException("Expected number.");
 			}
@@ -79,9 +80,11 @@ public class Parser {
 			}
 			samples[i] = sample;
 
+			// Eat commas
 			if(i < 31) {
 				eat(Lexer.TokenType.COMMA, ",");
 			}
+			while(next.type == Lexer.TokenType.NEWLINE) eat();
 		}
 
 		eat(Lexer.TokenType.RCURLY, "}");
