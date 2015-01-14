@@ -18,24 +18,28 @@ const UBYTE song[] = {
 0U,
 0U,
 6U,
-13U,
-14U,
-15U,
+16U,
+17U,
+18U,
 0U,
 2U,
+140U,
+2U,
+132U,
+2U,
 12U,
-4U,
-12U,
-5U,
+133U,
+2U,
 18U,
 18U,
 18U,
 18U,
-
 };
 
 UBYTE mus_octave1, mus_octave2, mus_octave3, mus_octave4;
 UBYTE mus_length1, mus_length2, mus_length3, mus_length4;
+UBYTE mus_volume1, mus_volume2, mus_volume3, mus_volume4;
+UBYTE mus_env1, mus_env2, mus_env4;
 UBYTE mus_wait1, mus_wait2, mus_wait3, mus_wait4;
 UBYTE *mus_song1, *mus_song2, *mus_song3, *mus_song4;
 UBYTE *mus_data1, *mus_data2, *mus_data3, *mus_data4;
@@ -55,9 +59,15 @@ void mus_init() {
 	mus_data2 = mus_song2 = song + song[CHN2_OFFSET];
 	mus_data3 = mus_song3 = song + song[CHN3_OFFSET];
 	mus_data4 = mus_song4 = song + song[CHN4_OFFSET];
+
 	mus_wait1 = mus_wait2 = mus_wait3 = mus_wait4 = 0U;
 	mus_octave1 = mus_octave2 = mus_octave3 = mus_octave4 = 4U;
 	mus_length1 = mus_length2 = mus_length3 = mus_length4 = 4U;
+	mus_volume1 = mus_volume2 = mus_volume3 = mus_volume4 = 15U;
+
+	mus_env1 = 2U;
+	mus_env2 = 4U;
+	mus_env4 = 3U;
 }
 
 void mus_update() {
@@ -112,8 +122,10 @@ void mus_update1() {
 				// TODO: Handle 
 				if(note == T_REST) {
 					frequency = 0U;
+					NR12_REG = 0U;
 				} else {
 					frequency = freq[((mus_octave1-FIRST_OCTAVE) << 4) + note];
+					NR12_REG = (mus_volume1 << 4) | mus_env1;
 				}
 				NR13_REG = (UBYTE)frequency;
 				NR14_REG = 0x80U | (frequency >> 8);
@@ -168,8 +180,10 @@ void mus_update2() {
 				}
 				if(note == T_REST) {
 					frequency = 0U;
+					NR22_REG = 0U;
 				} else {
 					frequency = freq[((mus_octave2-FIRST_OCTAVE) << 4) + note];
+					NR22_REG = (mus_volume2 << 4) | mus_env2;
 				}
 				NR23_REG = (UBYTE)frequency;
 				NR24_REG = 0x80U | (frequency >> 8);

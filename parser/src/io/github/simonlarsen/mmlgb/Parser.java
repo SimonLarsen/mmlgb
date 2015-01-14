@@ -12,6 +12,12 @@ public class Parser {
 	private static final String[] CHANNEL_NAMES = {"A","B","C","D"};
 	private static final String[] NOTE_NAMES = {"c","cs","d","ds","e","f","fs","g","gs","a","as","b"};
 
+	private static final int MIN_OCTAVE = 2;
+	private static final int MAX_OCTAVE = 8;
+
+	private static final int MIN_LENGTH = 1;
+	private static final int MAX_LENGTH = 32;
+
 	public Parser(List<Lexer.Token> tokens) {
 		this.tokens = tokens;
 
@@ -26,6 +32,9 @@ public class Parser {
 			if(next.type == Lexer.TokenType.CHANNEL) {
 				parseCommands();
 			}
+			else if(next.type == Lexer.TokenType.MACRO) {
+				parseDefinition();
+			}
 			else {
 				eat();
 			}
@@ -36,6 +45,50 @@ public class Parser {
 		}
 
 		return song;
+	}
+
+	private void parseDefinition() throws ParserException {
+		if(next.data.equals("@w")) {
+			parseWaveData();
+		}
+	}
+
+	private void parseWaveData() throws ParserException {
+		eat();
+
+		// Parse data id
+		if(next.type != Lexer.TokenType.NUMBER) {
+			throw new ParserException("Expected wave data id.");
+		}
+		int id = Integer.parseInt(next.data);
+		eat();
+
+		eat(Lexer.TokenType.ASSIGN, "=");
+		eat(Lexer.TokenType.LCURLY, "{");
+
+		// Parse samples
+		int samples[] = new int[32];
+		for(int i = 0; i < 32; ++i) {
+			if(next.type != Lexer.TokenType.NUMBER) {
+				throw new ParserException("Expected number.");
+			}
+			int sample = Integer.parseInt(next.data);
+			eat();
+			if(sample < 0 || sample > 15) {
+				throw new ParserException(String.format("Invalid wave sample %d. Expected 0-15.", sample));
+			}
+			samples[i] = sample;
+
+			if(i < 31) {
+				eat(Lexer.TokenType.COMMA, ",");
+			}
+		}
+
+		eat(Lexer.TokenType.RCURLY, "}");
+		eat(Lexer.TokenType.NEWLINE, "Line break");
+
+		WaveData waveData = new WaveData(samples);
+		song.addWaveData(id, waveData);
 	}
 
 	private void parseCommands() throws ParserException {
@@ -108,6 +161,9 @@ public class Parser {
 					}
 
 					int octave = Integer.parseInt(next.data);
+					if(octave < MIN_OCTAVE || octave > MAX_OCTAVE) {
+						throw new ParserException(String.format("Invalid octave %d. Expected %d-%d.", octave, MIN_OCTAVE, MAX_OCTAVE));
+					}
 					eat();
 
 					song.addData(active, Song.CMD.T_OCTAVE.ordinal());
@@ -141,6 +197,9 @@ public class Parser {
 		// Length
 		if(next.type == Lexer.TokenType.NUMBER) {
 			length = Integer.parseInt(next.data);
+			if(length < MIN_LENGTH || length > MAX_LENGTH) {
+				throw new ParserException(String.format("Invalid note length %d. Expected %d-%d.", length, MIN_LENGTH, MAX_LENGTH));
+			}
 			eat();
 		} else if(required) {
 			throw new ParserException("Expected note length.");

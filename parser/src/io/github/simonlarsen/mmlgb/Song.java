@@ -5,9 +5,12 @@ import java.util.ArrayList;
 
 public class Song {
 	private int modulo, ticks;
+	private int waveDataCount;
 
-	private List<WaveData> waveData;
+	private WaveData[] waveData;
 	private List<List<Integer>> channel;
+
+	private static final int MAX_WAVE_DATA = 8;
 
 	public enum CMD {
 		T_C,
@@ -32,7 +35,8 @@ public class Song {
 	};
 
 	public Song() {
-		waveData = new ArrayList<WaveData>();
+		waveData = new WaveData[MAX_WAVE_DATA];
+		waveDataCount = 0;
 
 		channel = new ArrayList<List<Integer>>();
 		for(int i = 0; i < 4; ++i) {
@@ -40,8 +44,9 @@ public class Song {
 		}
 	}
 
-	public void addWaveData(WaveData data) {
-		waveData.add(data);
+	public void addWaveData(int id, WaveData data) {
+		waveData[id] = data;
+		waveDataCount = Math.max(waveDataCount, id+1);
 	}
 
 	public void addData(int chan, int value) {
@@ -63,7 +68,7 @@ public class Song {
 		data.add(modulo);
 		data.add(ticks);
 
-		int chan1Start = 6;
+		int chan1Start = 6 + waveDataCount * 16;
 		int chan2Start = chan1Start + channel.get(0).size();
 		int chan3Start = chan2Start + channel.get(1).size();
 		int chan4Start = chan3Start + channel.get(2).size();
@@ -74,7 +79,20 @@ public class Song {
 		data.add(chan4Start);
 
 		// Generate wave data
-		
+		for(int i = 0; i < waveDataCount; ++i) {
+			int[] samples = waveData[i].getData();
+			if(samples != null) {
+				for(int j = 0; j < 16; j += 2) {
+					int value = (samples[j] << 4) | samples[j+1];
+					data.add(value);
+				}
+			} else {
+				for(int j = 0; j < 16; ++j) {
+					data.add(0);
+				}
+			}
+		}
+
 		// Output channel data
 		for(int i = 0; i < 4; ++i) {
 			data.addAll(channel.get(i));
