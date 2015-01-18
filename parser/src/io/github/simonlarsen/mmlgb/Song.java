@@ -5,12 +5,14 @@ import java.util.ArrayList;
 
 public class Song {
 	private int modulo, ticks;
-	private int waveDataCount;
+	private int waveDataCount, envDataCount;
 
 	private WaveData[] waveData;
+	private int[] envData;
 	private List<List<Integer>> channel;
 
 	private static final int MAX_WAVE_DATA = 8;
+	private static final int MAX_ENV_DATA = 16;
 
 	public enum CMD {
 		T_C,
@@ -31,6 +33,8 @@ public class Song {
 		T_OCT_UP,
 		T_OCT_DOWN,
 		T_VOL,
+		T_ENV,
+		T_WAVE,
 		T_EOF
 	};
 
@@ -38,15 +42,33 @@ public class Song {
 		waveData = new WaveData[MAX_WAVE_DATA];
 		waveDataCount = 0;
 
+		envData = new int[MAX_ENV_DATA];
+		envDataCount = 0;
+
 		channel = new ArrayList<List<Integer>>();
 		for(int i = 0; i < 4; ++i) {
 			channel.add(new ArrayList<Integer>());
 		}
 	}
 
-	public void addWaveData(int id, WaveData data) {
+	public void addWaveData(int id, WaveData data) throws ParserException {
+		if(id >= MAX_WAVE_DATA) {
+			throw new ParserException(String.format("You can only define %d wave data blocks.", MAX_WAVE_DATA));
+		}
 		waveData[id] = data;
 		waveDataCount = Math.max(waveDataCount, id+1);
+	}
+
+	public void addEnvData(int id, int direction, int length) throws ParserException {
+		if(id >= MAX_ENV_DATA) {
+			throw new ParserException(String.format("You can only define %d envelopes.", MAX_ENV_DATA));
+		}
+		envData[id] = (direction << 3) | length;
+		envDataCount = Math.max(envDataCount, id+1);
+	}
+
+	public int getEnvData(int id) {
+		return envData[id];
 	}
 
 	public void addData(int chan, int value) {

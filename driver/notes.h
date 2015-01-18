@@ -27,6 +27,8 @@ enum E_CMD {
 	T_OCT_UP,
 	T_OCT_DOWN,
 	T_VOL,
+	T_ENV,
+	T_WAVE,
 	T_EOF
 };
 

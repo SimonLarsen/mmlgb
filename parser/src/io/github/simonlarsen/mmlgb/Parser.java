@@ -51,6 +51,9 @@ public class Parser {
 		if(next.data.equals("@w")) {
 			parseWaveData();
 		}
+		else if(next.data.equals("@env")) {
+			parseEnvDefinition();
+		}
 	}
 
 	private void parseWaveData() throws ParserException {
@@ -71,7 +74,7 @@ public class Parser {
 		for(int i = 0; i < 32; ++i) {
 			while(next.type == Lexer.TokenType.NEWLINE) eat();
 			if(next.type != Lexer.TokenType.NUMBER) {
-				throw new ParserException("Expected number.");
+				throw new ParserException("Invalid wave sample. Expected number.");
 			}
 			int sample = Integer.parseInt(next.data);
 			eat();
@@ -92,6 +95,42 @@ public class Parser {
 
 		WaveData waveData = new WaveData(samples);
 		song.addWaveData(id, waveData);
+	}
+
+	private void parseEnvDefinition() throws ParserException {
+		eat();
+
+		if(next.type != Lexer.TokenType.NUMBER) {
+			throw new ParserException("Expected env id.");
+		}
+		int id = Integer.parseInt(next.data);
+		eat();
+
+		eat(Lexer.TokenType.ASSIGN, "=");
+		eat(Lexer.TokenType.LCURLY, "{");
+
+		if(next.type != Lexer.TokenType.NUMBER) {
+			throw new ParserException("Invalid envelope direction. Expected number.");
+		}
+		int direction = Integer.parseInt(next.data);
+		eat();
+
+		eat(Lexer.TokenType.COMMA, ",");
+
+		if(next.type != Lexer.TokenType.NUMBER) {
+			throw new ParserException("Invalid envelope length. Expected number.");
+		}
+		int length = Integer.parseInt(next.data);
+		eat();
+
+		eat(Lexer.TokenType.RCURLY, "}");
+		eat(Lexer.TokenType.NEWLINE, "Line break");
+
+		if(direction > 1 || length > 7) {
+			throw new ParserException("Invalid envelope definition. Direction must be 0-1 and length must be 0-7.");
+		}
+
+		song.addEnvData(id, direction, length);
 	}
 
 	private void parseCommands() throws ParserException {
@@ -189,8 +228,30 @@ public class Parser {
 					song.addData(active, length);
 				}
 			}
+			else if(next.type == Lexer.TokenType.MACRO) {
+				if(next.data.equals("@w")) {
+					eat();
+					if(next.type != Lexer.TokenType.NUMBER) {
+						throw new ParserException("Expected wave data id.");
+					}
+					int id = Integer.parseInt(next.data);
+					eat();
+				}
+				else if(next.data.equals("@env")) {
+					eat();
+					if(next.type != Lexer.TokenType.NUMBER) {
+						throw new ParserException("Expected envelope definition id.");
+					}
+					int id = Integer.parseInt(next.data);
+					eat();
+
+					song.addData(active, Song.CMD.T_ENV.ordinal());
+					song.addData(active, song.getEnvData(id));
+					System.out.println("Found env set: " + id);
+				}
+			}
 			else {
-				eat();
+				throw new ParserException(String.format("Unexpected token %s.", next.data));
 			}
 		}
 	}
