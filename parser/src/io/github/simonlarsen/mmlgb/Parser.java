@@ -247,7 +247,6 @@ public class Parser {
 
 					song.addData(active, Song.CMD.T_ENV.ordinal());
 					song.addData(active, song.getEnvData(id));
-					System.out.println("Found env set: " + id);
 				}
 			}
 			else {

@@ -15,6 +15,48 @@ const UBYTE length_frames[] = {
 };
 
 const UBYTE song[] = {
+0U,
+0U,
+6U,
+39U,
+40U,
+41U,
+18U,
+1U,
+0U,
+2U,
+4U,
+5U,
+135U,
+1U,
+18U,
+2U,
+0U,
+2U,
+4U,
+5U,
+135U,
+1U,
+18U,
+4U,
+0U,
+2U,
+4U,
+5U,
+135U,
+1U,
+18U,
+7U,
+0U,
+2U,
+4U,
+5U,
+135U,
+1U,
+20U,
+20U,
+20U,
+20U,
 };
 
 UBYTE mus_octave1, mus_octave2, mus_octave3, mus_octave4;
@@ -22,7 +64,6 @@ UBYTE mus_length1, mus_length2, mus_length3, mus_length4;
 UBYTE mus_volume1, mus_volume2, mus_volume3, mus_volume4;
 UBYTE mus_env1, mus_env2, mus_env4;
 UBYTE mus_wait1, mus_wait2, mus_wait3, mus_wait4;
-UBYTE *mus_song1, *mus_song2, *mus_song3, *mus_song4;
 UBYTE *mus_data1, *mus_data2, *mus_data3, *mus_data4;
 
 void mus_init() {
@@ -36,10 +77,10 @@ void mus_init() {
 	NR22_REG = B8(11110100);
 
 	// Setup data
-	mus_data1 = mus_song1 = song + song[CHN1_OFFSET];
-	mus_data2 = mus_song2 = song + song[CHN2_OFFSET];
-	mus_data3 = mus_song3 = song + song[CHN3_OFFSET];
-	mus_data4 = mus_song4 = song + song[CHN4_OFFSET];
+	mus_data1 = song + song[CHN1_OFFSET];
+	mus_data2 = song + song[CHN2_OFFSET];
+	mus_data3 = song + song[CHN3_OFFSET];
+	mus_data4 = song + song[CHN4_OFFSET];
 
 	mus_wait1 = mus_wait2 = mus_wait3 = mus_wait4 = 0U;
 	mus_octave1 = mus_octave2 = mus_octave3 = mus_octave4 = 4U;
