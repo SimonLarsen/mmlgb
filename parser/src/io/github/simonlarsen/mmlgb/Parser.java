@@ -253,6 +253,9 @@ public class Parser {
 					}
 					int id = Integer.parseInt(next.data);
 					eat();
+
+					song.addData(active, Song.CMD.T_WAVE.ordinal());
+					song.addData(active, id);
 				}
 				else if(next.data.equals("@env")) {
 					eat();

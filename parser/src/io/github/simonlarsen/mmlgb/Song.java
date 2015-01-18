@@ -102,7 +102,7 @@ public class Song {
 		for(int i = 0; i < waveDataCount; ++i) {
 			int[] samples = waveData[i].getData();
 			if(samples != null) {
-				for(int j = 0; j < 16; j += 2) {
+				for(int j = 0; j < 32; j += 2) {
 					int value = (samples[j] << 4) | samples[j+1];
 					data.add(value);
 				}
