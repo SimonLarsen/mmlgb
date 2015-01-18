@@ -4,13 +4,13 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class Song {
-	private int modulo, ticks;
 	private int waveDataCount, envDataCount;
 
 	private WaveData[] waveData;
 	private int[] envData;
 	private List<List<Integer>> channel;
 
+	private static final int HEADER_SIZE = 4;
 	private static final int MAX_WAVE_DATA = 8;
 	private static final int MAX_ENV_DATA = 16;
 
@@ -35,6 +35,7 @@ public class Song {
 		T_VOL,
 		T_ENV,
 		T_WAVE,
+		T_TEMPO,
 		T_EOF
 	};
 
@@ -87,10 +88,7 @@ public class Song {
 		List<Integer> data = new ArrayList<Integer>();
 
 		// Generate header
-		data.add(modulo);
-		data.add(ticks);
-
-		int chan1Start = 6 + waveDataCount * 16;
+		int chan1Start = HEADER_SIZE + waveDataCount * 16;
 		int chan2Start = chan1Start + channel.get(0).size();
 		int chan3Start = chan2Start + channel.get(1).size();
 		int chan4Start = chan3Start + channel.get(2).size();

@@ -8,55 +8,17 @@
 
 const UBYTE length_frames[] = {
 	0U,
-	64U, 32U, 24U, 16U, 14U, 12U, 10U, 8U,
-	 0U,  7U,  0U,  6U,  0U,  5U,  0U, 4U,
-	 0U,  0U,  0U,  0U,  0U,  0U,  0U, 3U,
-	 0U,  0U,  0U,  0U,  0U,  0U,  0U, 2U
+ 	128, 64U, 48U, 32U, 28U, 24U, 20U, 16U,
+	 0U, 14U,  0U, 12U,  0U, 10U,  0U,  8U,
+	 0U,  0U,  0U,  0U,  0U,  0U,  0U,  6U,
+	 0U,  0U,  0U,  0U,  0U,  0U,  0U,  4U
 };
 
 const UBYTE song[] = {
-0U,
-0U,
-6U,
-39U,
-40U,
-41U,
-18U,
-1U,
-0U,
-2U,
-4U,
-5U,
-135U,
-1U,
-18U,
-2U,
-0U,
-2U,
-4U,
-5U,
-135U,
-1U,
-18U,
-4U,
-0U,
-2U,
-4U,
-5U,
-135U,
-1U,
-18U,
-7U,
-0U,
-2U,
-4U,
-5U,
-135U,
-1U,
-20U,
-20U,
-20U,
-20U,
+	4U, 39U, 40U, 41U, 13U, 4U, 20U, 159U, 0U, 2U, 4U,
+	5U, 135U, 1U, 20U, 185U, 0U, 2U, 4U, 5U, 135U,
+	1U, 20U, 200U, 0U, 2U, 4U, 5U, 135U, 1U, 20U,
+	212U, 0U, 2U, 4U, 5U, 135U, 1U, 21U, 21U, 21U, 21U,
 };
 
 UBYTE mus_octave1, mus_octave2, mus_octave3, mus_octave4;
@@ -75,6 +37,10 @@ void mus_init() {
 
 	NR21_REG = B8(10000000);
 	NR22_REG = B8(11110100);
+
+	// Setup timer
+	TAC_REG = 0x04U; // TAC clock = 4096 Hz
+	TMA_REG = 255U - 51U; // Default to ~150 bpm
 
 	// Setup data
 	mus_data1 = song + song[CHN1_OFFSET];
@@ -134,9 +100,12 @@ void mus_update1() {
 			case T_WAVE:
 				mus_data1++;
 				break;
+			case T_TEMPO:
+				TMA_REG = *mus_data1++;
+				break;
 			case T_EOF:
 				mus_data1 = song + song[CHN1_OFFSET];
-				return;
+				break;
 			default:
 				if(note & MUS_HAS_LENGTH) {
 					note ^= MUS_HAS_LENGTH;

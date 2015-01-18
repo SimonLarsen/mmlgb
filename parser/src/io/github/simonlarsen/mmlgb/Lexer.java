@@ -13,7 +13,7 @@ public  class Lexer {
 		NOTE("[cdefgab]"),
 		SHARP("[\\#\\+]"),
 		FLAT("-"),
-		COMMAND("[ro<>lv]"),
+		COMMAND("[ro<>lvt]"),
 		DOT("\\."),
 		MACRO("(@w|@env)"),
 		ASSIGN("="),

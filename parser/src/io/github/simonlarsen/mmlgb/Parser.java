@@ -18,6 +18,9 @@ public class Parser {
 	private static final int MIN_LENGTH = 1;
 	private static final int MAX_LENGTH = 32;
 
+	private static final int BEAT_STEPS = 32; // Steps per beat
+	private static final int TIMA_SPEED = 4096;
+
 	public Parser(List<Lexer.Token> tokens) {
 		this.tokens = tokens;
 
@@ -226,6 +229,20 @@ public class Parser {
 
 					song.addData(active, Song.CMD.T_LENGTH.ordinal());
 					song.addData(active, length);
+				}
+				else if(next.data.equals("t")) {
+					eat();
+
+					if(next.type != Lexer.TokenType.NUMBER) {
+						throw new ParserException("Invalid tempo command. Expected number.");
+					}
+					int bpm = Integer.parseInt(next.data);
+					eat();
+
+					float ups = (float)bpm / 60.0f * (float)BEAT_STEPS;
+					int mod = (int)Math.round((float)TIMA_SPEED / ups);
+					song.addData(active, Song.CMD.T_TEMPO.ordinal());
+					song.addData(active, 255 - mod);
 				}
 			}
 			else if(next.type == Lexer.TokenType.MACRO) {

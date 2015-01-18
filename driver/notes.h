@@ -1,13 +1,6 @@
 #ifndef NOTES_H
 #define NOTES_H
 
-#define FIRST_OCTAVE 2U
-
-#define CHN1_OFFSET	2
-#define CHN2_OFFSET	3
-#define CHN3_OFFSET	4
-#define CHN4_OFFSET	5
-
 enum E_CMD {
 	T_C,
 	T_Cs,
@@ -29,6 +22,7 @@ enum E_CMD {
 	T_VOL,
 	T_ENV,
 	T_WAVE,
+	T_TEMPO,
 	T_EOF
 };
 
