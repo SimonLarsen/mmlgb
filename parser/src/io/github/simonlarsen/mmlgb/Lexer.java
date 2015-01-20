@@ -8,14 +8,14 @@ import java.util.regex.Matcher;
 public  class Lexer {
 	public static enum TokenType {
 		COMMENT(";.*\\n?"),
-		NUMBER("[0-9]+"),
+		NUMBER("-?[0-9]+"),
 		CHANNEL("[ABCD]"),
 		NOTE("[cdefgab]"),
 		SHARP("[\\#\\+]"),
 		FLAT("-"),
 		COMMAND("[ro<>lvt]"),
 		DOT("\\."),
-		MACRO("(@w|@env)"),
+		MACRO("(@wave|@ve|@wd)"),
 		ASSIGN("="),
 		LCURLY("\\{"),
 		RCURLY("\\}"),

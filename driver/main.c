@@ -1,10 +1,12 @@
 #include <gb/gb.h>
 #include "music.h"
 
+#include "song.h"
+
 void main() {
 	disable_interrupts();
 
-	mus_init();
+	mus_init(song_data);
 
 	add_TIM(mus_update);
 	enable_interrupts();

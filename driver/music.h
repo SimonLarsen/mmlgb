@@ -9,7 +9,7 @@
 #define CHN3_OFFSET	2U
 #define CHN4_OFFSET	3U
 
-void mus_init();
+void mus_init(UBYTE *song);
 void mus_update();
 void mus_update1();
 void mus_update2();

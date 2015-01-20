@@ -51,11 +51,8 @@ public class Parser {
 	}
 
 	private void parseDefinition() throws ParserException {
-		if(next.data.equals("@w")) {
+		if(next.data.equals("@wave")) {
 			parseWaveData();
-		}
-		else if(next.data.equals("@env")) {
-			parseEnvDefinition();
 		}
 	}
 
@@ -98,42 +95,6 @@ public class Parser {
 
 		WaveData waveData = new WaveData(samples);
 		song.addWaveData(id, waveData);
-	}
-
-	private void parseEnvDefinition() throws ParserException {
-		eat();
-
-		if(next.type != Lexer.TokenType.NUMBER) {
-			throw new ParserException("Expected env id.");
-		}
-		int id = Integer.parseInt(next.data);
-		eat();
-
-		eat(Lexer.TokenType.ASSIGN, "=");
-		eat(Lexer.TokenType.LCURLY, "{");
-
-		if(next.type != Lexer.TokenType.NUMBER) {
-			throw new ParserException("Invalid envelope direction. Expected number.");
-		}
-		int direction = Integer.parseInt(next.data);
-		eat();
-
-		eat(Lexer.TokenType.COMMA, ",");
-
-		if(next.type != Lexer.TokenType.NUMBER) {
-			throw new ParserException("Invalid envelope length. Expected number.");
-		}
-		int length = Integer.parseInt(next.data);
-		eat();
-
-		eat(Lexer.TokenType.RCURLY, "}");
-		eat(Lexer.TokenType.NEWLINE, "Line break");
-
-		if(direction > 1 || length > 7) {
-			throw new ParserException("Invalid envelope definition. Direction must be 0-1 and length must be 0-7.");
-		}
-
-		song.addEnvData(id, direction, length);
 	}
 
 	private void parseCommands() throws ParserException {
@@ -246,8 +207,9 @@ public class Parser {
 				}
 			}
 			else if(next.type == Lexer.TokenType.MACRO) {
-				if(next.data.equals("@w")) {
+				if(next.data.equals("@wave")) {
 					eat();
+
 					if(next.type != Lexer.TokenType.NUMBER) {
 						throw new ParserException("Expected wave data id.");
 					}
@@ -257,16 +219,42 @@ public class Parser {
 					song.addData(active, Song.CMD.T_WAVE.ordinal());
 					song.addData(active, id);
 				}
-				else if(next.data.equals("@env")) {
-					eat();
-					if(next.type != Lexer.TokenType.NUMBER) {
-						throw new ParserException("Expected envelope definition id.");
-					}
-					int id = Integer.parseInt(next.data);
+				else if(next.data.equals("@ve")) {
 					eat();
 
+					if(next.type != Lexer.TokenType.NUMBER) {
+						throw new ParserException("Invalid volume envelope. Expected number.");
+					}
+					int envelope = Integer.parseInt(next.data);
+					eat();
+
+					if(envelope < -7 || envelope > 7) {
+						throw new ParserException("Invalid volume envelope. Expected values from -7 to 7.");
+					}
+
+					int value = Math.abs(envelope);
+					if(envelope < 0) {
+						envelope |= (1 << 3);
+					}
+
 					song.addData(active, Song.CMD.T_ENV.ordinal());
-					song.addData(active, song.getEnvData(id));
+					song.addData(active, value);
+				}
+				else if(next.data.equals("@wd")) {
+					eat();
+
+					if(next.type != Lexer.TokenType.NUMBER) {
+						throw new ParserException("Invalid wave duty. Expected number.");
+					}
+					int duty = Integer.parseInt(next.data);
+					eat();
+
+					if(duty < 0 || duty > 3) {
+						throw new ParserException("Invalid wave duty. Expected values 0-3.");
+					}
+
+					song.addData(active, Song.CMD.T_WAVEDUTY.ordinal());
+					song.addData(active, duty);
 				}
 			}
 			else {

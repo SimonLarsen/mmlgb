@@ -23,6 +23,7 @@ enum E_CMD {
 	T_ENV,
 	T_WAVE,
 	T_TEMPO,
+	T_WAVEDUTY,
 	T_EOF
 };
 

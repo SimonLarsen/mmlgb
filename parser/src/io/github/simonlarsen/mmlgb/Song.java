@@ -4,10 +4,10 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class Song {
-	private int waveDataCount, envDataCount;
+	private String name;
+	private int waveDataCount;
 
 	private WaveData[] waveData;
-	private int[] envData;
 	private List<List<Integer>> channel;
 
 	private static final int HEADER_SIZE = 4;
@@ -36,15 +36,13 @@ public class Song {
 		T_ENV,
 		T_WAVE,
 		T_TEMPO,
+		T_WAVEDUTY,
 		T_EOF
 	};
 
 	public Song() {
 		waveData = new WaveData[MAX_WAVE_DATA];
 		waveDataCount = 0;
-
-		envData = new int[MAX_ENV_DATA];
-		envDataCount = 0;
 
 		channel = new ArrayList<List<Integer>>();
 		for(int i = 0; i < 4; ++i) {
@@ -58,18 +56,6 @@ public class Song {
 		}
 		waveData[id] = data;
 		waveDataCount = Math.max(waveDataCount, id+1);
-	}
-
-	public void addEnvData(int id, int direction, int length) throws ParserException {
-		if(id >= MAX_ENV_DATA) {
-			throw new ParserException(String.format("You can only define %d envelopes.", MAX_ENV_DATA));
-		}
-		envData[id] = (direction << 3) | length;
-		envDataCount = Math.max(envDataCount, id+1);
-	}
-
-	public int getEnvData(int id) {
-		return envData[id];
 	}
 
 	public void addData(int chan, int value) {
@@ -119,5 +105,29 @@ public class Song {
 		}
 
 		return data;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String toString() {
+		String id = name.replaceAll("[^a-zA-Z0-9]", "");
+		String id_upper = id.toUpperCase();
+		StringBuilder sb = new StringBuilder();
+
+		sb.append(String.format("#ifndef %s_H\n", id_upper));
+		sb.append(String.format("#define %s_H\n", id_upper));
+
+		sb.append(String.format("\nconst UBYTE %s_data[] = {\n", id));
+
+		for(Integer i : getData()) {
+			sb.append("\t" + i + "U,\n");
+		}
+		sb.append("};\n\n");
+
+		sb.append("#endif");
+
+		return sb.toString();
 	}
 }
