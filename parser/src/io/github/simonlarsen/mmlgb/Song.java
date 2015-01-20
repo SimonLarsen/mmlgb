@@ -10,7 +10,7 @@ public class Song {
 	private WaveData[] waveData;
 	private List<List<Integer>> channel;
 
-	private static final int HEADER_SIZE = 4;
+	private static final int HEADER_SIZE = 8;
 	private static final int MAX_WAVE_DATA = 8;
 	private static final int MAX_ENV_DATA = 16;
 
@@ -74,15 +74,19 @@ public class Song {
 		List<Integer> data = new ArrayList<Integer>();
 
 		// Generate header
-		int chan1Start = HEADER_SIZE + waveDataCount * 16;
-		int chan2Start = chan1Start + channel.get(0).size();
-		int chan3Start = chan2Start + channel.get(1).size();
-		int chan4Start = chan3Start + channel.get(2).size();
+		int c1Start = HEADER_SIZE + waveDataCount * 16;
+		int c2Start = c1Start + channel.get(0).size();
+		int c3Start = c2Start + channel.get(1).size();
+		int c4Start = c3Start + channel.get(2).size();
 
-		data.add(chan1Start);
-		data.add(chan2Start);
-		data.add(chan3Start);
-		data.add(chan4Start);
+		data.add(c1Start & 0xFF);
+		data.add(c1Start >> 8);
+		data.add(c2Start & 0xFF);
+		data.add(c2Start >> 8);
+		data.add(c3Start & 0xFF);
+		data.add(c3Start >> 8);
+		data.add(c4Start & 0xFF);
+		data.add(c4Start >> 8);
 
 		// Generate wave data
 		for(int i = 0; i < waveDataCount; ++i) {

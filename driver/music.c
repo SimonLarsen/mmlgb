@@ -25,15 +25,8 @@ void mus_init(UBYTE *song_data) {
 	NR52_REG = 0x80U; // Enable sound
 	NR51_REG = 0xFFU;
 
-	// Channel 1
-	NR11_REG = B8(11000000);
-	NR12_REG = B8(11110010);
-	// Channel 2
-	NR21_REG = B8(10000000);
-	NR22_REG = B8(11110100);
 	// Channel 3
 	NR30_REG = 0xFFU;
-	// Channel 4
 
 	// Setup timer
 	TAC_REG = 0x04U; // TAC clock = 4096 Hz
@@ -41,10 +34,11 @@ void mus_init(UBYTE *song_data) {
 
 	// Setup data
 	song = song_data;
-	mus_data1 = song + song[CHN1_OFFSET];
-	mus_data2 = song + song[CHN2_OFFSET];
-	mus_data3 = song + song[CHN3_OFFSET];
-	mus_data4 = song + song[CHN4_OFFSET];
+	
+	mus_data1 = song + ((UWORD*)song)[CHN1_OFFSET];
+	mus_data2 = song + ((UWORD*)song)[CHN2_OFFSET];
+	mus_data3 = song + ((UWORD*)song)[CHN3_OFFSET];
+	mus_data4 = song + ((UWORD*)song)[CHN4_OFFSET];
 
 	mus_wait1 = mus_wait2 = mus_wait3 = mus_wait4 = 0U;
 	mus_octave1 = mus_octave2 = mus_octave3 = mus_octave4 = 4U;
@@ -98,8 +92,12 @@ void mus_update1() {
 			case T_TEMPO:
 				TMA_REG = *mus_data1++;
 				break;
+			case T_WAVEDUTY:
+				note = *mus_data1++;
+				NR11_REG = (note << 5);
+				break;
 			case T_EOF:
-				mus_data1 = song + song[CHN1_OFFSET];
+				mus_data1 = song + ((UWORD*)song)[CHN1_OFFSET];
 				return;
 			default:
 				if(note & MUS_HAS_LENGTH) {
@@ -161,8 +159,12 @@ void mus_update2() {
 			case T_TEMPO:
 				TMA_REG = *mus_data2++;
 				break;
+			case T_WAVEDUTY:
+				note = *mus_data2++;
+				NR21_REG = note << 5;
+				break;
 			case T_EOF:
-				mus_data2 = song + song[CHN2_OFFSET];
+				mus_data2 = song + ((UWORD*)song)[CHN2_OFFSET];
 				return;
 			default:
 				if(note & MUS_HAS_LENGTH) {
@@ -226,8 +228,11 @@ void mus_update3() {
 			case T_TEMPO:
 				TMA_REG = *mus_data3++;
 				break;
+			case T_WAVEDUTY:
+				mus_data3++;
+				break;
 			case T_EOF:
-				mus_data3 = song + song[CHN3_OFFSET];
+				mus_data3 = song + ((UWORD*)song)[CHN3_OFFSET];
 				return;
 			default:
 				if(note & MUS_HAS_LENGTH) {

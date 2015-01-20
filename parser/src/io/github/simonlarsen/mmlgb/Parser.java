@@ -191,6 +191,18 @@ public class Parser {
 					song.addData(active, Song.CMD.T_LENGTH.ordinal());
 					song.addData(active, length);
 				}
+				else if(next.data.equals("v")) {
+					eat();
+
+					if(next.type != Lexer.TokenType.NUMBER) {
+						throw new ParserException("Invalid volume. Expected number.");
+					}
+					int volume = Integer.parseInt(next.data);
+					eat();
+
+					song.addData(active, Song.CMD.T_VOL.ordinal());
+					song.addData(active, volume);
+				}
 				else if(next.data.equals("t")) {
 					eat();
 
@@ -233,8 +245,8 @@ public class Parser {
 					}
 
 					int value = Math.abs(envelope);
-					if(envelope < 0) {
-						envelope |= (1 << 3);
+					if(envelope >= 0) {
+						value = value | (1 << 3);
 					}
 
 					song.addData(active, Song.CMD.T_ENV.ordinal());
@@ -276,7 +288,16 @@ public class Parser {
 			throw new ParserException("Expected note length.");
 		}
 
-		// TODO: Add dotted notes
+		// Add dots
+		if(next.type == Lexer.TokenType.DOT) {
+			eat();
+			if(next.type == Lexer.TokenType.DOT) {
+				eat();
+				length = length + length/2 + length/4;
+			} else {
+				length = length + length/2;
+			}
+		}
 
 		return length;
 	}
