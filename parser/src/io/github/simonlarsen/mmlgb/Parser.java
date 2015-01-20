@@ -15,9 +15,6 @@ public class Parser {
 	private static final int MIN_OCTAVE = 2;
 	private static final int MAX_OCTAVE = 8;
 
-	private static final int MIN_LENGTH = 1;
-	private static final int MAX_LENGTH = 32;
-
 	private static final int BEAT_STEPS = 32; // Steps per beat
 	private static final int TIMA_SPEED = 4096;
 
@@ -280,23 +277,29 @@ public class Parser {
 		// Length
 		if(next.type == Lexer.TokenType.NUMBER) {
 			length = Integer.parseInt(next.data);
-			if(length < MIN_LENGTH || length > MAX_LENGTH) {
-				throw new ParserException(String.format("Invalid note length %d. Expected %d-%d.", length, MIN_LENGTH, MAX_LENGTH));
+			if(length < 1 || length > 32) {
+				throw new ParserException(String.format("Invalid note length %d. Expected 1-32.", length));
 			}
 			eat();
 		} else if(required) {
 			throw new ParserException("Expected note length.");
+		} else {
+			return 0;
 		}
 
+		// Bar is 128 updates.
+		// Divide with note fraction.
+		length = 128 / length;
+
 		// Add dots
-		if(next.type == Lexer.TokenType.DOT) {
-			eat();
-			if(next.type == Lexer.TokenType.DOT) {
-				eat();
-				length = length + length/2 + length/4;
-			} else {
-				length = length + length/2;
+		int dot = length / 2;
+		while(next.type == Lexer.TokenType.DOT) {
+			if(dot <= 0) {
+				throw new ParserException("Too many dots in not length. Not enough precision.");
 			}
+			eat();
+			length += dot;
+			dot = dot / 2;
 		}
 
 		return length;

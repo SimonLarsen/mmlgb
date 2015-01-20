@@ -5,14 +5,6 @@
 #include "notes.h"
 #include "freq.h"
 
-const UBYTE length_frames[] = {
-	0U,
- 	128, 64U, 48U, 32U, 28U, 24U, 20U, 16U,
-	 0U, 14U,  0U, 12U,  0U, 10U,  0U,  8U,
-	 0U,  0U,  0U,  0U,  0U,  0U,  0U,  6U,
-	 0U,  0U,  0U,  0U,  0U,  0U,  0U,  4U
-};
-
 UBYTE *song;
 UBYTE mus_octave1, mus_octave2, mus_octave3, mus_octave4;
 UBYTE mus_length1, mus_length2, mus_length3, mus_length4;
@@ -102,10 +94,12 @@ void mus_update1() {
 			default:
 				if(note & MUS_HAS_LENGTH) {
 					note ^= MUS_HAS_LENGTH;
-					mus_wait1 = length_frames[*mus_data1++];
+					//mus_wait1 = length_frames[*mus_data1++];
+					mus_wait1 = *mus_data1++;
 				}
 				else {
-					mus_wait1 = length_frames[mus_length1];
+					//mus_wait1 = length_frames[mus_length1];
+					mus_wait1 = mus_length1;
 				}
 				if(note == T_REST) {
 					frequency = 0U;
@@ -169,10 +163,12 @@ void mus_update2() {
 			default:
 				if(note & MUS_HAS_LENGTH) {
 					note ^= MUS_HAS_LENGTH;
-					mus_wait2 = length_frames[*mus_data2++];
+					//mus_wait2 = length_frames[*mus_data2++];
+					mus_wait2 = *mus_data2++;
 				}
 				else {
-					mus_wait2 = length_frames[mus_length2];
+					//mus_wait2 = length_frames[mus_length2];
+					mus_wait2 = mus_length2;
 				}
 				if(note == T_REST) {
 					frequency = 0U;
@@ -237,9 +233,11 @@ void mus_update3() {
 			default:
 				if(note & MUS_HAS_LENGTH) {
 					note ^= MUS_HAS_LENGTH;
-					mus_wait3 = length_frames[*mus_data3++];
+					//mus_wait3 = length_frames[*mus_data3++];
+					mus_wait3 = *mus_data3++;
 				} else {
-					mus_wait3 = length_frames[mus_length3];
+					//mus_wait3 = length_frames[mus_length3];
+					mus_wait3 = mus_length3;
 				}
 				if(note == T_REST) {
 					frequency = 0U;
