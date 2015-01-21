@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class Song {
-	private String name;
+	private String filename;
 	private int waveDataCount;
 
 	private WaveData[] waveData;
@@ -111,17 +111,17 @@ public class Song {
 		return data;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setFileName(String name) {
+		this.filename = name;
 	}
 
 	public String toString() {
-		String id = name.replaceAll("[^a-zA-Z0-9]", "");
+		String id = filename.replaceAll("[^a-zA-Z0-9]", "_");
 		String id_upper = id.toUpperCase();
 		StringBuilder sb = new StringBuilder();
 
-		sb.append(String.format("#ifndef %s_H\n", id_upper));
-		sb.append(String.format("#define %s_H\n", id_upper));
+		sb.append(String.format("#ifndef %s\n", id_upper));
+		sb.append(String.format("#define %s\n", id_upper));
 
 		sb.append(String.format("\nconst UBYTE %s_data[] = {\n", id));
 

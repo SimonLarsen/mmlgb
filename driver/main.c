@@ -6,7 +6,7 @@
 void main() {
 	disable_interrupts();
 
-	mus_init(song_data);
+	mus_init(song_h_data);
 
 	add_TIM(mus_update);
 	enable_interrupts();
