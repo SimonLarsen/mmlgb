@@ -1,4 +1,4 @@
-package io.github.simonlarsen.mmlgb;
+package dk.hisimon.mmlgb;
 
 import java.util.List;
 import java.util.ArrayList;

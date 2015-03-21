@@ -1,4 +1,4 @@
-package io.github.simonlarsen.mmlgb;
+package dk.hisimon.mmlgb;
 
 public class WaveData {
 	private int[] data;

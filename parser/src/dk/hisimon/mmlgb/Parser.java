@@ -1,4 +1,4 @@
-package io.github.simonlarsen.mmlgb;
+package dk.hisimon.mmlgb;
 
 import java.util.List;
 
@@ -58,7 +58,7 @@ public class Parser {
 
 		// Parse data id
 		if(next.type != Lexer.TokenType.NUMBER) {
-			throw new ParserException("Expected wave data id.");
+			throw new ParserException("Expected wave data id.", next);
 		}
 		int id = Integer.parseInt(next.data);
 		eat();
@@ -71,12 +71,12 @@ public class Parser {
 		for(int i = 0; i < 32; ++i) {
 			while(next.type == Lexer.TokenType.NEWLINE) eat();
 			if(next.type != Lexer.TokenType.NUMBER) {
-				throw new ParserException("Invalid wave sample. Expected number.");
+				throw new ParserException("Invalid wave sample. Expected number.", next);
 			}
 			int sample = Integer.parseInt(next.data);
 			eat();
 			if(sample < 0 || sample > 15) {
-				throw new ParserException(String.format("Invalid wave sample %d. Expected 0-15.", sample));
+				throw new ParserException(String.format("Invalid wave sample %d. Expected 0-15.", sample), next);
 			}
 			samples[i] = sample;
 
@@ -160,12 +160,12 @@ public class Parser {
 					eat();
 
 					if(next.type != Lexer.TokenType.NUMBER) {
-						throw new ParserException("Expected number after octave command.");
+						throw new ParserException("Expected number after octave command.", next);
 					}
 
 					int octave = Integer.parseInt(next.data);
 					if(octave < MIN_OCTAVE || octave > MAX_OCTAVE) {
-						throw new ParserException(String.format("Invalid octave %d. Expected %d-%d.", octave, MIN_OCTAVE, MAX_OCTAVE));
+						throw new ParserException(String.format("Invalid octave %d. Expected %d-%d.", octave, MIN_OCTAVE, MAX_OCTAVE), next);
 					}
 					eat();
 
@@ -192,7 +192,7 @@ public class Parser {
 					eat();
 
 					if(next.type != Lexer.TokenType.NUMBER) {
-						throw new ParserException("Invalid volume. Expected number.");
+						throw new ParserException("Invalid volume. Expected number.", next);
 					}
 					int volume = Integer.parseInt(next.data);
 					eat();
@@ -204,7 +204,7 @@ public class Parser {
 					eat();
 
 					if(next.type != Lexer.TokenType.NUMBER) {
-						throw new ParserException("Invalid tempo command. Expected number.");
+						throw new ParserException("Invalid tempo command. Expected number.", next);
 					}
 					int bpm = Integer.parseInt(next.data);
 					eat();
@@ -218,7 +218,7 @@ public class Parser {
 					eat();
 
 					if(next.type != Lexer.TokenType.NUMBER) {
-						throw new ParserException("Invalid panning command. Expected number.");
+						throw new ParserException("Invalid panning command. Expected number.", next);
 					}
 
 					int pan = Integer.parseInt(next.data);
@@ -231,7 +231,7 @@ public class Parser {
 					} else if(pan == 1) {
 						val = 1; //  00000001
 					} else {
-						throw new ParserException("Invalid panning value. Expected -1, 0 or 1.");
+						throw new ParserException("Invalid panning value. Expected -1, 0 or 1.", next);
 					}
 
 					song.addData(active, Song.CMD.T_PAN.ordinal());
@@ -243,7 +243,7 @@ public class Parser {
 					eat();
 
 					if(next.type != Lexer.TokenType.NUMBER) {
-						throw new ParserException("Expected wave data id.");
+						throw new ParserException("Expected wave data id.", next);
 					}
 					int id = Integer.parseInt(next.data);
 					eat();
@@ -255,13 +255,13 @@ public class Parser {
 					eat();
 
 					if(next.type != Lexer.TokenType.NUMBER) {
-						throw new ParserException("Invalid volume envelope. Expected number.");
+						throw new ParserException("Invalid volume envelope. Expected number.", next);
 					}
 					int envelope = Integer.parseInt(next.data);
 					eat();
 
 					if(envelope < -7 || envelope > 7) {
-						throw new ParserException("Invalid volume envelope. Expected values from -7 to 7.");
+						throw new ParserException("Invalid volume envelope. Expected values from -7 to 7.", next);
 					}
 
 					int value = Math.abs(envelope);
@@ -276,13 +276,13 @@ public class Parser {
 					eat();
 
 					if(next.type != Lexer.TokenType.NUMBER) {
-						throw new ParserException("Invalid wave duty. Expected number.");
+						throw new ParserException("Invalid wave duty. Expected number.", next);
 					}
 					int duty = Integer.parseInt(next.data);
 					eat();
 
 					if(duty < 0 || duty > 3) {
-						throw new ParserException("Invalid wave duty. Expected values 0-3.");
+						throw new ParserException("Invalid wave duty. Expected values 0-3.", next);
 					}
 
 					song.addData(active, Song.CMD.T_WAVEDUTY.ordinal());
@@ -290,7 +290,7 @@ public class Parser {
 				}
 			}
 			else {
-				throw new ParserException(String.format("Unexpected token %s.", next.data));
+				throw new ParserException(String.format("Unexpected token %s.", next.data), next);
 			}
 		}
 	}
@@ -301,11 +301,11 @@ public class Parser {
 		if(next.type == Lexer.TokenType.NUMBER) {
 			length = Integer.parseInt(next.data);
 			if(length < 1 || length > 32) {
-				throw new ParserException(String.format("Invalid note length %d. Expected 1-32.", length));
+				throw new ParserException(String.format("Invalid note length %d. Expected 1-32.", length), next);
 			}
 			eat();
 		} else if(required) {
-			throw new ParserException("Expected note length.");
+			throw new ParserException("Expected note length.", next);
 		} else {
 			return 0;
 		}
@@ -317,7 +317,7 @@ public class Parser {
 		int dot = length / 2;
 		while(next.type == Lexer.TokenType.DOT) {
 			if(dot <= 0) {
-				throw new ParserException("Too many dots in length. Not enough precision.");
+				throw new ParserException("Too many dots in length. Not enough precision.", next);
 			}
 			eat();
 			length += dot;
@@ -330,7 +330,7 @@ public class Parser {
 	private void eat(Lexer.TokenType expected, String message) throws ParserException {
 		if(next.type != expected) {
 			throw new ParserException(
-				String.format("Found token %s. Expected %s.", next.data, message)
+				String.format("Found token %s. Expected %s.", next.data, message), next
 			);
 		}
 
@@ -342,7 +342,7 @@ public class Parser {
 		next = tokens.get(position);
 
 		if(position >= tokens.size()) {
-			throw new ParserException("End of file reached.");
+			throw new ParserException("End of file reached.", next);
 		}
 	}
 }
