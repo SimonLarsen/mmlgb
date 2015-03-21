@@ -60,7 +60,7 @@ public class Parser {
 		if(next.type != Lexer.TokenType.NUMBER) {
 			throw new ParserException("Expected wave data id.", next);
 		}
-		int id = Integer.parseInt(next.data);
+		int id = parseInt(next.data);
 		eat();
 
 		eat(Lexer.TokenType.ASSIGN, "=");
@@ -73,7 +73,7 @@ public class Parser {
 			if(next.type != Lexer.TokenType.NUMBER) {
 				throw new ParserException("Invalid wave sample. Expected number.", next);
 			}
-			int sample = Integer.parseInt(next.data);
+			int sample = parseInt(next.data);
 			eat();
 			if(sample < 0 || sample > 15) {
 				throw new ParserException(String.format("Invalid wave sample %d. Expected 0-15.", sample), next);
@@ -163,7 +163,7 @@ public class Parser {
 						throw new ParserException("Expected number after octave command.", next);
 					}
 
-					int octave = Integer.parseInt(next.data);
+					int octave = parseInt(next.data);
 					if(octave < MIN_OCTAVE || octave > MAX_OCTAVE) {
 						throw new ParserException(String.format("Invalid octave %d. Expected %d-%d.", octave, MIN_OCTAVE, MAX_OCTAVE), next);
 					}
@@ -194,7 +194,7 @@ public class Parser {
 					if(next.type != Lexer.TokenType.NUMBER) {
 						throw new ParserException("Invalid volume. Expected number.", next);
 					}
-					int volume = Integer.parseInt(next.data);
+					int volume = parseInt(next.data);
 					eat();
 
 					song.addData(active, Song.CMD.T_VOL.ordinal());
@@ -206,7 +206,7 @@ public class Parser {
 					if(next.type != Lexer.TokenType.NUMBER) {
 						throw new ParserException("Invalid tempo command. Expected number.", next);
 					}
-					int bpm = Integer.parseInt(next.data);
+					int bpm = parseInt(next.data);
 					eat();
 
 					float ups = (float)bpm / 60.0f * (float)BEAT_STEPS;
@@ -221,7 +221,7 @@ public class Parser {
 						throw new ParserException("Invalid panning command. Expected number.", next);
 					}
 
-					int pan = Integer.parseInt(next.data);
+					int pan = parseInt(next.data);
 					eat();
 					int val;
 					if(pan == -1) {
@@ -245,7 +245,7 @@ public class Parser {
 					if(next.type != Lexer.TokenType.NUMBER) {
 						throw new ParserException("Expected wave data id.", next);
 					}
-					int id = Integer.parseInt(next.data);
+					int id = parseInt(next.data);
 					eat();
 
 					song.addData(active, Song.CMD.T_WAVE.ordinal());
@@ -257,7 +257,7 @@ public class Parser {
 					if(next.type != Lexer.TokenType.NUMBER) {
 						throw new ParserException("Invalid volume envelope. Expected number.", next);
 					}
-					int envelope = Integer.parseInt(next.data);
+					int envelope = parseInt(next.data);
 					eat();
 
 					if(envelope < -7 || envelope > 7) {
@@ -278,7 +278,7 @@ public class Parser {
 					if(next.type != Lexer.TokenType.NUMBER) {
 						throw new ParserException("Invalid wave duty. Expected number.", next);
 					}
-					int duty = Integer.parseInt(next.data);
+					int duty = parseInt(next.data);
 					eat();
 
 					if(duty < 0 || duty > 3) {
@@ -299,7 +299,7 @@ public class Parser {
 		int length = 0;
 		// Length
 		if(next.type == Lexer.TokenType.NUMBER) {
-			length = Integer.parseInt(next.data);
+			length = parseInt(next.data);
 			if(length < 1 || length > 32) {
 				throw new ParserException(String.format("Invalid note length %d. Expected 1-32.", length), next);
 			}
@@ -323,7 +323,7 @@ public class Parser {
 		} else if(next.type == Lexer.TokenType.ASSIGN) {
 			eat();
 
-			length = Integer.parseInt(next.data);
+			length = parseInt(next.data);
 			if(length < 1 || length > 255) {
 				throw new ParserException(String.format("Invalid note frame length %d. Expected 1-255.", length), next);
 			}
@@ -353,6 +353,21 @@ public class Parser {
 
 		if(position >= tokens.size()) {
 			throw new ParserException("End of file reached.", next);
+		}
+	}
+
+	private static int parseInt(String s) {
+		if(s.startsWith("-")) {
+			return -parseInt(s.substring(1));
+		}
+		else if(s.startsWith("0x")) {
+			return Integer.parseInt(s.substring(2), 16);
+		}
+		else if(s.startsWith("0b")) {
+			return Integer.parseInt(s.substring(2), 2);
+		}
+		else {
+			return Integer.parseInt(s);
 		}
 	}
 }

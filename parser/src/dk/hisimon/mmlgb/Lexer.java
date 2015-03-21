@@ -9,6 +9,8 @@ public  class Lexer {
 	public static enum TokenType {
 		COMMENT(";.*\\n?"),
 		NUMBER("-?[0-9]+"),
+		HEXNUMBER("-?0x[0-9]+"),
+		BINNUMBER("-?0b[0-1]+"),
 		CHANNEL("[ABCD]"),
 		NOTE("[cdefgab]"),
 		SHARP("[\\#\\+]"),
@@ -72,6 +74,14 @@ public  class Lexer {
 			}
 			else if(matcher.group(TokenType.NUMBER.name()) != null) {
 				tokens.add(new Token(TokenType.NUMBER, matcher.group(TokenType.NUMBER.name()), line, pos));
+				continue;
+			}
+			else if(matcher.group(TokenType.HEXNUMBER.name()) != null) {
+				tokens.add(new Token(TokenType.HEXNUMBER, matcher.group(TokenType.HEXNUMBER.name()), line, pos));
+				continue;
+			}
+			else if(matcher.group(TokenType.BINNUMBER.name()) != null) {
+				tokens.add(new Token(TokenType.BINNUMBER, matcher.group(TokenType.BINNUMBER.name()), line, pos));
 				continue;
 			}
 			else if(matcher.group(TokenType.CHANNEL.name()) != null) {
