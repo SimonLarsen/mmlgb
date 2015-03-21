@@ -304,27 +304,37 @@ public class Parser {
 				throw new ParserException(String.format("Invalid note length %d. Expected 1-32.", length), next);
 			}
 			eat();
+
+			// Divide with note fraction.
+			length = (4 * BEAT_STEPS) / length;
+
+			// Add dots
+			int dot = length / 2;
+			while(next.type == Lexer.TokenType.DOT) {
+				if(dot <= 0) {
+					throw new ParserException("Too many dots in length. Not enough precision.", next);
+				}
+				eat();
+				length += dot;
+				dot = dot / 2;
+			}
+
+			return length;
+		} else if(next.type == Lexer.TokenType.ASSIGN) {
+			eat();
+
+			length = Integer.parseInt(next.data);
+			if(length < 1 || length > 255) {
+				throw new ParserException(String.format("Invalid note frame length %d. Expected 1-255.", length), next);
+			}
+			eat();
+
+			return length;
 		} else if(required) {
 			throw new ParserException("Expected note length.", next);
 		} else {
 			return 0;
 		}
-
-		// Divide with note fraction.
-		length = (4 * BEAT_STEPS) / length;
-
-		// Add dots
-		int dot = length / 2;
-		while(next.type == Lexer.TokenType.DOT) {
-			if(dot <= 0) {
-				throw new ParserException("Too many dots in length. Not enough precision.", next);
-			}
-			eat();
-			length += dot;
-			dot = dot / 2;
-		}
-
-		return length;
 	}
 
 	private void eat(Lexer.TokenType expected, String message) throws ParserException {
