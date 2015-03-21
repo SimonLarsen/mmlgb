@@ -260,5 +260,63 @@ void mus_update3() {
 }
 
 void mus_update4() {
+	UBYTE note, frequency;
 
+	if(mus_wait4) {
+		mus_wait4--;
+		if(mus_wait4) return;
+	}
+
+	while(1U) {
+		note = *mus_data4++;
+		switch(note) {
+			case T_LENGTH:
+				mus_length4 = *mus_data4++;
+				break;
+			case T_OCTAVE:
+				mus_octave4 = *mus_data4++;
+				break;
+			case T_OCT_UP:
+				mus_octave4++;
+				break;
+			case T_OCT_DOWN:
+				mus_octave4--;
+				break;
+			case T_VOL:
+				mus_volume4 = *mus_data4++;
+				NR42_REG = (mus_volume4 << 4) | mus_env4;
+				break;
+			case T_ENV:
+				mus_env4 = *mus_data4++;
+				NR42_REG = (mus_volume4 << 4) | mus_env4;
+				break;
+			case T_TEMPO:
+				TMA_REG = *mus_data4++;
+				break;
+			case T_PAN:
+				note = *mus_data4++;
+				NR51_REG = (NR51_REG & B8(01110111)) | (note << 3);
+				break;
+			case T_EOF:
+				mus_data4 = song + ((UWORD*)song)[CHN4_OFFSET];
+				return;
+			default:
+				if(note & MUS_HAS_LENGTH) {
+					note ^= MUS_HAS_LENGTH;
+					mus_wait4 = *mus_data4++;
+				} else {
+					mus_wait4 = mus_length4;
+				}
+				if(note == T_REST) {
+					frequency = 0U;
+					NR42_REG = 0U;
+				} else {
+					frequency = noise_freq[(mus_octave4 << 4) + note];
+					NR42_REG = (mus_volume4 << 4) | mus_env4;
+				}
+				NR43_REG = frequency;
+				NR44_REG = 0x80U;
+				return;
+		}
+	}
 }

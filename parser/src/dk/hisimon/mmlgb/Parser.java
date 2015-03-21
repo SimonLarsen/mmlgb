@@ -12,9 +12,6 @@ public class Parser {
 	private static final String[] CHANNEL_NAMES = {"A","B","C","D"};
 	private static final String[] NOTE_NAMES = {"c","cs","d","ds","e","f","fs","g","gs","a","as","b"};
 
-	private static final int MIN_OCTAVE = 2;
-	private static final int MAX_OCTAVE = 8;
-
 	private static final int BEAT_STEPS = 48; // Steps per beat
 	private static final int TIMA_SPEED = 4096;
 
@@ -164,9 +161,6 @@ public class Parser {
 					}
 
 					int octave = parseInt(next.data);
-					if(octave < MIN_OCTAVE || octave > MAX_OCTAVE) {
-						throw new ParserException(String.format("Invalid octave %d. Expected %d-%d.", octave, MIN_OCTAVE, MAX_OCTAVE), next);
-					}
 					eat();
 
 					song.addData(active, Song.CMD.T_OCTAVE.ordinal());
