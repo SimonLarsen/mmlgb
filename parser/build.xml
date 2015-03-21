@@ -7,7 +7,7 @@
 	<target name="jar" depends="compile">
 		<jar destfile="MMLGB.jar" basedir="build">
 			<manifest>
-				<attribute name="Main-Class" value="io.github.simonlarsen.mmlgb.MMLGB" />
+				<attribute name="Main-Class" value="dk.hisimon.mmlgb.MMLGB" />
 			</manifest>
 		</jar>
 	</target>

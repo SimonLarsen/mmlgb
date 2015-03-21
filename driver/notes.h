@@ -24,6 +24,7 @@ enum E_CMD {
 	T_WAVE,
 	T_TEMPO,
 	T_WAVEDUTY,
+	T_PAN,
 	T_EOF
 };
 

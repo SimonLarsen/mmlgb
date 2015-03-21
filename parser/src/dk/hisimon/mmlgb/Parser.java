@@ -15,7 +15,7 @@ public class Parser {
 	private static final int MIN_OCTAVE = 2;
 	private static final int MAX_OCTAVE = 8;
 
-	private static final int BEAT_STEPS = 32; // Steps per beat
+	private static final int BEAT_STEPS = 48; // Steps per beat
 	private static final int TIMA_SPEED = 4096;
 
 	public Parser(List<Lexer.Token> tokens) {
@@ -214,6 +214,29 @@ public class Parser {
 					song.addData(active, Song.CMD.T_TEMPO.ordinal());
 					song.addData(active, 255 - mod);
 				}
+				else if(next.data.equals("y")) {
+					eat();
+
+					if(next.type != Lexer.TokenType.NUMBER) {
+						throw new ParserException("Invalid panning command. Expected number.");
+					}
+
+					int pan = Integer.parseInt(next.data);
+					eat();
+					int val;
+					if(pan == -1) {
+						val = 16; // 00010000
+					} else if(pan == 0) {
+						val = 17; // 00010001
+					} else if(pan == 1) {
+						val = 1; //  00000001
+					} else {
+						throw new ParserException("Invalid panning value. Expected -1, 0 or 1.");
+					}
+
+					song.addData(active, Song.CMD.T_PAN.ordinal());
+					song.addData(active, val);
+				}
 			}
 			else if(next.type == Lexer.TokenType.MACRO) {
 				if(next.data.equals("@wave")) {
@@ -287,15 +310,14 @@ public class Parser {
 			return 0;
 		}
 
-		// Bar is 128 updates.
 		// Divide with note fraction.
-		length = 128 / length;
+		length = (4 * BEAT_STEPS) / length;
 
 		// Add dots
 		int dot = length / 2;
 		while(next.type == Lexer.TokenType.DOT) {
 			if(dot <= 0) {
-				throw new ParserException("Too many dots in not length. Not enough precision.");
+				throw new ParserException("Too many dots in length. Not enough precision.");
 			}
 			eat();
 			length += dot;

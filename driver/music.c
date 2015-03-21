@@ -88,17 +88,19 @@ void mus_update1() {
 				note = *mus_data1++;
 				NR11_REG = (note << 5);
 				break;
+			case T_PAN:
+				note = *mus_data1++;
+				NR51_REG = (NR51_REG & B8(11101110)) | note;
+				break;
 			case T_EOF:
 				mus_data1 = song + ((UWORD*)song)[CHN1_OFFSET];
 				return;
 			default:
 				if(note & MUS_HAS_LENGTH) {
 					note ^= MUS_HAS_LENGTH;
-					//mus_wait1 = length_frames[*mus_data1++];
 					mus_wait1 = *mus_data1++;
 				}
 				else {
-					//mus_wait1 = length_frames[mus_length1];
 					mus_wait1 = mus_length1;
 				}
 				if(note == T_REST) {
@@ -157,17 +159,19 @@ void mus_update2() {
 				note = *mus_data2++;
 				NR21_REG = note << 5;
 				break;
+			case T_PAN:
+				note = *mus_data2++;
+				NR51_REG = (NR51_REG & B8(11011101)) | (note << 1);
+				break;
 			case T_EOF:
 				mus_data2 = song + ((UWORD*)song)[CHN2_OFFSET];
 				return;
 			default:
 				if(note & MUS_HAS_LENGTH) {
 					note ^= MUS_HAS_LENGTH;
-					//mus_wait2 = length_frames[*mus_data2++];
 					mus_wait2 = *mus_data2++;
 				}
 				else {
-					//mus_wait2 = length_frames[mus_length2];
 					mus_wait2 = mus_length2;
 				}
 				if(note == T_REST) {
@@ -227,16 +231,18 @@ void mus_update3() {
 			case T_WAVEDUTY:
 				mus_data3++;
 				break;
+			case T_PAN:
+				note = *mus_data3++;
+				NR51_REG = (NR51_REG & B8(10111011)) | (note << 2);
+				break;
 			case T_EOF:
 				mus_data3 = song + ((UWORD*)song)[CHN3_OFFSET];
 				return;
 			default:
 				if(note & MUS_HAS_LENGTH) {
 					note ^= MUS_HAS_LENGTH;
-					//mus_wait3 = length_frames[*mus_data3++];
 					mus_wait3 = *mus_data3++;
 				} else {
-					//mus_wait3 = length_frames[mus_length3];
 					mus_wait3 = mus_length3;
 				}
 				if(note == T_REST) {
