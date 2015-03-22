@@ -77,10 +77,6 @@ public class Parser {
 			}
 			samples[i] = sample;
 
-			// Eat commas
-			if(i < 31) {
-				eat(Lexer.TokenType.COMMA, ",");
-			}
 			while(next.type == Lexer.TokenType.NEWLINE) eat();
 		}
 

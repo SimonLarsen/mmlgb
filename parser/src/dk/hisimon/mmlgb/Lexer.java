@@ -21,7 +21,6 @@ public  class Lexer {
 		ASSIGN("="),
 		LCURLY("\\{"),
 		RCURLY("\\}"),
-		COMMA(","),
 		NEWLINE("\\n"),
 		WHITESPACE("[ \\t\\f\\r]+"),
 		EOF("");
@@ -128,10 +127,6 @@ public  class Lexer {
 			}
 			else if(matcher.group(TokenType.RCURLY.name()) != null) {
 				tokens.add(new Token(TokenType.RCURLY, matcher.group(TokenType.RCURLY.name()), line, pos));
-				continue;
-			}
-			else if(matcher.group(TokenType.COMMA.name()) != null) {
-				tokens.add(new Token(TokenType.COMMA, matcher.group(TokenType.COMMA.name()), line, pos));
 				continue;
 			}
 			else if(matcher.group(TokenType.WHITESPACE.name()) != null) {
