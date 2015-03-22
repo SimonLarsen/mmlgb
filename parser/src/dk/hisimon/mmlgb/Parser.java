@@ -12,7 +12,8 @@ public class Parser {
 	private static final String[] CHANNEL_NAMES = {"A","B","C","D"};
 	private static final String[] NOTE_NAMES = {"c","cs","d","ds","e","f","fs","g","gs","a","as","b"};
 
-	private static final int BEAT_STEPS = 48; // Steps per beat
+	private static final int BEAT_STEPS = 48;
+	private static final int BAR_STEPS = 4*BEAT_STEPS;
 	private static final int TIMA_SPEED = 4096;
 
 	public Parser(List<Lexer.Token> tokens) {
@@ -305,13 +306,18 @@ public class Parser {
 		// Length
 		if(next.type == Lexer.TokenType.NUMBER) {
 			length = parseInt(next.data);
-			if(length < 1 || length > 32) {
-				throw new ParserException(String.format("Invalid note length %d. Expected 1-32.", length), next);
+			if(length < 1 || length > 192) {
+				throw new ParserException(String.format("Invalid note length %d. Expected 1-%d.", length, BAR_STEPS), next);
 			}
 			eat();
 
+			// Check if BAR_STEPS is divisible by length
+			if((int)(BAR_STEPS / length)*length != BAR_STEPS) {
+				throw new ParserException(String.format("Invalid note length %d. Not enough precision.", length), next);
+			}
+
 			// Divide with note fraction.
-			length = (4 * BEAT_STEPS) / length;
+			length = BAR_STEPS / length;
 
 			// Add dots
 			int dot = length / 2;
