@@ -232,6 +232,11 @@ public class Parser {
 					song.addData(active, Song.CMD.T_PAN.ordinal());
 					song.addData(active, val);
 				}
+				else if(next.data.equals("L")) {
+					eat();
+
+					song.addData(active, Song.CMD.T_LOOP.ordinal());
+				}
 			}
 			else if(next.type == Lexer.TokenType.MACRO) {
 				if(next.data.equals("@wave")) {

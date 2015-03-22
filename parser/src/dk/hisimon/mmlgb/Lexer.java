@@ -15,7 +15,7 @@ public  class Lexer {
 		NOTE("[cdefgab]"),
 		SHARP("[\\#\\+]"),
 		DASH("-"),
-		COMMAND("[ro<>lvty]"),
+		COMMAND("[ro<>lvtysL]"),
 		DOT("\\."),
 		MACRO("(@wave|@ve|@wd)"),
 		ASSIGN("="),

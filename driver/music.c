@@ -6,7 +6,7 @@
 #include "freq.h"
 #include "noisefreq.h"
 
-UBYTE *song;
+UBYTE *mus_song, *mus_loop1, *mus_loop2, *mus_loop3, *mus_loop4;
 UBYTE mus_octave1, mus_octave2, mus_octave3, mus_octave4;
 UBYTE mus_length1, mus_length2, mus_length3, mus_length4;
 UBYTE mus_volume1, mus_volume2, mus_volume3, mus_volume4;
@@ -26,16 +26,16 @@ void mus_init(UBYTE *song_data) {
 	TMA_REG = 255U - 51U; // Default to ~150 bpm
 
 	// Setup data
-	song = song_data;
+	mus_song = song_data;
 	
-	mus_data1 = song + ((UWORD*)song)[CHN1_OFFSET];
-	mus_data2 = song + ((UWORD*)song)[CHN2_OFFSET];
-	mus_data3 = song + ((UWORD*)song)[CHN3_OFFSET];
-	mus_data4 = song + ((UWORD*)song)[CHN4_OFFSET];
+	mus_data1 = mus_loop1 = mus_song + ((UWORD*)mus_song)[CHN1_OFFSET];
+	mus_data2 = mus_loop2 = mus_song + ((UWORD*)mus_song)[CHN2_OFFSET];
+	mus_data3 = mus_loop3 = mus_song + ((UWORD*)mus_song)[CHN3_OFFSET];
+	mus_data4 = mus_loop4 = mus_song + ((UWORD*)mus_song)[CHN4_OFFSET];
 
 	mus_wait1 = mus_wait2 = mus_wait3 = mus_wait4 = 0U;
 	mus_octave1 = mus_octave2 = mus_octave3 = mus_octave4 = 4U;
-	mus_length1 = mus_length2 = mus_length3 = mus_length4 = 4U;
+	mus_length1 = mus_length2 = mus_length3 = mus_length4 = 48U;
 	mus_volume1 = mus_volume2 = mus_volume3 = mus_volume4 = 15U;
 	mus_env1 = mus_env2 = mus_env4 = 3U;
 }
@@ -93,8 +93,11 @@ void mus_update1() {
 				note = *mus_data1++;
 				NR51_REG = (NR51_REG & B8(11101110)) | note;
 				break;
+			case T_LOOP:
+				mus_loop1 = mus_data1;
+				break;
 			case T_EOF:
-				mus_data1 = song + ((UWORD*)song)[CHN1_OFFSET];
+				mus_data1 = mus_loop1;
 				return;
 			default:
 				if(note & MUS_HAS_LENGTH) {
@@ -164,8 +167,11 @@ void mus_update2() {
 				note = *mus_data2++;
 				NR51_REG = (NR51_REG & B8(11011101)) | (note << 1);
 				break;
+			case T_LOOP:
+				mus_loop2 = mus_data2;
+				break;
 			case T_EOF:
-				mus_data2 = song + ((UWORD*)song)[CHN2_OFFSET];
+				mus_data2 = mus_loop2;
 				return;
 			default:
 				if(note & MUS_HAS_LENGTH) {
@@ -223,7 +229,7 @@ void mus_update3() {
 			case T_WAVE:
 				note = *mus_data3++;
 				NR30_REG = 0x0U;
-				memcpy(0xFF30, song + WAVE_OFFSET + (note << 4), 16U);
+				memcpy(0xFF30, mus_song + WAVE_OFFSET + (note << 4), 16U);
 				NR30_REG = 0xFFU;
 				break;
 			case T_TEMPO:
@@ -236,8 +242,11 @@ void mus_update3() {
 				note = *mus_data3++;
 				NR51_REG = (NR51_REG & B8(10111011)) | (note << 2);
 				break;
+			case T_LOOP:
+				mus_loop3 = mus_data3;
+				break;
 			case T_EOF:
-				mus_data3 = song + ((UWORD*)song)[CHN3_OFFSET];
+				mus_data3 = mus_loop3;
 				return;
 			default:
 				if(note & MUS_HAS_LENGTH) {
@@ -298,8 +307,11 @@ void mus_update4() {
 				note = *mus_data4++;
 				NR51_REG = (NR51_REG & B8(01110111)) | (note << 3);
 				break;
+			case T_LOOP:
+				mus_loop4 = mus_data4;
+				break;
 			case T_EOF:
-				mus_data4 = song + ((UWORD*)song)[CHN4_OFFSET];
+				mus_data4 = mus_loop4;
 				return;
 			default:
 				if(note & MUS_HAS_LENGTH) {
