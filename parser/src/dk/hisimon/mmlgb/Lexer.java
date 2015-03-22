@@ -8,13 +8,13 @@ import java.util.regex.Matcher;
 public  class Lexer {
 	public static enum TokenType {
 		COMMENT(";.*\\n?"),
-		NUMBER("-?[0-9]+"),
-		HEXNUMBER("-?0x[0-9]+"),
-		BINNUMBER("-?0b[0-1]+"),
+		NUMBER("[0-9]+"),
+		HEXNUMBER("0x[0-9]+"),
+		BINNUMBER("0b[0-1]+"),
 		CHANNEL("[ABCD]"),
 		NOTE("[cdefgab]"),
 		SHARP("[\\#\\+]"),
-		FLAT("-"),
+		DASH("-"),
 		COMMAND("[ro<>lvty]"),
 		DOT("\\."),
 		MACRO("(@wave|@ve|@wd)"),
@@ -96,8 +96,8 @@ public  class Lexer {
 				tokens.add(new Token(TokenType.SHARP, matcher.group(TokenType.SHARP.name()), line, pos));
 				continue;
 			}
-			else if(matcher.group(TokenType.FLAT.name()) != null) {
-				tokens.add(new Token(TokenType.FLAT, matcher.group(TokenType.FLAT.name()), line, pos));
+			else if(matcher.group(TokenType.DASH.name()) != null) {
+				tokens.add(new Token(TokenType.DASH, matcher.group(TokenType.DASH.name()), line, pos));
 				continue;
 			}
 			else if(matcher.group(TokenType.COMMAND.name()) != null) {

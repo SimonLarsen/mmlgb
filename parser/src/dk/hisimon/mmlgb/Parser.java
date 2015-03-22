@@ -122,7 +122,7 @@ public class Parser {
 					note++;
 					eat();
 				}
-				else if(next.type == Lexer.TokenType.FLAT) {
+				else if(next.type == Lexer.TokenType.DASH) {
 					note--;
 					eat();
 				}
@@ -211,21 +211,26 @@ public class Parser {
 				else if(next.data.equals("y")) {
 					eat();
 
+					boolean negative = false;
+					if(next.type == Lexer.TokenType.DASH) {
+						eat();
+						negative = true;
+					}
+
 					if(next.type != Lexer.TokenType.NUMBER) {
 						throw new ParserException("Invalid panning command. Expected number.", next);
 					}
 
 					int pan = parseInt(next.data);
 					eat();
+
 					int val;
-					if(pan == -1) {
-						val = 16; // 00010000
-					} else if(pan == 0) {
+					if(pan == 0) {
 						val = 17; // 00010001
-					} else if(pan == 1) {
-						val = 1; //  00000001
+					} else if(negative) {
+						val = 16; // 00010000
 					} else {
-						throw new ParserException("Invalid panning value. Expected -1, 0 or 1.", next);
+						val = 1;  // 00000001
 					}
 
 					song.addData(active, Song.CMD.T_PAN.ordinal());
@@ -248,23 +253,28 @@ public class Parser {
 				else if(next.data.equals("@ve")) {
 					eat();
 
+					boolean increasing = true;
+					if(next.type == Lexer.TokenType.DASH) {
+						eat();
+						increasing = false;
+					}
+
 					if(next.type != Lexer.TokenType.NUMBER) {
 						throw new ParserException("Invalid volume envelope. Expected number.", next);
 					}
+
 					int envelope = parseInt(next.data);
 					eat();
-
-					if(envelope < -7 || envelope > 7) {
+					if(envelope > 7) {
 						throw new ParserException("Invalid volume envelope. Expected values from -7 to 7.", next);
 					}
 
-					int value = Math.abs(envelope);
-					if(envelope >= 0) {
-						value = value | (1 << 3);
+					if(increasing) {
+						envelope = envelope | (1 << 3);
 					}
 
 					song.addData(active, Song.CMD.T_ENV.ordinal());
-					song.addData(active, value);
+					song.addData(active, envelope);
 				}
 				else if(next.data.equals("@wd")) {
 					eat();

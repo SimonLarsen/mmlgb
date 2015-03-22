@@ -4,6 +4,7 @@
 #include "binconst.h"
 #include "notes.h"
 #include "freq.h"
+#include "noisefreq.h"
 
 UBYTE *song;
 UBYTE mus_octave1, mus_octave2, mus_octave3, mus_octave4;
@@ -107,7 +108,7 @@ void mus_update1() {
 					frequency = 0U;
 					NR12_REG = 0U;
 				} else {
-					frequency = freq[((mus_octave1-FIRST_OCTAVE) << 4) + note];
+					frequency = freq[((mus_octave1-MUS_FIRST_OCTAVE) << 4) + note];
 					NR12_REG = (mus_volume1 << 4) | mus_env1;
 				}
 				NR13_REG = (UBYTE)frequency;
@@ -178,7 +179,7 @@ void mus_update2() {
 					frequency = 0U;
 					NR22_REG = 0U;
 				} else {
-					frequency = freq[((mus_octave2-FIRST_OCTAVE) << 4) + note];
+					frequency = freq[((mus_octave2-MUS_FIRST_OCTAVE) << 4) + note];
 					NR22_REG = (mus_volume2 << 4) | mus_env2;
 				}
 				NR23_REG = (UBYTE)frequency;
@@ -249,7 +250,7 @@ void mus_update3() {
 					frequency = 0U;
 					NR32_REG = 0U;
 				} else {
-					frequency = freq[((mus_octave3-FIRST_OCTAVE) << 4) + note];
+					frequency = freq[((mus_octave3-MUS_FIRST_OCTAVE) << 4) + note];
 					NR32_REG = mus_volume3 << 5;
 				}
 				NR33_REG = (UBYTE)frequency;
@@ -311,7 +312,7 @@ void mus_update4() {
 					frequency = 0U;
 					NR42_REG = 0U;
 				} else {
-					frequency = noise_freq[(mus_octave4 << 4) + note];
+					frequency = noise_freq[((mus_octave4-MUS_NOISE_FIRST_OCTAVE) << 4) + note];
 					NR42_REG = (mus_volume4 << 4) | mus_env4;
 				}
 				NR43_REG = frequency;

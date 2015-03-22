@@ -1,7 +1,6 @@
 #ifndef MUSIC_H
 #define MUSIC_H
 
-#define FIRST_OCTAVE 2U
 #define WAVE_OFFSET 8U
 
 #define CHN1_OFFSET	0U
