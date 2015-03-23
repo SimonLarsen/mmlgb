@@ -28,6 +28,7 @@ public class Song {
 		T_As,
 		T_B,
 		T_REST,
+		T_WAIT,
 		T_LENGTH,
 		T_OCTAVE,
 		T_OCT_UP,

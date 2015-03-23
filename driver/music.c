@@ -17,9 +17,11 @@ UBYTE *mus_data1, *mus_data2, *mus_data3, *mus_data4;
 void mus_init(UBYTE *song_data) {
 	NR52_REG = 0x80U; // Enable sound
 	NR51_REG = 0xFFU;
+	NR50_REG = 0xFFU;
 
 	// Channel 3
-	NR30_REG = 0xFFU;
+	NR30_REG = 0x0U;
+	NR32_REG = 0x40U;
 
 	// Setup timer
 	TAC_REG = 0x04U; // TAC clock = 4096 Hz
@@ -107,7 +109,9 @@ void mus_update1() {
 				else {
 					mus_wait1 = mus_length1;
 				}
-				if(note == T_REST) {
+				if(note == T_WAIT) {
+					return;
+				} else if(note == T_REST) {
 					frequency = 0U;
 					NR12_REG = 0U;
 				} else {
@@ -181,7 +185,9 @@ void mus_update2() {
 				else {
 					mus_wait2 = mus_length2;
 				}
-				if(note == T_REST) {
+				if(note == T_WAIT) {
+					return;
+				} else if(note == T_REST) {
 					frequency = 0U;
 					NR22_REG = 0U;
 				} else {
@@ -230,7 +236,7 @@ void mus_update3() {
 				note = *mus_data3++;
 				NR30_REG = 0x0U;
 				memcpy(0xFF30, mus_song + WAVE_OFFSET + (note << 4), 16U);
-				NR30_REG = 0xFFU;
+				NR30_REG = 0x80U;
 				break;
 			case T_TEMPO:
 				TMA_REG = *mus_data3++;
@@ -255,13 +261,17 @@ void mus_update3() {
 				} else {
 					mus_wait3 = mus_length3;
 				}
-				if(note == T_REST) {
+				if(note == T_WAIT) {
+					return;
+				} else if(note == T_REST) {
 					frequency = 0U;
 					NR32_REG = 0U;
 				} else {
 					frequency = freq[((mus_octave3-MUS_FIRST_OCTAVE) << 4) + note];
 					NR32_REG = mus_volume3 << 5;
 				}
+				NR30_REG = 0x0U;
+				NR30_REG = 0x80U;
 				NR33_REG = (UBYTE)frequency;
 				NR34_REG = 0x80U | (frequency >> 8);
 				return;
@@ -320,7 +330,9 @@ void mus_update4() {
 				} else {
 					mus_wait4 = mus_length4;
 				}
-				if(note == T_REST) {
+				if(note == T_WAIT) {
+					return;
+				} else if(note == T_REST) {
 					frequency = 0U;
 					NR42_REG = 0U;
 				} else {

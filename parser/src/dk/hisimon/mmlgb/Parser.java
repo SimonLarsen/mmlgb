@@ -142,11 +142,22 @@ public class Parser {
 
 					int length = parseLength(false);
 
-					// Emit data
 					if(length == 0) {
 						song.addData(active, Song.CMD.T_REST.ordinal());
 					} else {
 						song.addData(active, Song.CMD.T_REST.ordinal() | 0x80);
+						song.addData(active, length);
+					}
+				}
+				else if(next.data.equals("w")) {
+					eat();
+
+					int length = parseLength(false);
+
+					if(length == 0) {
+						song.addData(active, Song.CMD.T_WAIT.ordinal());
+					} else {
+						song.addData(active, Song.CMD.T_WAIT.ordinal() | 0x80);
 						song.addData(active, length);
 					}
 				}
@@ -186,6 +197,12 @@ public class Parser {
 						throw new ParserException("Invalid volume. Expected number.", next);
 					}
 					int volume = parseInt(next.data);
+					if(active[2] && volume > 3) {
+						throw new ParserException("Invalid volume for wave channel. Expected 0-3.", next);
+					}
+					if(volume > 15) {
+						throw new ParserException("Invalid volume value. Expected 0-15.", next);
+					}
 					eat();
 
 					song.addData(active, Song.CMD.T_VOL.ordinal());

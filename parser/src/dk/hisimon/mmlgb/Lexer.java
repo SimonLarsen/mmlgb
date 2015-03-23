@@ -7,7 +7,7 @@ import java.util.regex.Matcher;
 
 public  class Lexer {
 	public static enum TokenType {
-		COMMENT(";.*\\n?"),
+		COMMENT(";.*"),
 		NUMBER("[0-9]+"),
 		HEXNUMBER("0x[0-9]+"),
 		BINNUMBER("0b[0-1]+"),
@@ -15,7 +15,7 @@ public  class Lexer {
 		NOTE("[cdefgab]"),
 		SHARP("[\\#\\+]"),
 		DASH("-"),
-		COMMAND("[ro<>lvtysL]"),
+		COMMAND("[rwo<>lvtysL]"),
 		DOT("\\."),
 		MACRO("(@wave|@ve|@wd)"),
 		ASSIGN("="),
