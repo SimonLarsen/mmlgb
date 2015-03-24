@@ -119,7 +119,7 @@ public class Song {
 		this.filename = name;
 	}
 
-	public String emit() {
+	public String emitC() {
 		String id = filename.replaceAll("[^a-zA-Z0-9]", "_");
 		String id_upper = id.toUpperCase();
 		StringBuilder sb = new StringBuilder();
@@ -135,6 +135,21 @@ public class Song {
 		sb.append("};\n\n");
 
 		sb.append("#endif");
+
+		return sb.toString();
+	}
+
+	public String emitASM() {
+		String id = filename.replaceAll("[^a-zA-Z0-9]", "_");
+		String id_lower = id.toLowerCase();
+		StringBuilder sb = new StringBuilder();
+
+		sb.append(String.format(".globl %s_data\n", id_lower));
+		sb.append(String.format("%s_data:\n", id_lower));
+
+		for(Integer i : getData()) {
+			sb.append(String.format("\t.db 0x%02X\n", i));
+		}
 
 		return sb.toString();
 	}

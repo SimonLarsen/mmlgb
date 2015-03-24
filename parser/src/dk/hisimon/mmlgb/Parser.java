@@ -312,8 +312,11 @@ public class Parser {
 					song.addData(active, duty);
 				}
 			}
+			else if(next.type == Lexer.TokenType.EOF) {
+				break;
+			}
 			else {
-				throw new ParserException(String.format("Unexpected token %s.", next.data), next);
+				throw new ParserException(String.format("Unexpected token %s.", next), next);
 			}
 		}
 	}
