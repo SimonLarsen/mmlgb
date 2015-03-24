@@ -100,7 +100,11 @@ void mus_update1() {
 				break;
 			case T_EOF:
 				mus_data1 = mus_loop1;
-				return;
+				if(*mus_data1 == T_EOF) {
+					mus_wait2 = 255U;
+					return;
+				}
+				break;
 			default:
 				if(note & MUS_HAS_LENGTH) {
 					note ^= MUS_HAS_LENGTH;
@@ -176,7 +180,11 @@ void mus_update2() {
 				break;
 			case T_EOF:
 				mus_data2 = mus_loop2;
-				return;
+				if(*mus_data2 == T_EOF) {
+					mus_wait2 = 255U;
+					return;
+				}
+				break;
 			default:
 				if(note & MUS_HAS_LENGTH) {
 					note ^= MUS_HAS_LENGTH;
@@ -253,7 +261,11 @@ void mus_update3() {
 				break;
 			case T_EOF:
 				mus_data3 = mus_loop3;
-				return;
+				if(*mus_data3 == T_EOF) {
+					mus_wait3 = 255U;
+					return;
+				}
+				break;
 			default:
 				if(note & MUS_HAS_LENGTH) {
 					note ^= MUS_HAS_LENGTH;
@@ -322,7 +334,11 @@ void mus_update4() {
 				break;
 			case T_EOF:
 				mus_data4 = mus_loop4;
-				return;
+				if(*mus_data4 == T_EOF) {
+					mus_wait4 = 255U;
+					return;
+				}
+				break;
 			default:
 				if(note & MUS_HAS_LENGTH) {
 					note ^= MUS_HAS_LENGTH;

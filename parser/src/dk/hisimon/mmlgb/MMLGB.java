@@ -17,7 +17,7 @@ public class MMLGB {
 
 		song.setFileName(outpath.getFileName().toString());
 		PrintWriter pw = new PrintWriter(outpath.toFile());
-		pw.println(song);
+		pw.println(song.emit());
 		pw.flush();
 		pw.close();
 	}

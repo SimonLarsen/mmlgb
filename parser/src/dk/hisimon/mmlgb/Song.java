@@ -119,7 +119,7 @@ public class Song {
 		this.filename = name;
 	}
 
-	public String toString() {
+	public String emit() {
 		String id = filename.replaceAll("[^a-zA-Z0-9]", "_");
 		String id_upper = id.toUpperCase();
 		StringBuilder sb = new StringBuilder();
