@@ -1,12 +1,12 @@
 #include <gb/gb.h>
 #include "music.h"
 
-#include "song.h"
+extern UBYTE song_asm_data;
 
 void main() {
 	disable_interrupts();
 
-	mus_init(song_h_data);
+	mus_init(&song_asm_data);
 
 	add_TIM(mus_update);
 	enable_interrupts();

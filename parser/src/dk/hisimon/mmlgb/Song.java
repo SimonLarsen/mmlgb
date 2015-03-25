@@ -144,8 +144,8 @@ public class Song {
 		String id_lower = id.toLowerCase();
 		StringBuilder sb = new StringBuilder();
 
-		sb.append(String.format(".globl %s_data\n", id_lower));
-		sb.append(String.format("%s_data:\n", id_lower));
+		sb.append(String.format(".globl _%s_data\n", id_lower));
+		sb.append(String.format("_%s_data:\n", id_lower));
 
 		for(Integer i : getData()) {
 			sb.append(String.format("\t.db 0x%02X\n", i));
