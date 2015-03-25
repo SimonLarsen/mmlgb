@@ -41,6 +41,8 @@ public class Song {
 		T_PAN,
 		T_SWEEP,
 		T_LOOP,
+		T_REP_START,
+		T_REP_END,
 		T_EOF
 	};
 

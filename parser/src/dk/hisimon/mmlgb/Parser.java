@@ -312,6 +312,26 @@ public class Parser {
 					song.addData(active, duty);
 				}
 			}
+			else if(next.type == Lexer.TokenType.LBRACKET) {
+				eat();
+
+				song.addData(active, Song.CMD.T_REP_START.ordinal());
+			}
+			else if(next.type == Lexer.TokenType.RBRACKET) {
+				eat();
+
+				if(next.type != Lexer.TokenType.NUMBER) {
+					throw new ParserException("Expected repetition count.", next);
+				}
+				int reps = parseInt(next.data);
+				if(reps < 2) {
+					throw new ParserException("Invalid repetition count. Must be >= 2.", next);
+				}
+				eat();
+
+				song.addData(active, Song.CMD.T_REP_END.ordinal());
+				song.addData(active, reps);
+			}
 			else if(next.type == Lexer.TokenType.EOF) {
 				break;
 			}
