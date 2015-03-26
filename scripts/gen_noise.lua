@@ -14,20 +14,15 @@ end
 print("#ifndef MUS_NOISEFREQ_H")
 print("#define MUS_NOISEFREQ_H")
 
-print("\nconst UBYTE noise_freq[] = {")
-local count = 0
-for r = 7, 0, -1 do
-	for s = 15, 0, -1 do
-		if freq(r, s) >= THRESHOLD then
-			print("\t" .. bitmask(r, s) .. "U,")
+print("\n#define MUS_NOISE_FIRST_OCTAVE 1U");
 
-			count = count+1
-			if count == 12 then
-				print("\t0U, 0U, 0U, 0U,")
-				count = 0
-			end
-		end
+print("\nconst UBYTE noise_freq[] = {")
+
+for r = 7, 0, -1 do
+	for s = 15, 4, -1 do
+		print("\t" .. bitmask(r, s) .. "U,")
 	end
+	print("\t0U, 0U, 0U, 0U,")
 end
 print("};")
 print("\n#endif")

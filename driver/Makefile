@@ -1,5 +1,7 @@
 .PHONY: compile
 compile:
+	lcc -S main.c
+	lcc -S music.c
 	lcc -c main.c -o main.o
 	lcc -c music.c -o music.o
 	lcc -c song.asm -o song.o

@@ -7,8 +7,8 @@ if %errorlevel% neq 0 (
 	exit /b %errorlevel%
 )
 
-lcc.exe -c driver\main.lin.asm -o driver\main.o
-lcc.exe -c driver\music.lin.asm -o driver\music.o
+lcc.exe -c driver\main.asm -o driver\main.o
+lcc.exe -c driver\music.asm -o driver\music.o
 lcc.exe -c driver\song.asm -o driver\song.o
 lcc.exe driver\main.o driver\music.o driver\song.o -o rom.gb
 
