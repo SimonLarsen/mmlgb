@@ -1,17 +1,17 @@
 ;--------------------------------------------------------
 ; File Created by SDCC : FreeWare ANSI-C Compiler
-; Version 2.3.1 Wed Mar 25 21:17:34 2015
+; Version 2.3.1 Thu Mar 26 11:13:41 2015
 
 ;--------------------------------------------------------
-	.module lcc6500
+	.module lcc110850
 	
 ;--------------------------------------------------------
 ; Public variables in this module
 ;--------------------------------------------------------
-	.globl _mus_data4
-	.globl _mus_data3
-	.globl _mus_data2
-	.globl _mus_data1
+	.globl _mus_repeats4
+	.globl _mus_repeats3
+	.globl _mus_repeats2
+	.globl _mus_repeats1
 	.globl _mus_wait4
 	.globl _mus_wait3
 	.globl _mus_wait2
@@ -31,10 +31,18 @@
 	.globl _mus_octave3
 	.globl _mus_octave2
 	.globl _mus_octave1
+	.globl _mus_rep4
+	.globl _mus_rep3
+	.globl _mus_rep2
+	.globl _mus_rep1
 	.globl _mus_loop4
 	.globl _mus_loop3
 	.globl _mus_loop2
 	.globl _mus_loop1
+	.globl _mus_data4
+	.globl _mus_data3
+	.globl _mus_data2
+	.globl _mus_data1
 	.globl _mus_song
 	.globl _noise_freq
 	.globl _freq
@@ -56,6 +64,14 @@
 	.area _DATA
 _mus_song::
 	.ds 2
+_mus_data1::
+	.ds 2
+_mus_data2::
+	.ds 2
+_mus_data3::
+	.ds 2
+_mus_data4::
+	.ds 2
 _mus_loop1::
 	.ds 2
 _mus_loop2::
@@ -63,6 +79,14 @@ _mus_loop2::
 _mus_loop3::
 	.ds 2
 _mus_loop4::
+	.ds 2
+_mus_rep1::
+	.ds 2
+_mus_rep2::
+	.ds 2
+_mus_rep3::
+	.ds 2
+_mus_rep4::
 	.ds 2
 _mus_octave1::
 	.ds 1
@@ -102,14 +126,14 @@ _mus_wait3::
 	.ds 1
 _mus_wait4::
 	.ds 1
-_mus_data1::
-	.ds 2
-_mus_data2::
-	.ds 2
-_mus_data3::
-	.ds 2
-_mus_data4::
-	.ds 2
+_mus_repeats1::
+	.ds 1
+_mus_repeats2::
+	.ds 1
+_mus_repeats3::
+	.ds 1
+_mus_repeats4::
+	.ds 1
 ;--------------------------------------------------------
 ; overlayable items in internal ram 
 ;--------------------------------------------------------
@@ -141,7 +165,7 @@ _mus_data4::
 ; code
 ;--------------------------------------------------------
 	.area _CODE
-;	music.c 17
+;	music.c 20
 ;	genLabel
 ;	genFunction
 ;	---------------------------------
@@ -150,49 +174,49 @@ _mus_data4::
 ___mus_init_start:
 _mus_init:
 	
-;	music.c 18
+;	music.c 21
 ;	genAssign
 	ld	bc,#0xFF26
 ;	genAssign (pointer)
 	ld	a,#0x80
 	ld	(bc),a
-;	music.c 19
+;	music.c 22
 ;	genAssign
 	ld	bc,#0xFF25
 ;	genAssign (pointer)
 	ld	a,#0xFF
 	ld	(bc),a
-;	music.c 20
+;	music.c 23
 ;	genAssign
 	ld	bc,#0xFF24
 ;	genAssign (pointer)
 	ld	a,#0xFF
 	ld	(bc),a
-;	music.c 23
+;	music.c 26
 ;	genAssign
 	ld	bc,#0xFF1A
 ;	genAssign (pointer)
 	ld	a,#0x00
 	ld	(bc),a
-;	music.c 24
+;	music.c 27
 ;	genAssign
 	ld	bc,#0xFF1C
 ;	genAssign (pointer)
 	ld	a,#0x40
 	ld	(bc),a
-;	music.c 27
+;	music.c 30
 ;	genAssign
 	ld	bc,#0xFF07
 ;	genAssign (pointer)
 	ld	a,#0x04
 	ld	(bc),a
-;	music.c 28
+;	music.c 31
 ;	genAssign
 	ld	bc,#0xFF06
 ;	genAssign (pointer)
 	ld	a,#0xCC
 	ld	(bc),a
-;	music.c 31
+;	music.c 34
 ;	genAssign
 ;	AOP_STK for 
 ;	AOP_HL for _mus_song
@@ -202,7 +226,7 @@ _mus_init:
 	ld	hl,#_mus_song
 	ld	(hl+),a
 	ld	(hl),e
-;	music.c 33
+;	music.c 36
 ;	genAssign
 ;	AOP_HL for _mus_song
 	dec	hl
@@ -240,7 +264,7 @@ _mus_init:
 	ld	(hl),c
 	inc	hl
 	ld	(hl),b
-;	music.c 34
+;	music.c 37
 ;	genAssign
 ;	AOP_HL for _mus_song
 	ld	hl,#_mus_song
@@ -282,7 +306,7 @@ _mus_init:
 	ld	(hl),c
 	inc	hl
 	ld	(hl),b
-;	music.c 35
+;	music.c 38
 ;	genAssign
 ;	AOP_HL for _mus_song
 	ld	hl,#_mus_song
@@ -326,7 +350,7 @@ _mus_init:
 	ld	(hl),c
 	inc	hl
 	ld	(hl),b
-;	music.c 36
+;	music.c 39
 ;	genAssign
 ;	AOP_HL for _mus_song
 	ld	hl,#_mus_song
@@ -373,7 +397,7 @@ _mus_init:
 	ld	(hl),c
 	inc	hl
 	ld	(hl),b
-;	music.c 38
+;	music.c 41
 ;	genAssign
 ;	AOP_HL for _mus_wait4
 	ld	hl,#_mus_wait4
@@ -390,7 +414,7 @@ _mus_init:
 ;	AOP_HL for _mus_wait1
 	ld	hl,#_mus_wait1
 	ld	(hl),#0x00
-;	music.c 39
+;	music.c 42
 ;	genAssign
 ;	AOP_HL for _mus_octave4
 	ld	hl,#_mus_octave4
@@ -407,7 +431,7 @@ _mus_init:
 ;	AOP_HL for _mus_octave1
 	ld	hl,#_mus_octave1
 	ld	(hl),#0x04
-;	music.c 40
+;	music.c 43
 ;	genAssign
 ;	AOP_HL for _mus_length4
 	ld	hl,#_mus_length4
@@ -424,7 +448,7 @@ _mus_init:
 ;	AOP_HL for _mus_length1
 	ld	hl,#_mus_length1
 	ld	(hl),#0x30
-;	music.c 41
+;	music.c 44
 ;	genAssign
 ;	AOP_HL for _mus_volume4
 	ld	hl,#_mus_volume4
@@ -441,7 +465,7 @@ _mus_init:
 ;	AOP_HL for _mus_volume1
 	ld	hl,#_mus_volume1
 	ld	(hl),#0x0F
-;	music.c 42
+;	music.c 45
 ;	genAssign
 ;	AOP_HL for _mus_env4
 	ld	hl,#_mus_env4
@@ -454,6 +478,23 @@ _mus_init:
 ;	AOP_HL for _mus_env1
 	ld	hl,#_mus_env1
 	ld	(hl),#0x03
+;	music.c 46
+;	genAssign
+;	AOP_HL for _mus_repeats4
+	ld	hl,#_mus_repeats4
+	ld	(hl),#0x00
+;	genAssign
+;	AOP_HL for _mus_repeats3
+	ld	hl,#_mus_repeats3
+	ld	(hl),#0x00
+;	genAssign
+;	AOP_HL for _mus_repeats2
+	ld	hl,#_mus_repeats2
+	ld	(hl),#0x00
+;	genAssign
+;	AOP_HL for _mus_repeats1
+	ld	hl,#_mus_repeats1
+	ld	(hl),#0x00
 ;	genLabel
 00101$:
 ;	genEndFunction
@@ -690,7 +731,7 @@ _noise_freq:
 	.db #0x20
 	.db #0x10
 	.db #0x00
-;	music.c 45
+;	music.c 49
 ;	genLabel
 ;	genFunction
 ;	---------------------------------
@@ -699,19 +740,19 @@ _noise_freq:
 ___mus_update_start:
 _mus_update:
 	
-;	music.c 46
+;	music.c 50
 ;	genCall
 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 0 deSending: 0
 	call	_mus_update1
-;	music.c 47
+;	music.c 51
 ;	genCall
 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 0 deSending: 0
 	call	_mus_update2
-;	music.c 48
+;	music.c 52
 ;	genCall
 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 0 deSending: 0
 	call	_mus_update3
-;	music.c 49
+;	music.c 53
 ;	genCall
 ; _saveRegsForCall: sendSetSize: 0 deInUse: 0 bcInUse: 0 deSending: 0
 	call	_mus_update4
@@ -721,7 +762,7 @@ _mus_update:
 	
 	ret
 ___mus_update_end:
-;	music.c 52
+;	music.c 56
 ;	genLabel
 ;	genFunction
 ;	---------------------------------
@@ -730,28 +771,28 @@ ___mus_update_end:
 ___mus_update1_start:
 _mus_update1:
 	lda	sp,-8(sp)
-;	music.c 56
+;	music.c 60
 ;	genIfx
 ;	AOP_HL for _mus_wait1
 	xor	a,a
 	ld	hl,#_mus_wait1
 	or	a,(hl)
-	jp	z,00131$
-;	music.c 57
+	jp	z,00137$
+;	music.c 61
 ;	genMinus
 ;	AOP_HL for _mus_wait1
 	dec	(hl)
-;	music.c 58
+;	music.c 62
 ;	genIfx
 ;	AOP_HL for _mus_wait1
 	xor	a,a
 	or	a,(hl)
 ;	genRet
-;	music.c 61
+;	music.c 65
 ;	genLabel
-	jp	nz,00133$
-00131$:
-;	music.c 62
+	jp	nz,00139$
+00137$:
+;	music.c 66
 ;	genAssign
 ;	AOP_HL for _mus_data1
 	ld	hl,#_mus_data1
@@ -763,10 +804,10 @@ _mus_update1:
 ;	genPlusIncr
 	dec	hl
 	inc	(hl)
-	jr	nz,00154$
+	jr	nz,00164$
 	inc	hl
 	inc	(hl)
-00154$:
+00164$:
 ;	genPointerGet
 	ld	a,(bc)
 	ld	c,a
@@ -774,14 +815,14 @@ _mus_update1:
 ;	AOP_STK for _mus_update1_note_1_1
 	lda	hl,7(sp)
 	ld	(hl),c
-;	music.c 63
+;	music.c 67
 ;	genCmpEq
 ;	AOP_STK for _mus_update1_note_1_1
 ; genCmpEq: left 1, right 1, result 0
 	ld	a,(hl)
 	cp	a,#0x0E
 	jp	z,00105$
-00155$:
+00165$:
 ;	genCmpEq
 ;	AOP_STK for _mus_update1_note_1_1
 ; genCmpEq: left 1, right 1, result 0
@@ -789,7 +830,7 @@ _mus_update1:
 	ld	a,(hl)
 	cp	a,#0x0F
 	jp	z,00106$
-00156$:
+00166$:
 ;	genCmpEq
 ;	AOP_STK for _mus_update1_note_1_1
 ; genCmpEq: left 1, right 1, result 0
@@ -797,7 +838,7 @@ _mus_update1:
 	ld	a,(hl)
 	cp	a,#0x10
 	jp	z,00107$
-00157$:
+00167$:
 ;	genCmpEq
 ;	AOP_STK for _mus_update1_note_1_1
 ; genCmpEq: left 1, right 1, result 0
@@ -805,7 +846,7 @@ _mus_update1:
 	ld	a,(hl)
 	cp	a,#0x11
 	jp	z,00108$
-00158$:
+00168$:
 ;	genCmpEq
 ;	AOP_STK for _mus_update1_note_1_1
 ; genCmpEq: left 1, right 1, result 0
@@ -813,7 +854,7 @@ _mus_update1:
 	ld	a,(hl)
 	cp	a,#0x12
 	jp	z,00109$
-00159$:
+00169$:
 ;	genCmpEq
 ;	AOP_STK for _mus_update1_note_1_1
 ; genCmpEq: left 1, right 1, result 0
@@ -821,7 +862,7 @@ _mus_update1:
 	ld	a,(hl)
 	cp	a,#0x13
 	jp	z,00110$
-00160$:
+00170$:
 ;	genCmpEq
 ;	AOP_STK for _mus_update1_note_1_1
 ; genCmpEq: left 1, right 1, result 0
@@ -829,7 +870,7 @@ _mus_update1:
 	ld	a,(hl)
 	cp	a,#0x14
 	jp	z,00111$
-00161$:
+00171$:
 ;	genCmpEq
 ;	AOP_STK for _mus_update1_note_1_1
 ; genCmpEq: left 1, right 1, result 0
@@ -837,7 +878,7 @@ _mus_update1:
 	ld	a,(hl)
 	cp	a,#0x15
 	jp	z,00112$
-00162$:
+00172$:
 ;	genCmpEq
 ;	AOP_STK for _mus_update1_note_1_1
 ; genCmpEq: left 1, right 1, result 0
@@ -845,7 +886,7 @@ _mus_update1:
 	ld	a,(hl)
 	cp	a,#0x16
 	jp	z,00113$
-00163$:
+00173$:
 ;	genCmpEq
 ;	AOP_STK for _mus_update1_note_1_1
 ; genCmpEq: left 1, right 1, result 0
@@ -853,7 +894,7 @@ _mus_update1:
 	ld	a,(hl)
 	cp	a,#0x17
 	jp	z,00114$
-00164$:
+00174$:
 ;	genCmpEq
 ;	AOP_STK for _mus_update1_note_1_1
 ; genCmpEq: left 1, right 1, result 0
@@ -861,7 +902,7 @@ _mus_update1:
 	ld	a,(hl)
 	cp	a,#0x19
 	jp	z,00115$
-00165$:
+00175$:
 ;	genCmpEq
 ;	AOP_STK for _mus_update1_note_1_1
 ; genCmpEq: left 1, right 1, result 0
@@ -869,10 +910,26 @@ _mus_update1:
 	ld	a,(hl)
 	cp	a,#0x1A
 	jp	z,00116$
-00166$:
+00176$:
+;	genCmpEq
+;	AOP_STK for _mus_update1_note_1_1
+; genCmpEq: left 1, right 1, result 0
+	lda	hl,7(sp)
+	ld	a,(hl)
+	cp	a,#0x1B
+	jp	z,00117$
+00177$:
+;	genCmpEq
+;	AOP_STK for _mus_update1_note_1_1
+; genCmpEq: left 1, right 1, result 0
+	lda	hl,7(sp)
+	ld	a,(hl)
+	cp	a,#0x1C
+	jp	z,00122$
+00178$:
 ;	genGoto
-	jp	00122$
-;	music.c 65
+	jp	00128$
+;	music.c 69
 ;	genLabel
 00105$:
 ;	genAssign
@@ -886,10 +943,10 @@ _mus_update1:
 ;	genPlusIncr
 	dec	hl
 	inc	(hl)
-	jr	nz,00167$
+	jr	nz,00179$
 	inc	hl
 	inc	(hl)
-00167$:
+00179$:
 ;	genPointerGet
 ;	AOP_HL for _mus_length1
 	ld	e,b
@@ -897,10 +954,10 @@ _mus_update1:
 	ld	a,(de)
 	ld	hl,#_mus_length1
 	ld	(hl),a
-;	music.c 66
+;	music.c 70
 ;	genGoto
-	jp	00131$
-;	music.c 68
+	jp	00137$
+;	music.c 72
 ;	genLabel
 00106$:
 ;	genAssign
@@ -914,19 +971,19 @@ _mus_update1:
 ;	genPlusIncr
 	dec	hl
 	inc	(hl)
-	jr	nz,00168$
+	jr	nz,00180$
 	inc	hl
 	inc	(hl)
-00168$:
+00180$:
 ;	genPointerGet
 ;	AOP_HL for _mus_octave1
 	ld	a,(bc)
 	ld	hl,#_mus_octave1
 	ld	(hl),a
-;	music.c 69
+;	music.c 73
 ;	genGoto
-	jp	00131$
-;	music.c 71
+	jp	00137$
+;	music.c 75
 ;	genLabel
 00107$:
 ;	genPlus
@@ -934,20 +991,20 @@ _mus_update1:
 ;	genPlusIncr
 	ld	hl,#_mus_octave1
 	inc	(hl)
-;	music.c 72
+;	music.c 76
 ;	genGoto
-	jp	00131$
-;	music.c 74
+	jp	00137$
+;	music.c 78
 ;	genLabel
 00108$:
 ;	genMinus
 ;	AOP_HL for _mus_octave1
 	ld	hl,#_mus_octave1
 	dec	(hl)
-;	music.c 75
+;	music.c 79
 ;	genGoto
-	jp	00131$
-;	music.c 77
+	jp	00137$
+;	music.c 81
 ;	genLabel
 00109$:
 ;	genAssign
@@ -961,62 +1018,14 @@ _mus_update1:
 ;	genPlusIncr
 	dec	hl
 	inc	(hl)
-	jr	nz,00169$
+	jr	nz,00181$
 	inc	hl
 	inc	(hl)
-00169$:
+00181$:
 ;	genPointerGet
 ;	AOP_HL for _mus_volume1
 	ld	a,(bc)
 	ld	hl,#_mus_volume1
-	ld	(hl),a
-;	music.c 78
-;	genAssign
-	ld	bc,#0xFF12
-;	genLeftShift
-;	AOP_HL for _mus_volume1
-;	AOP_STK for _mus_update1_sloc0_1_0
-	ld	a,(hl)
-	sla	a
-	rl	a
-	rl	a
-	rl	a
-	and	a,#0xF0
-	lda	hl,4(sp)
-;	genOr
-;	AOP_STK for _mus_update1_sloc0_1_0
-;	AOP_HL for _mus_env1
-	ld      (hl),a
-; Removed redundent load
-	ld	hl,#_mus_env1
-	or	a,(hl)
-;	genAssign (pointer)
-	ld	(bc),a
-;	music.c 79
-;	genGoto
-	jp	00131$
-;	music.c 81
-;	genLabel
-00110$:
-;	genAssign
-;	AOP_HL for _mus_data1
-	ld	hl,#_mus_data1
-	ld	c,(hl)
-	inc	hl
-	ld	b,(hl)
-;	genPlus
-;	AOP_HL for _mus_data1
-;	genPlusIncr
-	dec	hl
-	inc	(hl)
-	jr	nz,00170$
-	inc	hl
-	inc	(hl)
-00170$:
-;	genPointerGet
-;	AOP_HL for _mus_env1
-	ld	a,(bc)
-	ld	hl,#_mus_env1
 	ld	(hl),a
 ;	music.c 82
 ;	genAssign
@@ -1024,7 +1033,6 @@ _mus_update1:
 ;	genLeftShift
 ;	AOP_HL for _mus_volume1
 ;	AOP_STK for _mus_update1_sloc0_1_0
-	ld	hl,#_mus_volume1
 	ld	a,(hl)
 	sla	a
 	rl	a
@@ -1043,8 +1051,57 @@ _mus_update1:
 	ld	(bc),a
 ;	music.c 83
 ;	genGoto
-	jp	00131$
+	jp	00137$
 ;	music.c 85
+;	genLabel
+00110$:
+;	genAssign
+;	AOP_HL for _mus_data1
+	ld	hl,#_mus_data1
+	ld	c,(hl)
+	inc	hl
+	ld	b,(hl)
+;	genPlus
+;	AOP_HL for _mus_data1
+;	genPlusIncr
+	dec	hl
+	inc	(hl)
+	jr	nz,00182$
+	inc	hl
+	inc	(hl)
+00182$:
+;	genPointerGet
+;	AOP_HL for _mus_env1
+	ld	a,(bc)
+	ld	hl,#_mus_env1
+	ld	(hl),a
+;	music.c 86
+;	genAssign
+	ld	bc,#0xFF12
+;	genLeftShift
+;	AOP_HL for _mus_volume1
+;	AOP_STK for _mus_update1_sloc0_1_0
+	ld	hl,#_mus_volume1
+	ld	a,(hl)
+	sla	a
+	rl	a
+	rl	a
+	rl	a
+	and	a,#0xF0
+	lda	hl,4(sp)
+;	genOr
+;	AOP_STK for _mus_update1_sloc0_1_0
+;	AOP_HL for _mus_env1
+	ld      (hl),a
+; Removed redundent load
+	ld	hl,#_mus_env1
+	or	a,(hl)
+;	genAssign (pointer)
+	ld	(bc),a
+;	music.c 87
+;	genGoto
+	jp	00137$
+;	music.c 89
 ;	genLabel
 00111$:
 ;	genPlus
@@ -1052,14 +1109,14 @@ _mus_update1:
 ;	genPlusIncr
 	ld	hl,#_mus_data1
 	inc	(hl)
-	jr	nz,00171$
+	jr	nz,00183$
 	inc	hl
 	inc	(hl)
-00171$:
-;	music.c 86
+00183$:
+;	music.c 90
 ;	genGoto
-	jp	00131$
-;	music.c 88
+	jp	00137$
+;	music.c 92
 ;	genLabel
 00112$:
 ;	genAssign
@@ -1078,10 +1135,10 @@ _mus_update1:
 ;	genPlusIncr
 	ld	hl,#_mus_data1
 	inc	(hl)
-	jr	nz,00172$
+	jr	nz,00184$
 	inc	hl
 	inc	(hl)
-00172$:
+00184$:
 ;	genPointerGet
 ;	AOP_STK for _mus_update1_sloc1_1_0
 	lda	hl,2(sp)
@@ -1091,10 +1148,10 @@ _mus_update1:
 	ld	a,(de)
 ;	genAssign (pointer)
 	ld	(bc),a
-;	music.c 89
+;	music.c 93
 ;	genGoto
-	jp	00131$
-;	music.c 91
+	jp	00137$
+;	music.c 95
 ;	genLabel
 00113$:
 ;	genAssign
@@ -1108,10 +1165,10 @@ _mus_update1:
 ;	genPlusIncr
 	dec	hl
 	inc	(hl)
-	jr	nz,00173$
+	jr	nz,00185$
 	inc	hl
 	inc	(hl)
-00173$:
+00185$:
 ;	genPointerGet
 	ld	a,(bc)
 	ld	c,a
@@ -1119,7 +1176,7 @@ _mus_update1:
 ;	AOP_STK for _mus_update1_note_1_1
 	lda	hl,7(sp)
 	ld	(hl),c
-;	music.c 92
+;	music.c 96
 ;	genAssign
 	ld	bc,#0xFF11
 ;	genLeftShift
@@ -1136,10 +1193,10 @@ _mus_update1:
 	ld      (hl),a
 ; Removed redundent load
 	ld	(bc),a
-;	music.c 93
+;	music.c 97
 ;	genGoto
-	jp	00131$
-;	music.c 95
+	jp	00137$
+;	music.c 99
 ;	genLabel
 00114$:
 ;	genAssign
@@ -1153,10 +1210,10 @@ _mus_update1:
 ;	genPlusIncr
 	dec	hl
 	inc	(hl)
-	jr	nz,00174$
+	jr	nz,00186$
 	inc	hl
 	inc	(hl)
-00174$:
+00186$:
 ;	genPointerGet
 	ld	a,(bc)
 	ld	c,a
@@ -1164,7 +1221,7 @@ _mus_update1:
 ;	AOP_STK for _mus_update1_note_1_1
 	lda	hl,7(sp)
 	ld	(hl),c
-;	music.c 96
+;	music.c 100
 ;	genAssign
 	ld	bc,#0xFF25
 ;	genAssign
@@ -1199,10 +1256,10 @@ _mus_update1:
 	or	a,(hl)
 ;	genAssign (pointer)
 	ld	(bc),a
-;	music.c 97
+;	music.c 101
 ;	genGoto
-	jp	00131$
-;	music.c 99
+	jp	00137$
+;	music.c 103
 ;	genLabel
 00115$:
 ;	genAssign
@@ -1214,67 +1271,27 @@ _mus_update1:
 	ld	hl,#_mus_loop1
 	ld	(hl+),a
 	ld	(hl),e
-;	music.c 100
+;	music.c 104
 ;	genGoto
-	jp	00131$
-;	music.c 102
+	jp	00137$
+;	music.c 106
 ;	genLabel
 00116$:
 ;	genAssign
-;	AOP_HL for _mus_loop1
 ;	AOP_HL for _mus_data1
-	ld	hl,#_mus_loop1
+;	AOP_HL for _mus_rep1
+	ld	hl,#_mus_data1
 	ld	a,(hl+)
 	ld	e,(hl)
-	ld	hl,#_mus_data1
+	ld	hl,#_mus_rep1
 	ld	(hl+),a
 	ld	(hl),e
-;	music.c 103
-;	genAssign
-;	AOP_HL for _mus_data1
-	dec	hl
-	ld	c,(hl)
-	inc	hl
-	ld	b,(hl)
-;	genPointerGet
-	ld	a,(bc)
-;	genCmpEq
-; genCmpEq: left 1, right 1, result 0
-	ld	c,a
-	cp	a,#0x1A
-	jp	nz,00131$
-	jr	00176$
-00175$:
-	jp	00131$
-00176$:
-;	music.c 104
-;	genAssign
-;	AOP_HL for _mus_wait2
-	ld	hl,#_mus_wait2
-	ld	(hl),#0xFF
-;	music.c 105
-;	genRet
-	jp	00133$
-;	music.c 115
-;	genLabel
-00122$:
+;	music.c 107
+;	genGoto
+	jp	00137$
 ;	music.c 109
-;	genAnd
-;	AOP_STK for _mus_update1_note_1_1
-	lda	hl,7(sp)
-	ld	a,(hl)
-	and	a,#0x80
-	jr	nz,00177$
-	jp	00120$
-00177$:
-;	music.c 110
-;	genXor
-;	AOP_STK for _mus_update1_note_1_1
-	ld	a,#0x80
-	lda	hl,7(sp)
-	xor	a,(hl)
-	ld	(hl),a
-;	music.c 111
+;	genLabel
+00117$:
 ;	genAssign
 ;	AOP_HL for _mus_data1
 	ld	hl,#_mus_data1
@@ -1286,20 +1303,151 @@ _mus_update1:
 ;	genPlusIncr
 	dec	hl
 	inc	(hl)
-	jr	nz,00178$
+	jr	nz,00187$
 	inc	hl
 	inc	(hl)
-00178$:
+00187$:
+;	genPointerGet
+	ld	a,(bc)
+	ld	c,a
+;	genAssign
+;	AOP_STK for _mus_update1_note_1_1
+	lda	hl,7(sp)
+	ld	(hl),c
+;	music.c 110
+;	genIfx
+;	AOP_HL for _mus_repeats1
+	xor	a,a
+	ld	hl,#_mus_repeats1
+	or	a,(hl)
+	jp	nz,00119$
+;	music.c 111
+;	genAssign
+;	AOP_STK for _mus_update1_note_1_1
+;	AOP_HL for _mus_repeats1
+	lda	hl,7(sp)
+	ld	a,(hl)
+	ld	hl,#_mus_repeats1
+	ld	(hl),a
+;	music.c 112
+;	genAssign
+;	AOP_HL for _mus_rep1
+;	AOP_HL for _mus_data1
+	ld	hl,#_mus_rep1
+	ld	a,(hl+)
+	ld	e,(hl)
+	ld	hl,#_mus_data1
+	ld	(hl+),a
+	ld	(hl),e
+;	genLabel
+00119$:
+;	music.c 114
+;	genMinus
+;	AOP_HL for _mus_repeats1
+	ld	hl,#_mus_repeats1
+	dec	(hl)
+;	music.c 115
+;	genIfx
+;	AOP_HL for _mus_repeats1
+	xor	a,a
+	or	a,(hl)
+	jp	z,00137$
+;	music.c 116
+;	genAssign
+;	AOP_HL for _mus_rep1
+;	AOP_HL for _mus_data1
+	ld	hl,#_mus_rep1
+	ld	a,(hl+)
+	ld	e,(hl)
+	ld	hl,#_mus_data1
+	ld	(hl+),a
+	ld	(hl),e
+;	music.c 118
+;	genGoto
+	jp	00137$
+;	music.c 120
+;	genLabel
+00122$:
+;	genAssign
+;	AOP_HL for _mus_loop1
+;	AOP_HL for _mus_data1
+	ld	hl,#_mus_loop1
+	ld	a,(hl+)
+	ld	e,(hl)
+	ld	hl,#_mus_data1
+	ld	(hl+),a
+	ld	(hl),e
+;	music.c 121
+;	genAssign
+;	AOP_HL for _mus_data1
+	dec	hl
+	ld	c,(hl)
+	inc	hl
+	ld	b,(hl)
+;	genPointerGet
+	ld	a,(bc)
+;	genCmpEq
+; genCmpEq: left 1, right 1, result 0
+	ld	c,a
+	cp	a,#0x1C
+	jp	nz,00137$
+	jr	00189$
+00188$:
+	jp	00137$
+00189$:
+;	music.c 122
+;	genAssign
+;	AOP_HL for _mus_wait2
+	ld	hl,#_mus_wait2
+	ld	(hl),#0xFF
+;	music.c 123
+;	genRet
+	jp	00139$
+;	music.c 133
+;	genLabel
+00128$:
+;	music.c 127
+;	genAnd
+;	AOP_STK for _mus_update1_note_1_1
+	lda	hl,7(sp)
+	ld	a,(hl)
+	and	a,#0x80
+	jr	nz,00190$
+	jp	00126$
+00190$:
+;	music.c 128
+;	genXor
+;	AOP_STK for _mus_update1_note_1_1
+	ld	a,#0x80
+	lda	hl,7(sp)
+	xor	a,(hl)
+	ld	(hl),a
+;	music.c 129
+;	genAssign
+;	AOP_HL for _mus_data1
+	ld	hl,#_mus_data1
+	ld	c,(hl)
+	inc	hl
+	ld	b,(hl)
+;	genPlus
+;	AOP_HL for _mus_data1
+;	genPlusIncr
+	dec	hl
+	inc	(hl)
+	jr	nz,00191$
+	inc	hl
+	inc	(hl)
+00191$:
 ;	genPointerGet
 ;	AOP_HL for _mus_wait1
 	ld	a,(bc)
 	ld	hl,#_mus_wait1
 	ld	(hl),a
 ;	genGoto
-	jp	00121$
+	jp	00127$
 ;	genLabel
-00120$:
-;	music.c 114
+00126$:
+;	music.c 132
 ;	genAssign
 ;	AOP_HL for _mus_length1
 ;	AOP_HL for _mus_wait1
@@ -1308,54 +1456,54 @@ _mus_update1:
 	ld	hl,#_mus_wait1
 	ld	(hl),a
 ;	genLabel
-00121$:
-;	music.c 116
+00127$:
+;	music.c 134
 ;	genCmpEq
 ;	AOP_STK for _mus_update1_note_1_1
 ; genCmpEq: left 1, right 1, result 0
 	lda	hl,7(sp)
 	ld	a,(hl)
 	cp	a,#0x0D
-	jp	nz,00127$
-	jr	00180$
-00179$:
-	jp	00127$
-00180$:
-;	music.c 117
-;	genRet
+	jp	nz,00133$
+	jr	00193$
+00192$:
 	jp	00133$
+00193$:
+;	music.c 135
+;	genRet
+	jp	00139$
 ;	genLabel
-00127$:
-;	music.c 118
+00133$:
+;	music.c 136
 ;	genCmpEq
 ;	AOP_STK for _mus_update1_note_1_1
 ; genCmpEq: left 1, right 1, result 0
 	lda	hl,7(sp)
 	ld	a,(hl)
 	cp	a,#0x0C
-	jp	nz,00124$
-	jr	00182$
-00181$:
-	jp	00124$
-00182$:
-;	music.c 119
+	jp	nz,00130$
+	jr	00195$
+00194$:
+	jp	00130$
+00195$:
+;	music.c 137
 ;	genAssign
 ;	AOP_STK for _mus_update1_frequency_1_1
 	lda	hl,5(sp)
 	ld	(hl),#0x00
 	inc	hl
 	ld	(hl),#0x00
-;	music.c 120
+;	music.c 138
 ;	genAssign
 	ld	bc,#0xFF12
 ;	genAssign (pointer)
 	ld	a,#0x00
 	ld	(bc),a
 ;	genGoto
-	jp	00128$
+	jp	00134$
 ;	genLabel
-00124$:
-;	music.c 122
+00130$:
+;	music.c 140
 ;	genMinus
 ;	AOP_HL for _mus_octave1
 	ld	hl,#_mus_octave1
@@ -1401,7 +1549,7 @@ _mus_update1:
 	ld	(hl),c
 	inc	hl
 	ld	(hl),b
-;	music.c 123
+;	music.c 141
 ;	genAssign
 	ld	bc,#0xFF12
 ;	genLeftShift
@@ -1425,8 +1573,8 @@ _mus_update1:
 ;	genAssign (pointer)
 	ld	(bc),a
 ;	genLabel
-00128$:
-;	music.c 125
+00134$:
+;	music.c 143
 ;	genAssign
 	ld	bc,#0xFF13
 ;	genCast
@@ -1435,7 +1583,7 @@ _mus_update1:
 	ld	a,(hl)
 ;	genAssign (pointer)
 	ld	(bc),a
-;	music.c 126
+;	music.c 144
 ;	genAssign
 	ld	bc,#0xFF14
 ;	genRightShift
@@ -1465,16 +1613,16 @@ _mus_update1:
 	ld	a,(hl)
 ;	genAssign (pointer)
 	ld	(bc),a
-;	music.c 127
+;	music.c 145
 ;	genRet
-;	music.c 128
+;	music.c 146
 ;	genLabel
-00133$:
+00139$:
 ;	genEndFunction
 	lda	sp,8(sp)
 	ret
 ___mus_update1_end:
-;	music.c 132
+;	music.c 150
 ;	genLabel
 ;	genFunction
 ;	---------------------------------
@@ -1483,28 +1631,28 @@ ___mus_update1_end:
 ___mus_update2_start:
 _mus_update2:
 	lda	sp,-8(sp)
-;	music.c 136
+;	music.c 154
 ;	genIfx
 ;	AOP_HL for _mus_wait2
 	xor	a,a
 	ld	hl,#_mus_wait2
 	or	a,(hl)
-	jp	z,00131$
-;	music.c 137
+	jp	z,00137$
+;	music.c 155
 ;	genMinus
 ;	AOP_HL for _mus_wait2
 	dec	(hl)
-;	music.c 138
+;	music.c 156
 ;	genIfx
 ;	AOP_HL for _mus_wait2
 	xor	a,a
 	or	a,(hl)
 ;	genRet
-;	music.c 141
+;	music.c 159
 ;	genLabel
-	jp	nz,00133$
-00131$:
-;	music.c 142
+	jp	nz,00139$
+00137$:
+;	music.c 160
 ;	genAssign
 ;	AOP_HL for _mus_data2
 	ld	hl,#_mus_data2
@@ -1516,10 +1664,10 @@ _mus_update2:
 ;	genPlusIncr
 	dec	hl
 	inc	(hl)
-	jr	nz,00154$
+	jr	nz,00164$
 	inc	hl
 	inc	(hl)
-00154$:
+00164$:
 ;	genPointerGet
 	ld	a,(bc)
 	ld	c,a
@@ -1527,14 +1675,14 @@ _mus_update2:
 ;	AOP_STK for _mus_update2_note_1_1
 	lda	hl,7(sp)
 	ld	(hl),c
-;	music.c 143
+;	music.c 161
 ;	genCmpEq
 ;	AOP_STK for _mus_update2_note_1_1
 ; genCmpEq: left 1, right 1, result 0
 	ld	a,(hl)
 	cp	a,#0x0E
 	jp	z,00105$
-00155$:
+00165$:
 ;	genCmpEq
 ;	AOP_STK for _mus_update2_note_1_1
 ; genCmpEq: left 1, right 1, result 0
@@ -1542,7 +1690,7 @@ _mus_update2:
 	ld	a,(hl)
 	cp	a,#0x0F
 	jp	z,00106$
-00156$:
+00166$:
 ;	genCmpEq
 ;	AOP_STK for _mus_update2_note_1_1
 ; genCmpEq: left 1, right 1, result 0
@@ -1550,7 +1698,7 @@ _mus_update2:
 	ld	a,(hl)
 	cp	a,#0x10
 	jp	z,00107$
-00157$:
+00167$:
 ;	genCmpEq
 ;	AOP_STK for _mus_update2_note_1_1
 ; genCmpEq: left 1, right 1, result 0
@@ -1558,7 +1706,7 @@ _mus_update2:
 	ld	a,(hl)
 	cp	a,#0x11
 	jp	z,00108$
-00158$:
+00168$:
 ;	genCmpEq
 ;	AOP_STK for _mus_update2_note_1_1
 ; genCmpEq: left 1, right 1, result 0
@@ -1566,7 +1714,7 @@ _mus_update2:
 	ld	a,(hl)
 	cp	a,#0x12
 	jp	z,00109$
-00159$:
+00169$:
 ;	genCmpEq
 ;	AOP_STK for _mus_update2_note_1_1
 ; genCmpEq: left 1, right 1, result 0
@@ -1574,7 +1722,7 @@ _mus_update2:
 	ld	a,(hl)
 	cp	a,#0x13
 	jp	z,00110$
-00160$:
+00170$:
 ;	genCmpEq
 ;	AOP_STK for _mus_update2_note_1_1
 ; genCmpEq: left 1, right 1, result 0
@@ -1582,7 +1730,7 @@ _mus_update2:
 	ld	a,(hl)
 	cp	a,#0x14
 	jp	z,00111$
-00161$:
+00171$:
 ;	genCmpEq
 ;	AOP_STK for _mus_update2_note_1_1
 ; genCmpEq: left 1, right 1, result 0
@@ -1590,7 +1738,7 @@ _mus_update2:
 	ld	a,(hl)
 	cp	a,#0x15
 	jp	z,00112$
-00162$:
+00172$:
 ;	genCmpEq
 ;	AOP_STK for _mus_update2_note_1_1
 ; genCmpEq: left 1, right 1, result 0
@@ -1598,7 +1746,7 @@ _mus_update2:
 	ld	a,(hl)
 	cp	a,#0x16
 	jp	z,00113$
-00163$:
+00173$:
 ;	genCmpEq
 ;	AOP_STK for _mus_update2_note_1_1
 ; genCmpEq: left 1, right 1, result 0
@@ -1606,7 +1754,7 @@ _mus_update2:
 	ld	a,(hl)
 	cp	a,#0x17
 	jp	z,00114$
-00164$:
+00174$:
 ;	genCmpEq
 ;	AOP_STK for _mus_update2_note_1_1
 ; genCmpEq: left 1, right 1, result 0
@@ -1614,7 +1762,7 @@ _mus_update2:
 	ld	a,(hl)
 	cp	a,#0x19
 	jp	z,00115$
-00165$:
+00175$:
 ;	genCmpEq
 ;	AOP_STK for _mus_update2_note_1_1
 ; genCmpEq: left 1, right 1, result 0
@@ -1622,10 +1770,26 @@ _mus_update2:
 	ld	a,(hl)
 	cp	a,#0x1A
 	jp	z,00116$
-00166$:
+00176$:
+;	genCmpEq
+;	AOP_STK for _mus_update2_note_1_1
+; genCmpEq: left 1, right 1, result 0
+	lda	hl,7(sp)
+	ld	a,(hl)
+	cp	a,#0x1B
+	jp	z,00117$
+00177$:
+;	genCmpEq
+;	AOP_STK for _mus_update2_note_1_1
+; genCmpEq: left 1, right 1, result 0
+	lda	hl,7(sp)
+	ld	a,(hl)
+	cp	a,#0x1C
+	jp	z,00122$
+00178$:
 ;	genGoto
-	jp	00122$
-;	music.c 145
+	jp	00128$
+;	music.c 163
 ;	genLabel
 00105$:
 ;	genAssign
@@ -1639,10 +1803,10 @@ _mus_update2:
 ;	genPlusIncr
 	dec	hl
 	inc	(hl)
-	jr	nz,00167$
+	jr	nz,00179$
 	inc	hl
 	inc	(hl)
-00167$:
+00179$:
 ;	genPointerGet
 ;	AOP_HL for _mus_length2
 	ld	e,b
@@ -1650,10 +1814,10 @@ _mus_update2:
 	ld	a,(de)
 	ld	hl,#_mus_length2
 	ld	(hl),a
-;	music.c 146
+;	music.c 164
 ;	genGoto
-	jp	00131$
-;	music.c 148
+	jp	00137$
+;	music.c 166
 ;	genLabel
 00106$:
 ;	genAssign
@@ -1667,19 +1831,19 @@ _mus_update2:
 ;	genPlusIncr
 	dec	hl
 	inc	(hl)
-	jr	nz,00168$
+	jr	nz,00180$
 	inc	hl
 	inc	(hl)
-00168$:
+00180$:
 ;	genPointerGet
 ;	AOP_HL for _mus_octave2
 	ld	a,(bc)
 	ld	hl,#_mus_octave2
 	ld	(hl),a
-;	music.c 149
+;	music.c 167
 ;	genGoto
-	jp	00131$
-;	music.c 151
+	jp	00137$
+;	music.c 169
 ;	genLabel
 00107$:
 ;	genPlus
@@ -1687,20 +1851,20 @@ _mus_update2:
 ;	genPlusIncr
 	ld	hl,#_mus_octave2
 	inc	(hl)
-;	music.c 152
+;	music.c 170
 ;	genGoto
-	jp	00131$
-;	music.c 154
+	jp	00137$
+;	music.c 172
 ;	genLabel
 00108$:
 ;	genMinus
 ;	AOP_HL for _mus_octave2
 	ld	hl,#_mus_octave2
 	dec	(hl)
-;	music.c 155
+;	music.c 173
 ;	genGoto
-	jp	00131$
-;	music.c 157
+	jp	00137$
+;	music.c 175
 ;	genLabel
 00109$:
 ;	genAssign
@@ -1714,16 +1878,16 @@ _mus_update2:
 ;	genPlusIncr
 	dec	hl
 	inc	(hl)
-	jr	nz,00169$
+	jr	nz,00181$
 	inc	hl
 	inc	(hl)
-00169$:
+00181$:
 ;	genPointerGet
 ;	AOP_HL for _mus_volume2
 	ld	a,(bc)
 	ld	hl,#_mus_volume2
 	ld	(hl),a
-;	music.c 158
+;	music.c 176
 ;	genAssign
 	ld	bc,#0xFF17
 ;	genLeftShift
@@ -1745,10 +1909,10 @@ _mus_update2:
 	or	a,(hl)
 ;	genAssign (pointer)
 	ld	(bc),a
-;	music.c 159
+;	music.c 177
 ;	genGoto
-	jp	00131$
-;	music.c 161
+	jp	00137$
+;	music.c 179
 ;	genLabel
 00110$:
 ;	genAssign
@@ -1762,16 +1926,16 @@ _mus_update2:
 ;	genPlusIncr
 	dec	hl
 	inc	(hl)
-	jr	nz,00170$
+	jr	nz,00182$
 	inc	hl
 	inc	(hl)
-00170$:
+00182$:
 ;	genPointerGet
 ;	AOP_HL for _mus_env2
 	ld	a,(bc)
 	ld	hl,#_mus_env2
 	ld	(hl),a
-;	music.c 162
+;	music.c 180
 ;	genAssign
 	ld	bc,#0xFF17
 ;	genLeftShift
@@ -1794,10 +1958,10 @@ _mus_update2:
 	or	a,(hl)
 ;	genAssign (pointer)
 	ld	(bc),a
-;	music.c 163
+;	music.c 181
 ;	genGoto
-	jp	00131$
-;	music.c 165
+	jp	00137$
+;	music.c 183
 ;	genLabel
 00111$:
 ;	genPlus
@@ -1805,14 +1969,14 @@ _mus_update2:
 ;	genPlusIncr
 	ld	hl,#_mus_data2
 	inc	(hl)
-	jr	nz,00171$
+	jr	nz,00183$
 	inc	hl
 	inc	(hl)
-00171$:
-;	music.c 166
+00183$:
+;	music.c 184
 ;	genGoto
-	jp	00131$
-;	music.c 168
+	jp	00137$
+;	music.c 186
 ;	genLabel
 00112$:
 ;	genAssign
@@ -1831,10 +1995,10 @@ _mus_update2:
 ;	genPlusIncr
 	ld	hl,#_mus_data2
 	inc	(hl)
-	jr	nz,00172$
+	jr	nz,00184$
 	inc	hl
 	inc	(hl)
-00172$:
+00184$:
 ;	genPointerGet
 ;	AOP_STK for _mus_update2_sloc1_1_0
 	lda	hl,2(sp)
@@ -1844,10 +2008,10 @@ _mus_update2:
 	ld	a,(de)
 ;	genAssign (pointer)
 	ld	(bc),a
-;	music.c 169
+;	music.c 187
 ;	genGoto
-	jp	00131$
-;	music.c 171
+	jp	00137$
+;	music.c 189
 ;	genLabel
 00113$:
 ;	genAssign
@@ -1861,10 +2025,10 @@ _mus_update2:
 ;	genPlusIncr
 	dec	hl
 	inc	(hl)
-	jr	nz,00173$
+	jr	nz,00185$
 	inc	hl
 	inc	(hl)
-00173$:
+00185$:
 ;	genPointerGet
 	ld	a,(bc)
 	ld	c,a
@@ -1872,7 +2036,7 @@ _mus_update2:
 ;	AOP_STK for _mus_update2_note_1_1
 	lda	hl,7(sp)
 	ld	(hl),c
-;	music.c 172
+;	music.c 190
 ;	genAssign
 	ld	bc,#0xFF16
 ;	genLeftShift
@@ -1889,10 +2053,10 @@ _mus_update2:
 	ld      (hl),a
 ; Removed redundent load
 	ld	(bc),a
-;	music.c 173
+;	music.c 191
 ;	genGoto
-	jp	00131$
-;	music.c 175
+	jp	00137$
+;	music.c 193
 ;	genLabel
 00114$:
 ;	genAssign
@@ -1906,10 +2070,10 @@ _mus_update2:
 ;	genPlusIncr
 	dec	hl
 	inc	(hl)
-	jr	nz,00174$
+	jr	nz,00186$
 	inc	hl
 	inc	(hl)
-00174$:
+00186$:
 ;	genPointerGet
 	ld	a,(bc)
 	ld	c,a
@@ -1917,7 +2081,7 @@ _mus_update2:
 ;	AOP_STK for _mus_update2_note_1_1
 	lda	hl,7(sp)
 	ld	(hl),c
-;	music.c 176
+;	music.c 194
 ;	genAssign
 	ld	bc,#0xFF25
 ;	genAssign
@@ -1961,10 +2125,10 @@ _mus_update2:
 	or	a,(hl)
 ;	genAssign (pointer)
 	ld	(bc),a
-;	music.c 177
+;	music.c 195
 ;	genGoto
-	jp	00131$
-;	music.c 179
+	jp	00137$
+;	music.c 197
 ;	genLabel
 00115$:
 ;	genAssign
@@ -1976,67 +2140,27 @@ _mus_update2:
 	ld	hl,#_mus_loop2
 	ld	(hl+),a
 	ld	(hl),e
-;	music.c 180
+;	music.c 198
 ;	genGoto
-	jp	00131$
-;	music.c 182
+	jp	00137$
+;	music.c 200
 ;	genLabel
 00116$:
 ;	genAssign
-;	AOP_HL for _mus_loop2
 ;	AOP_HL for _mus_data2
-	ld	hl,#_mus_loop2
+;	AOP_HL for _mus_rep2
+	ld	hl,#_mus_data2
 	ld	a,(hl+)
 	ld	e,(hl)
-	ld	hl,#_mus_data2
+	ld	hl,#_mus_rep2
 	ld	(hl+),a
 	ld	(hl),e
-;	music.c 183
-;	genAssign
-;	AOP_HL for _mus_data2
-	dec	hl
-	ld	c,(hl)
-	inc	hl
-	ld	b,(hl)
-;	genPointerGet
-	ld	a,(bc)
-;	genCmpEq
-; genCmpEq: left 1, right 1, result 0
-	ld	c,a
-	cp	a,#0x1A
-	jp	nz,00131$
-	jr	00176$
-00175$:
-	jp	00131$
-00176$:
-;	music.c 184
-;	genAssign
-;	AOP_HL for _mus_wait2
-	ld	hl,#_mus_wait2
-	ld	(hl),#0xFF
-;	music.c 185
-;	genRet
-	jp	00133$
-;	music.c 195
+;	music.c 201
+;	genGoto
+	jp	00137$
+;	music.c 203
 ;	genLabel
-00122$:
-;	music.c 189
-;	genAnd
-;	AOP_STK for _mus_update2_note_1_1
-	lda	hl,7(sp)
-	ld	a,(hl)
-	and	a,#0x80
-	jr	nz,00177$
-	jp	00120$
-00177$:
-;	music.c 190
-;	genXor
-;	AOP_STK for _mus_update2_note_1_1
-	ld	a,#0x80
-	lda	hl,7(sp)
-	xor	a,(hl)
-	ld	(hl),a
-;	music.c 191
+00117$:
 ;	genAssign
 ;	AOP_HL for _mus_data2
 	ld	hl,#_mus_data2
@@ -2048,20 +2172,151 @@ _mus_update2:
 ;	genPlusIncr
 	dec	hl
 	inc	(hl)
-	jr	nz,00178$
+	jr	nz,00187$
 	inc	hl
 	inc	(hl)
-00178$:
+00187$:
+;	genPointerGet
+	ld	a,(bc)
+	ld	c,a
+;	genAssign
+;	AOP_STK for _mus_update2_note_1_1
+	lda	hl,7(sp)
+	ld	(hl),c
+;	music.c 204
+;	genIfx
+;	AOP_HL for _mus_repeats2
+	xor	a,a
+	ld	hl,#_mus_repeats2
+	or	a,(hl)
+	jp	nz,00119$
+;	music.c 205
+;	genAssign
+;	AOP_STK for _mus_update2_note_1_1
+;	AOP_HL for _mus_repeats2
+	lda	hl,7(sp)
+	ld	a,(hl)
+	ld	hl,#_mus_repeats2
+	ld	(hl),a
+;	music.c 206
+;	genAssign
+;	AOP_HL for _mus_rep2
+;	AOP_HL for _mus_data2
+	ld	hl,#_mus_rep2
+	ld	a,(hl+)
+	ld	e,(hl)
+	ld	hl,#_mus_data2
+	ld	(hl+),a
+	ld	(hl),e
+;	genLabel
+00119$:
+;	music.c 208
+;	genMinus
+;	AOP_HL for _mus_repeats2
+	ld	hl,#_mus_repeats2
+	dec	(hl)
+;	music.c 209
+;	genIfx
+;	AOP_HL for _mus_repeats2
+	xor	a,a
+	or	a,(hl)
+	jp	z,00137$
+;	music.c 210
+;	genAssign
+;	AOP_HL for _mus_rep2
+;	AOP_HL for _mus_data2
+	ld	hl,#_mus_rep2
+	ld	a,(hl+)
+	ld	e,(hl)
+	ld	hl,#_mus_data2
+	ld	(hl+),a
+	ld	(hl),e
+;	music.c 212
+;	genGoto
+	jp	00137$
+;	music.c 214
+;	genLabel
+00122$:
+;	genAssign
+;	AOP_HL for _mus_loop2
+;	AOP_HL for _mus_data2
+	ld	hl,#_mus_loop2
+	ld	a,(hl+)
+	ld	e,(hl)
+	ld	hl,#_mus_data2
+	ld	(hl+),a
+	ld	(hl),e
+;	music.c 215
+;	genAssign
+;	AOP_HL for _mus_data2
+	dec	hl
+	ld	c,(hl)
+	inc	hl
+	ld	b,(hl)
+;	genPointerGet
+	ld	a,(bc)
+;	genCmpEq
+; genCmpEq: left 1, right 1, result 0
+	ld	c,a
+	cp	a,#0x1C
+	jp	nz,00137$
+	jr	00189$
+00188$:
+	jp	00137$
+00189$:
+;	music.c 216
+;	genAssign
+;	AOP_HL for _mus_wait2
+	ld	hl,#_mus_wait2
+	ld	(hl),#0xFF
+;	music.c 217
+;	genRet
+	jp	00139$
+;	music.c 227
+;	genLabel
+00128$:
+;	music.c 221
+;	genAnd
+;	AOP_STK for _mus_update2_note_1_1
+	lda	hl,7(sp)
+	ld	a,(hl)
+	and	a,#0x80
+	jr	nz,00190$
+	jp	00126$
+00190$:
+;	music.c 222
+;	genXor
+;	AOP_STK for _mus_update2_note_1_1
+	ld	a,#0x80
+	lda	hl,7(sp)
+	xor	a,(hl)
+	ld	(hl),a
+;	music.c 223
+;	genAssign
+;	AOP_HL for _mus_data2
+	ld	hl,#_mus_data2
+	ld	c,(hl)
+	inc	hl
+	ld	b,(hl)
+;	genPlus
+;	AOP_HL for _mus_data2
+;	genPlusIncr
+	dec	hl
+	inc	(hl)
+	jr	nz,00191$
+	inc	hl
+	inc	(hl)
+00191$:
 ;	genPointerGet
 ;	AOP_HL for _mus_wait2
 	ld	a,(bc)
 	ld	hl,#_mus_wait2
 	ld	(hl),a
 ;	genGoto
-	jp	00121$
+	jp	00127$
 ;	genLabel
-00120$:
-;	music.c 194
+00126$:
+;	music.c 226
 ;	genAssign
 ;	AOP_HL for _mus_length2
 ;	AOP_HL for _mus_wait2
@@ -2070,54 +2325,54 @@ _mus_update2:
 	ld	hl,#_mus_wait2
 	ld	(hl),a
 ;	genLabel
-00121$:
-;	music.c 196
+00127$:
+;	music.c 228
 ;	genCmpEq
 ;	AOP_STK for _mus_update2_note_1_1
 ; genCmpEq: left 1, right 1, result 0
 	lda	hl,7(sp)
 	ld	a,(hl)
 	cp	a,#0x0D
-	jp	nz,00127$
-	jr	00180$
-00179$:
-	jp	00127$
-00180$:
-;	music.c 197
-;	genRet
+	jp	nz,00133$
+	jr	00193$
+00192$:
 	jp	00133$
+00193$:
+;	music.c 229
+;	genRet
+	jp	00139$
 ;	genLabel
-00127$:
-;	music.c 198
+00133$:
+;	music.c 230
 ;	genCmpEq
 ;	AOP_STK for _mus_update2_note_1_1
 ; genCmpEq: left 1, right 1, result 0
 	lda	hl,7(sp)
 	ld	a,(hl)
 	cp	a,#0x0C
-	jp	nz,00124$
-	jr	00182$
-00181$:
-	jp	00124$
-00182$:
-;	music.c 199
+	jp	nz,00130$
+	jr	00195$
+00194$:
+	jp	00130$
+00195$:
+;	music.c 231
 ;	genAssign
 ;	AOP_STK for _mus_update2_frequency_1_1
 	lda	hl,5(sp)
 	ld	(hl),#0x00
 	inc	hl
 	ld	(hl),#0x00
-;	music.c 200
+;	music.c 232
 ;	genAssign
 	ld	bc,#0xFF17
 ;	genAssign (pointer)
 	ld	a,#0x00
 	ld	(bc),a
 ;	genGoto
-	jp	00128$
+	jp	00134$
 ;	genLabel
-00124$:
-;	music.c 202
+00130$:
+;	music.c 234
 ;	genMinus
 ;	AOP_HL for _mus_octave2
 	ld	hl,#_mus_octave2
@@ -2163,7 +2418,7 @@ _mus_update2:
 	ld	(hl),c
 	inc	hl
 	ld	(hl),b
-;	music.c 203
+;	music.c 235
 ;	genAssign
 	ld	bc,#0xFF17
 ;	genLeftShift
@@ -2187,8 +2442,8 @@ _mus_update2:
 ;	genAssign (pointer)
 	ld	(bc),a
 ;	genLabel
-00128$:
-;	music.c 205
+00134$:
+;	music.c 237
 ;	genAssign
 	ld	bc,#0xFF18
 ;	genCast
@@ -2197,7 +2452,7 @@ _mus_update2:
 	ld	a,(hl)
 ;	genAssign (pointer)
 	ld	(bc),a
-;	music.c 206
+;	music.c 238
 ;	genAssign
 	ld	bc,#0xFF19
 ;	genRightShift
@@ -2227,16 +2482,16 @@ _mus_update2:
 	ld	a,(hl)
 ;	genAssign (pointer)
 	ld	(bc),a
-;	music.c 207
+;	music.c 239
 ;	genRet
-;	music.c 208
+;	music.c 240
 ;	genLabel
-00133$:
+00139$:
 ;	genEndFunction
 	lda	sp,8(sp)
 	ret
 ___mus_update2_end:
-;	music.c 212
+;	music.c 244
 ;	genLabel
 ;	genFunction
 ;	---------------------------------
@@ -2245,28 +2500,28 @@ ___mus_update2_end:
 ___mus_update3_start:
 _mus_update3:
 	lda	sp,-8(sp)
-;	music.c 216
+;	music.c 248
 ;	genIfx
 ;	AOP_HL for _mus_wait3
 	xor	a,a
 	ld	hl,#_mus_wait3
 	or	a,(hl)
-	jp	z,00131$
-;	music.c 217
+	jp	z,00137$
+;	music.c 249
 ;	genMinus
 ;	AOP_HL for _mus_wait3
 	dec	(hl)
-;	music.c 218
+;	music.c 250
 ;	genIfx
 ;	AOP_HL for _mus_wait3
 	xor	a,a
 	or	a,(hl)
 ;	genRet
-;	music.c 221
+;	music.c 253
 ;	genLabel
-	jp	nz,00133$
-00131$:
-;	music.c 222
+	jp	nz,00139$
+00137$:
+;	music.c 254
 ;	genAssign
 ;	AOP_HL for _mus_data3
 	ld	hl,#_mus_data3
@@ -2278,10 +2533,10 @@ _mus_update3:
 ;	genPlusIncr
 	dec	hl
 	inc	(hl)
-	jr	nz,00154$
+	jr	nz,00164$
 	inc	hl
 	inc	(hl)
-00154$:
+00164$:
 ;	genPointerGet
 	ld	a,(bc)
 	ld	c,a
@@ -2289,14 +2544,14 @@ _mus_update3:
 ;	AOP_STK for _mus_update3_note_1_1
 	lda	hl,7(sp)
 	ld	(hl),c
-;	music.c 223
+;	music.c 255
 ;	genCmpEq
 ;	AOP_STK for _mus_update3_note_1_1
 ; genCmpEq: left 1, right 1, result 0
 	ld	a,(hl)
 	cp	a,#0x0E
 	jp	z,00105$
-00155$:
+00165$:
 ;	genCmpEq
 ;	AOP_STK for _mus_update3_note_1_1
 ; genCmpEq: left 1, right 1, result 0
@@ -2304,7 +2559,7 @@ _mus_update3:
 	ld	a,(hl)
 	cp	a,#0x0F
 	jp	z,00106$
-00156$:
+00166$:
 ;	genCmpEq
 ;	AOP_STK for _mus_update3_note_1_1
 ; genCmpEq: left 1, right 1, result 0
@@ -2312,7 +2567,7 @@ _mus_update3:
 	ld	a,(hl)
 	cp	a,#0x10
 	jp	z,00107$
-00157$:
+00167$:
 ;	genCmpEq
 ;	AOP_STK for _mus_update3_note_1_1
 ; genCmpEq: left 1, right 1, result 0
@@ -2320,7 +2575,7 @@ _mus_update3:
 	ld	a,(hl)
 	cp	a,#0x11
 	jp	z,00108$
-00158$:
+00168$:
 ;	genCmpEq
 ;	AOP_STK for _mus_update3_note_1_1
 ; genCmpEq: left 1, right 1, result 0
@@ -2328,7 +2583,7 @@ _mus_update3:
 	ld	a,(hl)
 	cp	a,#0x12
 	jp	z,00109$
-00159$:
+00169$:
 ;	genCmpEq
 ;	AOP_STK for _mus_update3_note_1_1
 ; genCmpEq: left 1, right 1, result 0
@@ -2336,7 +2591,7 @@ _mus_update3:
 	ld	a,(hl)
 	cp	a,#0x13
 	jp	z,00110$
-00160$:
+00170$:
 ;	genCmpEq
 ;	AOP_STK for _mus_update3_note_1_1
 ; genCmpEq: left 1, right 1, result 0
@@ -2344,7 +2599,7 @@ _mus_update3:
 	ld	a,(hl)
 	cp	a,#0x14
 	jp	z,00111$
-00161$:
+00171$:
 ;	genCmpEq
 ;	AOP_STK for _mus_update3_note_1_1
 ; genCmpEq: left 1, right 1, result 0
@@ -2352,7 +2607,7 @@ _mus_update3:
 	ld	a,(hl)
 	cp	a,#0x15
 	jp	z,00112$
-00162$:
+00172$:
 ;	genCmpEq
 ;	AOP_STK for _mus_update3_note_1_1
 ; genCmpEq: left 1, right 1, result 0
@@ -2360,7 +2615,7 @@ _mus_update3:
 	ld	a,(hl)
 	cp	a,#0x16
 	jp	z,00113$
-00163$:
+00173$:
 ;	genCmpEq
 ;	AOP_STK for _mus_update3_note_1_1
 ; genCmpEq: left 1, right 1, result 0
@@ -2368,7 +2623,7 @@ _mus_update3:
 	ld	a,(hl)
 	cp	a,#0x17
 	jp	z,00114$
-00164$:
+00174$:
 ;	genCmpEq
 ;	AOP_STK for _mus_update3_note_1_1
 ; genCmpEq: left 1, right 1, result 0
@@ -2376,7 +2631,7 @@ _mus_update3:
 	ld	a,(hl)
 	cp	a,#0x19
 	jp	z,00115$
-00165$:
+00175$:
 ;	genCmpEq
 ;	AOP_STK for _mus_update3_note_1_1
 ; genCmpEq: left 1, right 1, result 0
@@ -2384,10 +2639,26 @@ _mus_update3:
 	ld	a,(hl)
 	cp	a,#0x1A
 	jp	z,00116$
-00166$:
+00176$:
+;	genCmpEq
+;	AOP_STK for _mus_update3_note_1_1
+; genCmpEq: left 1, right 1, result 0
+	lda	hl,7(sp)
+	ld	a,(hl)
+	cp	a,#0x1B
+	jp	z,00117$
+00177$:
+;	genCmpEq
+;	AOP_STK for _mus_update3_note_1_1
+; genCmpEq: left 1, right 1, result 0
+	lda	hl,7(sp)
+	ld	a,(hl)
+	cp	a,#0x1C
+	jp	z,00122$
+00178$:
 ;	genGoto
-	jp	00122$
-;	music.c 225
+	jp	00128$
+;	music.c 257
 ;	genLabel
 00105$:
 ;	genAssign
@@ -2401,10 +2672,10 @@ _mus_update3:
 ;	genPlusIncr
 	dec	hl
 	inc	(hl)
-	jr	nz,00167$
+	jr	nz,00179$
 	inc	hl
 	inc	(hl)
-00167$:
+00179$:
 ;	genPointerGet
 ;	AOP_HL for _mus_length3
 	ld	e,b
@@ -2412,10 +2683,10 @@ _mus_update3:
 	ld	a,(de)
 	ld	hl,#_mus_length3
 	ld	(hl),a
-;	music.c 226
+;	music.c 258
 ;	genGoto
-	jp	00131$
-;	music.c 228
+	jp	00137$
+;	music.c 260
 ;	genLabel
 00106$:
 ;	genAssign
@@ -2429,19 +2700,19 @@ _mus_update3:
 ;	genPlusIncr
 	dec	hl
 	inc	(hl)
-	jr	nz,00168$
+	jr	nz,00180$
 	inc	hl
 	inc	(hl)
-00168$:
+00180$:
 ;	genPointerGet
 ;	AOP_HL for _mus_octave3
 	ld	a,(bc)
 	ld	hl,#_mus_octave3
 	ld	(hl),a
-;	music.c 229
+;	music.c 261
 ;	genGoto
-	jp	00131$
-;	music.c 231
+	jp	00137$
+;	music.c 263
 ;	genLabel
 00107$:
 ;	genPlus
@@ -2449,20 +2720,20 @@ _mus_update3:
 ;	genPlusIncr
 	ld	hl,#_mus_octave3
 	inc	(hl)
-;	music.c 232
+;	music.c 264
 ;	genGoto
-	jp	00131$
-;	music.c 234
+	jp	00137$
+;	music.c 266
 ;	genLabel
 00108$:
 ;	genMinus
 ;	AOP_HL for _mus_octave3
 	ld	hl,#_mus_octave3
 	dec	(hl)
-;	music.c 235
+;	music.c 267
 ;	genGoto
-	jp	00131$
-;	music.c 237
+	jp	00137$
+;	music.c 269
 ;	genLabel
 00109$:
 ;	genAssign
@@ -2476,16 +2747,16 @@ _mus_update3:
 ;	genPlusIncr
 	dec	hl
 	inc	(hl)
-	jr	nz,00169$
+	jr	nz,00181$
 	inc	hl
 	inc	(hl)
-00169$:
+00181$:
 ;	genPointerGet
 ;	AOP_HL for _mus_volume3
 	ld	a,(bc)
 	ld	hl,#_mus_volume3
 	ld	(hl),a
-;	music.c 238
+;	music.c 270
 ;	genAssign
 	ld	bc,#0xFF1C
 ;	genLeftShift
@@ -2502,10 +2773,10 @@ _mus_update3:
 	ld      (hl),a
 ; Removed redundent load
 	ld	(bc),a
-;	music.c 239
+;	music.c 271
 ;	genGoto
-	jp	00131$
-;	music.c 241
+	jp	00137$
+;	music.c 273
 ;	genLabel
 00110$:
 ;	genPlus
@@ -2513,14 +2784,14 @@ _mus_update3:
 ;	genPlusIncr
 	ld	hl,#_mus_data3
 	inc	(hl)
-	jr	nz,00170$
+	jr	nz,00182$
 	inc	hl
 	inc	(hl)
-00170$:
-;	music.c 242
+00182$:
+;	music.c 274
 ;	genGoto
-	jp	00131$
-;	music.c 244
+	jp	00137$
+;	music.c 276
 ;	genLabel
 00111$:
 ;	genAssign
@@ -2534,10 +2805,10 @@ _mus_update3:
 ;	genPlusIncr
 	dec	hl
 	inc	(hl)
-	jr	nz,00171$
+	jr	nz,00183$
 	inc	hl
 	inc	(hl)
-00171$:
+00183$:
 ;	genPointerGet
 	ld	a,(bc)
 	ld	c,a
@@ -2545,13 +2816,13 @@ _mus_update3:
 ;	AOP_STK for _mus_update3_note_1_1
 	lda	hl,7(sp)
 	ld	(hl),c
-;	music.c 245
+;	music.c 277
 ;	genAssign
 	ld	bc,#0xFF1A
 ;	genAssign (pointer)
 	ld	a,#0x00
 	ld	(bc),a
-;	music.c 246
+;	music.c 278
 ;	genPlus
 ;	AOP_HL for _mus_song
 ;	genPlusIncr
@@ -2596,16 +2867,16 @@ _mus_update3:
 ;	genCall
 	call	_memcpy
 	lda	sp,6(sp)
-;	music.c 247
+;	music.c 279
 ;	genAssign
 	ld	bc,#0xFF1A
 ;	genAssign (pointer)
 	ld	a,#0x80
 	ld	(bc),a
-;	music.c 248
+;	music.c 280
 ;	genGoto
-	jp	00131$
-;	music.c 250
+	jp	00137$
+;	music.c 282
 ;	genLabel
 00112$:
 ;	genAssign
@@ -2624,10 +2895,10 @@ _mus_update3:
 ;	genPlusIncr
 	ld	hl,#_mus_data3
 	inc	(hl)
-	jr	nz,00172$
+	jr	nz,00184$
 	inc	hl
 	inc	(hl)
-00172$:
+00184$:
 ;	genPointerGet
 ;	AOP_STK for _mus_update3_sloc1_1_0
 	lda	hl,2(sp)
@@ -2637,10 +2908,10 @@ _mus_update3:
 	ld	a,(de)
 ;	genAssign (pointer)
 	ld	(bc),a
-;	music.c 251
+;	music.c 283
 ;	genGoto
-	jp	00131$
-;	music.c 253
+	jp	00137$
+;	music.c 285
 ;	genLabel
 00113$:
 ;	genPlus
@@ -2648,14 +2919,14 @@ _mus_update3:
 ;	genPlusIncr
 	ld	hl,#_mus_data3
 	inc	(hl)
-	jr	nz,00173$
+	jr	nz,00185$
 	inc	hl
 	inc	(hl)
-00173$:
-;	music.c 254
+00185$:
+;	music.c 286
 ;	genGoto
-	jp	00131$
-;	music.c 256
+	jp	00137$
+;	music.c 288
 ;	genLabel
 00114$:
 ;	genAssign
@@ -2669,10 +2940,10 @@ _mus_update3:
 ;	genPlusIncr
 	dec	hl
 	inc	(hl)
-	jr	nz,00174$
+	jr	nz,00186$
 	inc	hl
 	inc	(hl)
-00174$:
+00186$:
 ;	genPointerGet
 	ld	a,(bc)
 	ld	c,a
@@ -2680,7 +2951,7 @@ _mus_update3:
 ;	AOP_STK for _mus_update3_note_1_1
 	lda	hl,7(sp)
 	ld	(hl),c
-;	music.c 257
+;	music.c 289
 ;	genAssign
 	ld	bc,#0xFF25
 ;	genAssign
@@ -2725,10 +2996,10 @@ _mus_update3:
 	or	a,(hl)
 ;	genAssign (pointer)
 	ld	(bc),a
-;	music.c 258
+;	music.c 290
 ;	genGoto
-	jp	00131$
-;	music.c 260
+	jp	00137$
+;	music.c 292
 ;	genLabel
 00115$:
 ;	genAssign
@@ -2740,67 +3011,27 @@ _mus_update3:
 	ld	hl,#_mus_loop3
 	ld	(hl+),a
 	ld	(hl),e
-;	music.c 261
+;	music.c 293
 ;	genGoto
-	jp	00131$
-;	music.c 263
+	jp	00137$
+;	music.c 295
 ;	genLabel
 00116$:
 ;	genAssign
-;	AOP_HL for _mus_loop3
 ;	AOP_HL for _mus_data3
-	ld	hl,#_mus_loop3
+;	AOP_HL for _mus_rep3
+	ld	hl,#_mus_data3
 	ld	a,(hl+)
 	ld	e,(hl)
-	ld	hl,#_mus_data3
+	ld	hl,#_mus_rep3
 	ld	(hl+),a
 	ld	(hl),e
-;	music.c 264
-;	genAssign
-;	AOP_HL for _mus_data3
-	dec	hl
-	ld	c,(hl)
-	inc	hl
-	ld	b,(hl)
-;	genPointerGet
-	ld	a,(bc)
-;	genCmpEq
-; genCmpEq: left 1, right 1, result 0
-	ld	c,a
-	cp	a,#0x1A
-	jp	nz,00131$
-	jr	00176$
-00175$:
-	jp	00131$
-00176$:
-;	music.c 265
-;	genAssign
-;	AOP_HL for _mus_wait3
-	ld	hl,#_mus_wait3
-	ld	(hl),#0xFF
-;	music.c 266
-;	genRet
-	jp	00133$
-;	music.c 275
+;	music.c 296
+;	genGoto
+	jp	00137$
+;	music.c 298
 ;	genLabel
-00122$:
-;	music.c 270
-;	genAnd
-;	AOP_STK for _mus_update3_note_1_1
-	lda	hl,7(sp)
-	ld	a,(hl)
-	and	a,#0x80
-	jr	nz,00177$
-	jp	00120$
-00177$:
-;	music.c 271
-;	genXor
-;	AOP_STK for _mus_update3_note_1_1
-	ld	a,#0x80
-	lda	hl,7(sp)
-	xor	a,(hl)
-	ld	(hl),a
-;	music.c 272
+00117$:
 ;	genAssign
 ;	AOP_HL for _mus_data3
 	ld	hl,#_mus_data3
@@ -2812,20 +3043,151 @@ _mus_update3:
 ;	genPlusIncr
 	dec	hl
 	inc	(hl)
-	jr	nz,00178$
+	jr	nz,00187$
 	inc	hl
 	inc	(hl)
-00178$:
+00187$:
+;	genPointerGet
+	ld	a,(bc)
+	ld	c,a
+;	genAssign
+;	AOP_STK for _mus_update3_note_1_1
+	lda	hl,7(sp)
+	ld	(hl),c
+;	music.c 299
+;	genIfx
+;	AOP_HL for _mus_repeats3
+	xor	a,a
+	ld	hl,#_mus_repeats3
+	or	a,(hl)
+	jp	nz,00119$
+;	music.c 300
+;	genAssign
+;	AOP_STK for _mus_update3_note_1_1
+;	AOP_HL for _mus_repeats3
+	lda	hl,7(sp)
+	ld	a,(hl)
+	ld	hl,#_mus_repeats3
+	ld	(hl),a
+;	music.c 301
+;	genAssign
+;	AOP_HL for _mus_rep3
+;	AOP_HL for _mus_data3
+	ld	hl,#_mus_rep3
+	ld	a,(hl+)
+	ld	e,(hl)
+	ld	hl,#_mus_data3
+	ld	(hl+),a
+	ld	(hl),e
+;	genLabel
+00119$:
+;	music.c 303
+;	genMinus
+;	AOP_HL for _mus_repeats3
+	ld	hl,#_mus_repeats3
+	dec	(hl)
+;	music.c 304
+;	genIfx
+;	AOP_HL for _mus_repeats3
+	xor	a,a
+	or	a,(hl)
+	jp	z,00137$
+;	music.c 305
+;	genAssign
+;	AOP_HL for _mus_rep3
+;	AOP_HL for _mus_data3
+	ld	hl,#_mus_rep3
+	ld	a,(hl+)
+	ld	e,(hl)
+	ld	hl,#_mus_data3
+	ld	(hl+),a
+	ld	(hl),e
+;	music.c 307
+;	genGoto
+	jp	00137$
+;	music.c 309
+;	genLabel
+00122$:
+;	genAssign
+;	AOP_HL for _mus_loop3
+;	AOP_HL for _mus_data3
+	ld	hl,#_mus_loop3
+	ld	a,(hl+)
+	ld	e,(hl)
+	ld	hl,#_mus_data3
+	ld	(hl+),a
+	ld	(hl),e
+;	music.c 310
+;	genAssign
+;	AOP_HL for _mus_data3
+	dec	hl
+	ld	c,(hl)
+	inc	hl
+	ld	b,(hl)
+;	genPointerGet
+	ld	a,(bc)
+;	genCmpEq
+; genCmpEq: left 1, right 1, result 0
+	ld	c,a
+	cp	a,#0x1C
+	jp	nz,00137$
+	jr	00189$
+00188$:
+	jp	00137$
+00189$:
+;	music.c 311
+;	genAssign
+;	AOP_HL for _mus_wait3
+	ld	hl,#_mus_wait3
+	ld	(hl),#0xFF
+;	music.c 312
+;	genRet
+	jp	00139$
+;	music.c 321
+;	genLabel
+00128$:
+;	music.c 316
+;	genAnd
+;	AOP_STK for _mus_update3_note_1_1
+	lda	hl,7(sp)
+	ld	a,(hl)
+	and	a,#0x80
+	jr	nz,00190$
+	jp	00126$
+00190$:
+;	music.c 317
+;	genXor
+;	AOP_STK for _mus_update3_note_1_1
+	ld	a,#0x80
+	lda	hl,7(sp)
+	xor	a,(hl)
+	ld	(hl),a
+;	music.c 318
+;	genAssign
+;	AOP_HL for _mus_data3
+	ld	hl,#_mus_data3
+	ld	c,(hl)
+	inc	hl
+	ld	b,(hl)
+;	genPlus
+;	AOP_HL for _mus_data3
+;	genPlusIncr
+	dec	hl
+	inc	(hl)
+	jr	nz,00191$
+	inc	hl
+	inc	(hl)
+00191$:
 ;	genPointerGet
 ;	AOP_HL for _mus_wait3
 	ld	a,(bc)
 	ld	hl,#_mus_wait3
 	ld	(hl),a
 ;	genGoto
-	jp	00121$
+	jp	00127$
 ;	genLabel
-00120$:
-;	music.c 274
+00126$:
+;	music.c 320
 ;	genAssign
 ;	AOP_HL for _mus_length3
 ;	AOP_HL for _mus_wait3
@@ -2834,54 +3196,54 @@ _mus_update3:
 	ld	hl,#_mus_wait3
 	ld	(hl),a
 ;	genLabel
-00121$:
-;	music.c 276
+00127$:
+;	music.c 322
 ;	genCmpEq
 ;	AOP_STK for _mus_update3_note_1_1
 ; genCmpEq: left 1, right 1, result 0
 	lda	hl,7(sp)
 	ld	a,(hl)
 	cp	a,#0x0D
-	jp	nz,00127$
-	jr	00180$
-00179$:
-	jp	00127$
-00180$:
-;	music.c 277
-;	genRet
+	jp	nz,00133$
+	jr	00193$
+00192$:
 	jp	00133$
+00193$:
+;	music.c 323
+;	genRet
+	jp	00139$
 ;	genLabel
-00127$:
-;	music.c 278
+00133$:
+;	music.c 324
 ;	genCmpEq
 ;	AOP_STK for _mus_update3_note_1_1
 ; genCmpEq: left 1, right 1, result 0
 	lda	hl,7(sp)
 	ld	a,(hl)
 	cp	a,#0x0C
-	jp	nz,00124$
-	jr	00182$
-00181$:
-	jp	00124$
-00182$:
-;	music.c 279
+	jp	nz,00130$
+	jr	00195$
+00194$:
+	jp	00130$
+00195$:
+;	music.c 325
 ;	genAssign
 ;	AOP_STK for _mus_update3_frequency_1_1
 	lda	hl,5(sp)
 	ld	(hl),#0x00
 	inc	hl
 	ld	(hl),#0x00
-;	music.c 280
+;	music.c 326
 ;	genAssign
 	ld	bc,#0xFF1C
 ;	genAssign (pointer)
 	ld	a,#0x00
 	ld	(bc),a
 ;	genGoto
-	jp	00128$
+	jp	00134$
 ;	genLabel
-00124$:
-;	music.c 282
+00130$:
+;	music.c 328
 ;	genMinus
 ;	AOP_HL for _mus_octave3
 	ld	hl,#_mus_octave3
@@ -2927,7 +3289,7 @@ _mus_update3:
 	ld	(hl),c
 	inc	hl
 	ld	(hl),b
-;	music.c 283
+;	music.c 329
 ;	genAssign
 	ld	bc,#0xFF1C
 ;	genLeftShift
@@ -2946,20 +3308,20 @@ _mus_update3:
 ; Removed redundent load
 	ld	(bc),a
 ;	genLabel
-00128$:
-;	music.c 285
+00134$:
+;	music.c 331
 ;	genAssign
 	ld	bc,#0xFF1A
 ;	genAssign (pointer)
 	ld	a,#0x00
 	ld	(bc),a
-;	music.c 286
+;	music.c 332
 ;	genAssign
 	ld	bc,#0xFF1A
 ;	genAssign (pointer)
 	ld	a,#0x80
 	ld	(bc),a
-;	music.c 287
+;	music.c 333
 ;	genAssign
 	ld	bc,#0xFF1D
 ;	genCast
@@ -2968,7 +3330,7 @@ _mus_update3:
 	ld	a,(hl)
 ;	genAssign (pointer)
 	ld	(bc),a
-;	music.c 288
+;	music.c 334
 ;	genAssign
 	ld	bc,#0xFF1E
 ;	genRightShift
@@ -2998,16 +3360,16 @@ _mus_update3:
 	ld	a,(hl)
 ;	genAssign (pointer)
 	ld	(bc),a
-;	music.c 289
+;	music.c 335
 ;	genRet
-;	music.c 290
+;	music.c 336
 ;	genLabel
-00133$:
+00139$:
 ;	genEndFunction
 	lda	sp,8(sp)
 	ret
 ___mus_update3_end:
-;	music.c 294
+;	music.c 340
 ;	genLabel
 ;	genFunction
 ;	---------------------------------
@@ -3016,28 +3378,28 @@ ___mus_update3_end:
 ___mus_update4_start:
 _mus_update4:
 	lda	sp,-5(sp)
-;	music.c 297
+;	music.c 343
 ;	genIfx
 ;	AOP_HL for _mus_wait4
 	xor	a,a
 	ld	hl,#_mus_wait4
 	or	a,(hl)
-	jp	z,00129$
-;	music.c 298
+	jp	z,00135$
+;	music.c 344
 ;	genMinus
 ;	AOP_HL for _mus_wait4
 	dec	(hl)
-;	music.c 299
+;	music.c 345
 ;	genIfx
 ;	AOP_HL for _mus_wait4
 	xor	a,a
 	or	a,(hl)
 ;	genRet
-;	music.c 302
+;	music.c 348
 ;	genLabel
-	jp	nz,00131$
-00129$:
-;	music.c 303
+	jp	nz,00137$
+00135$:
+;	music.c 349
 ;	genAssign
 ;	AOP_HL for _mus_data4
 	ld	hl,#_mus_data4
@@ -3049,10 +3411,10 @@ _mus_update4:
 ;	genPlusIncr
 	dec	hl
 	inc	(hl)
-	jr	nz,00150$
+	jr	nz,00160$
 	inc	hl
 	inc	(hl)
-00150$:
+00160$:
 ;	genPointerGet
 	ld	a,(bc)
 	ld	c,a
@@ -3060,14 +3422,14 @@ _mus_update4:
 ;	AOP_STK for _mus_update4_note_1_1
 	lda	hl,4(sp)
 	ld	(hl),c
-;	music.c 304
+;	music.c 350
 ;	genCmpEq
 ;	AOP_STK for _mus_update4_note_1_1
 ; genCmpEq: left 1, right 1, result 0
 	ld	a,(hl)
 	cp	a,#0x0E
 	jp	z,00105$
-00151$:
+00161$:
 ;	genCmpEq
 ;	AOP_STK for _mus_update4_note_1_1
 ; genCmpEq: left 1, right 1, result 0
@@ -3075,7 +3437,7 @@ _mus_update4:
 	ld	a,(hl)
 	cp	a,#0x0F
 	jp	z,00106$
-00152$:
+00162$:
 ;	genCmpEq
 ;	AOP_STK for _mus_update4_note_1_1
 ; genCmpEq: left 1, right 1, result 0
@@ -3083,7 +3445,7 @@ _mus_update4:
 	ld	a,(hl)
 	cp	a,#0x10
 	jp	z,00107$
-00153$:
+00163$:
 ;	genCmpEq
 ;	AOP_STK for _mus_update4_note_1_1
 ; genCmpEq: left 1, right 1, result 0
@@ -3091,7 +3453,7 @@ _mus_update4:
 	ld	a,(hl)
 	cp	a,#0x11
 	jp	z,00108$
-00154$:
+00164$:
 ;	genCmpEq
 ;	AOP_STK for _mus_update4_note_1_1
 ; genCmpEq: left 1, right 1, result 0
@@ -3099,7 +3461,7 @@ _mus_update4:
 	ld	a,(hl)
 	cp	a,#0x12
 	jp	z,00109$
-00155$:
+00165$:
 ;	genCmpEq
 ;	AOP_STK for _mus_update4_note_1_1
 ; genCmpEq: left 1, right 1, result 0
@@ -3107,7 +3469,7 @@ _mus_update4:
 	ld	a,(hl)
 	cp	a,#0x13
 	jp	z,00110$
-00156$:
+00166$:
 ;	genCmpEq
 ;	AOP_STK for _mus_update4_note_1_1
 ; genCmpEq: left 1, right 1, result 0
@@ -3115,7 +3477,7 @@ _mus_update4:
 	ld	a,(hl)
 	cp	a,#0x15
 	jp	z,00111$
-00157$:
+00167$:
 ;	genCmpEq
 ;	AOP_STK for _mus_update4_note_1_1
 ; genCmpEq: left 1, right 1, result 0
@@ -3123,7 +3485,7 @@ _mus_update4:
 	ld	a,(hl)
 	cp	a,#0x17
 	jp	z,00112$
-00158$:
+00168$:
 ;	genCmpEq
 ;	AOP_STK for _mus_update4_note_1_1
 ; genCmpEq: left 1, right 1, result 0
@@ -3131,7 +3493,7 @@ _mus_update4:
 	ld	a,(hl)
 	cp	a,#0x19
 	jp	z,00113$
-00159$:
+00169$:
 ;	genCmpEq
 ;	AOP_STK for _mus_update4_note_1_1
 ; genCmpEq: left 1, right 1, result 0
@@ -3139,10 +3501,26 @@ _mus_update4:
 	ld	a,(hl)
 	cp	a,#0x1A
 	jp	z,00114$
-00160$:
+00170$:
+;	genCmpEq
+;	AOP_STK for _mus_update4_note_1_1
+; genCmpEq: left 1, right 1, result 0
+	lda	hl,4(sp)
+	ld	a,(hl)
+	cp	a,#0x1B
+	jp	z,00115$
+00171$:
+;	genCmpEq
+;	AOP_STK for _mus_update4_note_1_1
+; genCmpEq: left 1, right 1, result 0
+	lda	hl,4(sp)
+	ld	a,(hl)
+	cp	a,#0x1C
+	jp	z,00120$
+00172$:
 ;	genGoto
-	jp	00120$
-;	music.c 306
+	jp	00126$
+;	music.c 352
 ;	genLabel
 00105$:
 ;	genAssign
@@ -3156,10 +3534,10 @@ _mus_update4:
 ;	genPlusIncr
 	dec	hl
 	inc	(hl)
-	jr	nz,00161$
+	jr	nz,00173$
 	inc	hl
 	inc	(hl)
-00161$:
+00173$:
 ;	genPointerGet
 ;	AOP_HL for _mus_length4
 	ld	e,b
@@ -3167,10 +3545,10 @@ _mus_update4:
 	ld	a,(de)
 	ld	hl,#_mus_length4
 	ld	(hl),a
-;	music.c 307
+;	music.c 353
 ;	genGoto
-	jp	00129$
-;	music.c 309
+	jp	00135$
+;	music.c 355
 ;	genLabel
 00106$:
 ;	genAssign
@@ -3184,19 +3562,19 @@ _mus_update4:
 ;	genPlusIncr
 	dec	hl
 	inc	(hl)
-	jr	nz,00162$
+	jr	nz,00174$
 	inc	hl
 	inc	(hl)
-00162$:
+00174$:
 ;	genPointerGet
 ;	AOP_HL for _mus_octave4
 	ld	a,(bc)
 	ld	hl,#_mus_octave4
 	ld	(hl),a
-;	music.c 310
+;	music.c 356
 ;	genGoto
-	jp	00129$
-;	music.c 312
+	jp	00135$
+;	music.c 358
 ;	genLabel
 00107$:
 ;	genPlus
@@ -3204,20 +3582,20 @@ _mus_update4:
 ;	genPlusIncr
 	ld	hl,#_mus_octave4
 	inc	(hl)
-;	music.c 313
+;	music.c 359
 ;	genGoto
-	jp	00129$
-;	music.c 315
+	jp	00135$
+;	music.c 361
 ;	genLabel
 00108$:
 ;	genMinus
 ;	AOP_HL for _mus_octave4
 	ld	hl,#_mus_octave4
 	dec	(hl)
-;	music.c 316
+;	music.c 362
 ;	genGoto
-	jp	00129$
-;	music.c 318
+	jp	00135$
+;	music.c 364
 ;	genLabel
 00109$:
 ;	genAssign
@@ -3231,16 +3609,16 @@ _mus_update4:
 ;	genPlusIncr
 	dec	hl
 	inc	(hl)
-	jr	nz,00163$
+	jr	nz,00175$
 	inc	hl
 	inc	(hl)
-00163$:
+00175$:
 ;	genPointerGet
 ;	AOP_HL for _mus_volume4
 	ld	a,(bc)
 	ld	hl,#_mus_volume4
 	ld	(hl),a
-;	music.c 319
+;	music.c 365
 ;	genAssign
 	ld	bc,#0xFF21
 ;	genLeftShift
@@ -3262,10 +3640,10 @@ _mus_update4:
 	or	a,(hl)
 ;	genAssign (pointer)
 	ld	(bc),a
-;	music.c 320
+;	music.c 366
 ;	genGoto
-	jp	00129$
-;	music.c 322
+	jp	00135$
+;	music.c 368
 ;	genLabel
 00110$:
 ;	genAssign
@@ -3279,16 +3657,16 @@ _mus_update4:
 ;	genPlusIncr
 	dec	hl
 	inc	(hl)
-	jr	nz,00164$
+	jr	nz,00176$
 	inc	hl
 	inc	(hl)
-00164$:
+00176$:
 ;	genPointerGet
 ;	AOP_HL for _mus_env4
 	ld	a,(bc)
 	ld	hl,#_mus_env4
 	ld	(hl),a
-;	music.c 323
+;	music.c 369
 ;	genAssign
 	ld	bc,#0xFF21
 ;	genLeftShift
@@ -3311,10 +3689,10 @@ _mus_update4:
 	or	a,(hl)
 ;	genAssign (pointer)
 	ld	(bc),a
-;	music.c 324
+;	music.c 370
 ;	genGoto
-	jp	00129$
-;	music.c 326
+	jp	00135$
+;	music.c 372
 ;	genLabel
 00111$:
 ;	genAssign
@@ -3333,10 +3711,10 @@ _mus_update4:
 ;	genPlusIncr
 	ld	hl,#_mus_data4
 	inc	(hl)
-	jr	nz,00165$
+	jr	nz,00177$
 	inc	hl
 	inc	(hl)
-00165$:
+00177$:
 ;	genPointerGet
 ;	AOP_STK for _mus_update4_sloc1_1_0
 	lda	hl,0(sp)
@@ -3346,10 +3724,10 @@ _mus_update4:
 	ld	a,(de)
 ;	genAssign (pointer)
 	ld	(bc),a
-;	music.c 327
+;	music.c 373
 ;	genGoto
-	jp	00129$
-;	music.c 329
+	jp	00135$
+;	music.c 375
 ;	genLabel
 00112$:
 ;	genAssign
@@ -3363,10 +3741,10 @@ _mus_update4:
 ;	genPlusIncr
 	dec	hl
 	inc	(hl)
-	jr	nz,00166$
+	jr	nz,00178$
 	inc	hl
 	inc	(hl)
-00166$:
+00178$:
 ;	genPointerGet
 	ld	a,(bc)
 	ld	c,a
@@ -3374,7 +3752,7 @@ _mus_update4:
 ;	AOP_STK for _mus_update4_note_1_1
 	lda	hl,4(sp)
 	ld	(hl),c
-;	music.c 330
+;	music.c 376
 ;	genAssign
 	ld	bc,#0xFF25
 ;	genAssign
@@ -3422,10 +3800,10 @@ _mus_update4:
 	or	a,(hl)
 ;	genAssign (pointer)
 	ld	(bc),a
-;	music.c 331
+;	music.c 377
 ;	genGoto
-	jp	00129$
-;	music.c 333
+	jp	00135$
+;	music.c 379
 ;	genLabel
 00113$:
 ;	genAssign
@@ -3437,67 +3815,27 @@ _mus_update4:
 	ld	hl,#_mus_loop4
 	ld	(hl+),a
 	ld	(hl),e
-;	music.c 334
+;	music.c 380
 ;	genGoto
-	jp	00129$
-;	music.c 336
+	jp	00135$
+;	music.c 382
 ;	genLabel
 00114$:
 ;	genAssign
-;	AOP_HL for _mus_loop4
 ;	AOP_HL for _mus_data4
-	ld	hl,#_mus_loop4
+;	AOP_HL for _mus_rep4
+	ld	hl,#_mus_data4
 	ld	a,(hl+)
 	ld	e,(hl)
-	ld	hl,#_mus_data4
+	ld	hl,#_mus_rep4
 	ld	(hl+),a
 	ld	(hl),e
-;	music.c 337
-;	genAssign
-;	AOP_HL for _mus_data4
-	dec	hl
-	ld	c,(hl)
-	inc	hl
-	ld	b,(hl)
-;	genPointerGet
-	ld	a,(bc)
-;	genCmpEq
-; genCmpEq: left 1, right 1, result 0
-	ld	c,a
-	cp	a,#0x1A
-	jp	nz,00129$
-	jr	00168$
-00167$:
-	jp	00129$
-00168$:
-;	music.c 338
-;	genAssign
-;	AOP_HL for _mus_wait4
-	ld	hl,#_mus_wait4
-	ld	(hl),#0xFF
-;	music.c 339
-;	genRet
-	jp	00131$
-;	music.c 348
+;	music.c 383
+;	genGoto
+	jp	00135$
+;	music.c 385
 ;	genLabel
-00120$:
-;	music.c 343
-;	genAnd
-;	AOP_STK for _mus_update4_note_1_1
-	lda	hl,4(sp)
-	ld	a,(hl)
-	and	a,#0x80
-	jr	nz,00169$
-	jp	00118$
-00169$:
-;	music.c 344
-;	genXor
-;	AOP_STK for _mus_update4_note_1_1
-	ld	a,#0x80
-	lda	hl,4(sp)
-	xor	a,(hl)
-	ld	(hl),a
-;	music.c 345
+00115$:
 ;	genAssign
 ;	AOP_HL for _mus_data4
 	ld	hl,#_mus_data4
@@ -3509,20 +3847,151 @@ _mus_update4:
 ;	genPlusIncr
 	dec	hl
 	inc	(hl)
-	jr	nz,00170$
+	jr	nz,00179$
 	inc	hl
 	inc	(hl)
-00170$:
+00179$:
+;	genPointerGet
+	ld	a,(bc)
+	ld	c,a
+;	genAssign
+;	AOP_STK for _mus_update4_note_1_1
+	lda	hl,4(sp)
+	ld	(hl),c
+;	music.c 386
+;	genIfx
+;	AOP_HL for _mus_repeats4
+	xor	a,a
+	ld	hl,#_mus_repeats4
+	or	a,(hl)
+	jp	nz,00117$
+;	music.c 387
+;	genAssign
+;	AOP_STK for _mus_update4_note_1_1
+;	AOP_HL for _mus_repeats4
+	lda	hl,4(sp)
+	ld	a,(hl)
+	ld	hl,#_mus_repeats4
+	ld	(hl),a
+;	music.c 388
+;	genAssign
+;	AOP_HL for _mus_rep4
+;	AOP_HL for _mus_data4
+	ld	hl,#_mus_rep4
+	ld	a,(hl+)
+	ld	e,(hl)
+	ld	hl,#_mus_data4
+	ld	(hl+),a
+	ld	(hl),e
+;	genLabel
+00117$:
+;	music.c 390
+;	genMinus
+;	AOP_HL for _mus_repeats4
+	ld	hl,#_mus_repeats4
+	dec	(hl)
+;	music.c 391
+;	genIfx
+;	AOP_HL for _mus_repeats4
+	xor	a,a
+	or	a,(hl)
+	jp	z,00135$
+;	music.c 392
+;	genAssign
+;	AOP_HL for _mus_rep4
+;	AOP_HL for _mus_data4
+	ld	hl,#_mus_rep4
+	ld	a,(hl+)
+	ld	e,(hl)
+	ld	hl,#_mus_data4
+	ld	(hl+),a
+	ld	(hl),e
+;	music.c 394
+;	genGoto
+	jp	00135$
+;	music.c 396
+;	genLabel
+00120$:
+;	genAssign
+;	AOP_HL for _mus_loop4
+;	AOP_HL for _mus_data4
+	ld	hl,#_mus_loop4
+	ld	a,(hl+)
+	ld	e,(hl)
+	ld	hl,#_mus_data4
+	ld	(hl+),a
+	ld	(hl),e
+;	music.c 397
+;	genAssign
+;	AOP_HL for _mus_data4
+	dec	hl
+	ld	c,(hl)
+	inc	hl
+	ld	b,(hl)
+;	genPointerGet
+	ld	a,(bc)
+;	genCmpEq
+; genCmpEq: left 1, right 1, result 0
+	ld	c,a
+	cp	a,#0x1C
+	jp	nz,00135$
+	jr	00181$
+00180$:
+	jp	00135$
+00181$:
+;	music.c 398
+;	genAssign
+;	AOP_HL for _mus_wait4
+	ld	hl,#_mus_wait4
+	ld	(hl),#0xFF
+;	music.c 399
+;	genRet
+	jp	00137$
+;	music.c 408
+;	genLabel
+00126$:
+;	music.c 403
+;	genAnd
+;	AOP_STK for _mus_update4_note_1_1
+	lda	hl,4(sp)
+	ld	a,(hl)
+	and	a,#0x80
+	jr	nz,00182$
+	jp	00124$
+00182$:
+;	music.c 404
+;	genXor
+;	AOP_STK for _mus_update4_note_1_1
+	ld	a,#0x80
+	lda	hl,4(sp)
+	xor	a,(hl)
+	ld	(hl),a
+;	music.c 405
+;	genAssign
+;	AOP_HL for _mus_data4
+	ld	hl,#_mus_data4
+	ld	c,(hl)
+	inc	hl
+	ld	b,(hl)
+;	genPlus
+;	AOP_HL for _mus_data4
+;	genPlusIncr
+	dec	hl
+	inc	(hl)
+	jr	nz,00183$
+	inc	hl
+	inc	(hl)
+00183$:
 ;	genPointerGet
 ;	AOP_HL for _mus_wait4
 	ld	a,(bc)
 	ld	hl,#_mus_wait4
 	ld	(hl),a
 ;	genGoto
-	jp	00119$
+	jp	00125$
 ;	genLabel
-00118$:
-;	music.c 347
+00124$:
+;	music.c 407
 ;	genAssign
 ;	AOP_HL for _mus_length4
 ;	AOP_HL for _mus_wait4
@@ -3531,42 +4000,42 @@ _mus_update4:
 	ld	hl,#_mus_wait4
 	ld	(hl),a
 ;	genLabel
-00119$:
-;	music.c 349
+00125$:
+;	music.c 409
 ;	genCmpEq
 ;	AOP_STK for _mus_update4_note_1_1
 ; genCmpEq: left 1, right 1, result 0
 	lda	hl,4(sp)
 	ld	a,(hl)
 	cp	a,#0x0D
-	jp	nz,00125$
-	jr	00172$
-00171$:
-	jp	00125$
-00172$:
-;	music.c 350
-;	genRet
+	jp	nz,00131$
+	jr	00185$
+00184$:
 	jp	00131$
+00185$:
+;	music.c 410
+;	genRet
+	jp	00137$
 ;	genLabel
-00125$:
-;	music.c 351
+00131$:
+;	music.c 411
 ;	genCmpEq
 ;	AOP_STK for _mus_update4_note_1_1
 ; genCmpEq: left 1, right 1, result 0
 	lda	hl,4(sp)
 	ld	a,(hl)
 	cp	a,#0x0C
-	jp	nz,00122$
-	jr	00174$
-00173$:
-	jp	00122$
-00174$:
-;	music.c 352
+	jp	nz,00128$
+	jr	00187$
+00186$:
+	jp	00128$
+00187$:
+;	music.c 412
 ;	genAssign
 ;	AOP_STK for _mus_update4_frequency_1_1
 	lda	hl,3(sp)
 	ld	(hl),#0x00
-;	music.c 353
+;	music.c 413
 ;	genAssign
 	ld	b,#0x21
 	ld	c,#0xFF
@@ -3576,10 +4045,10 @@ _mus_update4:
 	ld	a,#0x00
 	ld	(de),a
 ;	genGoto
-	jp	00126$
+	jp	00132$
 ;	genLabel
-00122$:
-;	music.c 355
+00128$:
+;	music.c 415
 ;	genMinus
 ;	AOP_HL for _mus_octave4
 	ld	hl,#_mus_octave4
@@ -3614,7 +4083,7 @@ _mus_update4:
 ;	AOP_STK for _mus_update4_frequency_1_1
 	dec	hl
 	ld	(hl),c
-;	music.c 356
+;	music.c 416
 ;	genAssign
 	ld	bc,#0xFF21
 ;	genLeftShift
@@ -3638,8 +4107,8 @@ _mus_update4:
 ;	genAssign (pointer)
 	ld	(bc),a
 ;	genLabel
-00126$:
-;	music.c 358
+00132$:
+;	music.c 418
 ;	genAssign
 	ld	bc,#0xFF22
 ;	genAssign (pointer)
@@ -3647,17 +4116,17 @@ _mus_update4:
 	lda	hl,3(sp)
 	ld	a,(hl)
 	ld	(bc),a
-;	music.c 359
+;	music.c 419
 ;	genAssign
 	ld	bc,#0xFF23
 ;	genAssign (pointer)
 	ld	a,#0x80
 	ld	(bc),a
-;	music.c 360
+;	music.c 420
 ;	genRet
-;	music.c 361
+;	music.c 421
 ;	genLabel
-00131$:
+00137$:
 ;	genEndFunction
 	lda	sp,5(sp)
 	ret

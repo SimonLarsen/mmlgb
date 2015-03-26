@@ -7,9 +7,16 @@ if %errorlevel% neq 0 (
 	exit /b %errorlevel%
 )
 
-lcc.exe -Idriver -c driver\main.lin.asm -o driver\main.o
-lcc.exe -Idriver -c driver\music.lin.asm -o driver\music.o
-lcc.exe -Idriver -c driver\song.asm -o driver\song.o
+lcc.exe -c driver\main.lin.asm -o driver\main.o
+lcc.exe -c driver\music.lin.asm -o driver\music.o
+lcc.exe -c driver\song.asm -o driver\song.o
 lcc.exe driver\main.o driver\music.o driver\song.o -o rom.gb
+
+if %errorlevel% neq 0 (
+	echo Error compiling rom!
+	pause
+	exit /b %errorlevel%
+)
+
 echo %~nx0 compiled to rom.gb succesfully!
 pause
