@@ -1,7 +1,7 @@
 @echo off
 PATH=%PATH%;%~dp0\gbdk\bin
 
-java.exe -jar MMLGB.jar %1 driver\song.asm
+java.exe -jar parser\MMLGB.jar %1 driver\song.asm
 if %errorlevel% neq 0 (
 	pause
 	exit /b %errorlevel%
@@ -18,5 +18,5 @@ if %errorlevel% neq 0 (
 	exit /b %errorlevel%
 )
 
-echo %~nx0 compiled to rom.gb succesfully!
+echo %~nx0 compiled to rom.gb successfully!
 pause

@@ -1,6 +1,6 @@
 #/bin/sh
 
-java -jar MMLGB.jar $1 driver/song.asm
+java -jar parser/MMLGB.jar "$1" driver/song.asm
 
 lcc -c driver/main.asm -o driver/main.o
 lcc -c driver/music.asm -o driver/music.o
