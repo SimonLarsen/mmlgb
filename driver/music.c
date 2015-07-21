@@ -6,6 +6,7 @@
 #include "freq.h"
 #include "noisefreq.h"
 
+UBYTE mus_paused;
 UBYTE *mus_song;
 UBYTE *mus_data1, *mus_data2, *mus_data3, *mus_data4;
 UBYTE *mus_loop1, *mus_loop2, *mus_loop3, *mus_loop4;
@@ -22,17 +23,21 @@ void mus_init(UBYTE *song_data) {
 	NR51_REG = 0xFFU;
 	NR50_REG = 0xFFU;
 
-	// Channel 3
-	NR30_REG = 0x0U;
-	NR32_REG = 0x40U;
+	// Kill sound
+	NR30_REG = 0U;
+	NR12_REG = 0U;
+	NR22_REG = 0U;
+	NR32_REG = 0U;
+	NR42_REG = 0U;
 
 	// Setup timer
 	TAC_REG = 0x04U; // TAC clock = 4096 Hz
 	TMA_REG = 255U - 51U; // Default to ~150 bpm
 
 	// Setup data
+	mus_paused = 0U;
+
 	mus_song = song_data;
-	
 	mus_data1 = mus_loop1 = mus_song + ((UWORD*)mus_song)[CHN1_OFFSET];
 	mus_data2 = mus_loop2 = mus_song + ((UWORD*)mus_song)[CHN2_OFFSET];
 	mus_data3 = mus_loop3 = mus_song + ((UWORD*)mus_song)[CHN3_OFFSET];
@@ -41,12 +46,28 @@ void mus_init(UBYTE *song_data) {
 	mus_wait1 = mus_wait2 = mus_wait3 = mus_wait4 = 0U;
 	mus_octave1 = mus_octave2 = mus_octave3 = mus_octave4 = 4U;
 	mus_length1 = mus_length2 = mus_length3 = mus_length4 = 48U;
-	mus_volume1 = mus_volume2 = mus_volume3 = mus_volume4 = 15U;
+	mus_volume1 = mus_volume2 = mus_volume4 = 15U;
+	mus_volume3 = 3U;
 	mus_env1 = mus_env2 = mus_env4 = 3U;
 	mus_repeats1 = mus_repeats2 = mus_repeats3 = mus_repeats4 = 0U;
 }
 
+void mus_setPaused(UBYTE p) {
+	mus_paused = p;
+
+	if(mus_paused) {
+		NR12_REG = NR22_REG = NR32_REG = NR42_REG = 0U;
+		NR14_REG = NR24_REG = NR34_REG = NR44_REG = 0x80U;
+	}
+}
+
+void mus_togglePaused() {
+	mus_setPaused(mus_paused ^ 1U);
+}
+
 void mus_update() {
+	if(mus_paused) return;
+
 	mus_update1();
 	mus_update2();
 	mus_update3();
@@ -119,7 +140,7 @@ void mus_update1() {
 			case T_EOF:
 				mus_data1 = mus_loop1;
 				if(*mus_data1 == T_EOF) {
-					mus_wait2 = 255U;
+					mus_wait1 = 255U;
 					return;
 				}
 				break;
