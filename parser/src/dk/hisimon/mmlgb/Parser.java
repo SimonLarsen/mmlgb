@@ -346,7 +346,7 @@ public class Parser {
 		// Length
 		if(next.type == Lexer.TokenType.NUMBER) {
 			length = parseInt(next.data);
-			if(length < 1 || length > 192) {
+			if(length < 1 || length > BAR_STEPS) {
 				throw new ParserException(String.format("Invalid note length %d. Expected 1-%d.", length, BAR_STEPS), next);
 			}
 			eat();
@@ -369,8 +369,6 @@ public class Parser {
 				length += dot;
 				dot = dot / 2;
 			}
-
-			return length;
 		} else if(next.type == Lexer.TokenType.ASSIGN) {
 			eat();
 
@@ -379,13 +377,16 @@ public class Parser {
 				throw new ParserException(String.format("Invalid note frame length %d. Expected 1-255.", length), next);
 			}
 			eat();
-
-			return length;
 		} else if(required) {
 			throw new ParserException("Expected note length.", next);
-		} else {
-			return 0;
 		}
+
+		if(next.type == Lexer.TokenType.TIE) {
+			eat();
+			length += parseLength(true);
+		}
+
+		return length;
 	}
 
 	private void eat(Lexer.TokenType expected, String message) throws ParserException {
