@@ -52,7 +52,7 @@ void mus_init(UBYTE *song_data) {
 	mus_octave1 = mus_octave2 = mus_octave3 = mus_octave4 = 4U;
 	mus_length1 = mus_length2 = mus_length3 = mus_length4 = 48U;
 	mus_volume1 = mus_volume2 = mus_volume4 = 15U;
-	mus_volume3 = 3U;
+	mus_volume3 = 1U;
 	mus_env1 = mus_env2 = mus_env4 = 3U;
 	mus_rep_depth1 = mus_rep_depth2 = mus_rep_depth3 = mus_rep_depth4 = 255U;
 	for(i = 0U; i != MAX_REPEATS; ++i) {
