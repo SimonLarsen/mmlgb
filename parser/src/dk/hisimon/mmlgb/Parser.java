@@ -33,8 +33,11 @@ public class Parser {
 			else if(next.type == Lexer.TokenType.MACRO) {
 				parseDefinition();
 			}
-			else {
+			else if(next.type == Lexer.TokenType.NEWLINE) {
 				eat();
+			}
+			else {
+				throw new ParserException(String.format("Unexpected token %s.", next), next);
 			}
 		}
 
