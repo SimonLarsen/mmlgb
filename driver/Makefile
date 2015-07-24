@@ -1,14 +1,4 @@
 .PHONY: compile
 compile:
-	lcc -c main.c -o main.o
-	lcc -c music.c -o music.o
-	lcc -c song.asm -o song.o
-	lcc main.o music.o song.o -o music.gb
-
-.PHONY: clean
-clean:
-	rm *.o music.gb main.asm music.asm
-
-.PHONY: run
-run:
-	gambatte -s 3 music.gb
+	lcc -S main.c
+	lcc -S music.c

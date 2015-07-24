@@ -6,19 +6,24 @@
 #include "freq.h"
 #include "noisefreq.h"
 
+#define MAX_REPEATS 4
+
 UBYTE mus_paused;
 UBYTE *mus_song;
 UBYTE *mus_data1, *mus_data2, *mus_data3, *mus_data4;
 UBYTE *mus_loop1, *mus_loop2, *mus_loop3, *mus_loop4;
-UBYTE *mus_rep1, *mus_rep2, *mus_rep3, *mus_rep4;
 UBYTE mus_octave1, mus_octave2, mus_octave3, mus_octave4;
 UBYTE mus_length1, mus_length2, mus_length3, mus_length4;
 UBYTE mus_volume1, mus_volume2, mus_volume3, mus_volume4;
 UBYTE mus_env1, mus_env2, mus_env4;
 UBYTE mus_wait1, mus_wait2, mus_wait3, mus_wait4;
-UBYTE mus_repeats1, mus_repeats2, mus_repeats3, mus_repeats4;
+UBYTE *mus_rep1[MAX_REPEATS], *mus_rep2[MAX_REPEATS], *mus_rep3[MAX_REPEATS], *mus_rep4[MAX_REPEATS];
+UBYTE mus_repeats1[MAX_REPEATS], mus_repeats2[MAX_REPEATS], mus_repeats3[MAX_REPEATS], mus_repeats4[MAX_REPEATS];
+UBYTE mus_rep_depth1, mus_rep_depth2, mus_rep_depth3, mus_rep_depth4;
 
 void mus_init(UBYTE *song_data) {
+	UBYTE i;
+
 	NR52_REG = 0x80U; // Enable sound
 	NR51_REG = 0xFFU;
 	NR50_REG = 0xFFU;
@@ -49,7 +54,13 @@ void mus_init(UBYTE *song_data) {
 	mus_volume1 = mus_volume2 = mus_volume4 = 15U;
 	mus_volume3 = 3U;
 	mus_env1 = mus_env2 = mus_env4 = 3U;
-	mus_repeats1 = mus_repeats2 = mus_repeats3 = mus_repeats4 = 0U;
+	mus_rep_depth1 = mus_rep_depth2 = mus_rep_depth3 = mus_rep_depth4 = 255U;
+	for(i = 0U; i != MAX_REPEATS; ++i) {
+		mus_repeats1[i] = 0U;
+		mus_repeats2[i] = 0U;
+		mus_repeats3[i] = 0U;
+		mus_repeats4[i] = 0U;
+	}
 }
 
 void mus_setPaused(UBYTE p) {
@@ -124,17 +135,20 @@ void mus_update1() {
 				mus_loop1 = mus_data1;
 				break;
 			case T_REP_START:
-				mus_rep1 = mus_data1;
+				mus_rep_depth1++;
+				mus_rep1[mus_rep_depth1] = mus_data1;
 				break;
 			case T_REP_END:
 				note = *mus_data1++;
-				if(!mus_repeats1) {
-					mus_repeats1 = note;
-					mus_data1 = mus_rep1;
+				if(!mus_repeats1[mus_rep_depth1]) {
+					mus_repeats1[mus_rep_depth1] = note;
+					mus_data1 = mus_rep1[mus_rep_depth1];
 				}
-				mus_repeats1--;
-				if(mus_repeats1) {
-					mus_data1 = mus_rep1;
+				mus_repeats1[mus_rep_depth1]--;
+				if(mus_repeats1[mus_rep_depth1]) {
+					mus_data1 = mus_rep1[mus_rep_depth1];
+				} else {
+					mus_rep_depth1--;
 				}
 				break;
 			case T_EOF:
@@ -218,17 +232,20 @@ void mus_update2() {
 				mus_loop2 = mus_data2;
 				break;
 			case T_REP_START:
-				mus_rep2 = mus_data2;
+				mus_rep_depth2++;
+				mus_rep2[mus_rep_depth2] = mus_data2;
 				break;
 			case T_REP_END:
 				note = *mus_data2++;
-				if(!mus_repeats2) {
-					mus_repeats2 = note;
-					mus_data2 = mus_rep2;
+				if(!mus_repeats2[mus_rep_depth2]) {
+					mus_repeats2[mus_rep_depth2] = note;
+					mus_data2 = mus_rep2[mus_rep_depth2];
 				}
-				mus_repeats2--;
-				if(mus_repeats2) {
-					mus_data2 = mus_rep2;
+				mus_repeats2[mus_rep_depth2]--;
+				if(mus_repeats2[mus_rep_depth2]) {
+					mus_data2 = mus_rep2[mus_rep_depth2];
+				} else {
+					mus_rep_depth2--;
 				}
 				break;
 			case T_EOF:
@@ -313,17 +330,20 @@ void mus_update3() {
 				mus_loop3 = mus_data3;
 				break;
 			case T_REP_START:
-				mus_rep3 = mus_data3;
+				mus_rep_depth3++;
+				mus_rep3[mus_rep_depth3] = mus_data3;
 				break;
 			case T_REP_END:
 				note = *mus_data3++;
-				if(!mus_repeats3) {
-					mus_repeats3 = note;
-					mus_data3 = mus_rep3;
+				if(!mus_repeats3[mus_rep_depth3]) {
+					mus_repeats3[mus_rep_depth3] = note;
+					mus_data3 = mus_rep3[mus_rep_depth3];
 				}
-				mus_repeats3--;
-				if(mus_repeats3) {
-					mus_data3 = mus_rep3;
+				mus_repeats3[mus_rep_depth3]--;
+				if(mus_repeats3[mus_rep_depth3]) {
+					mus_data3 = mus_rep3[mus_rep_depth3];
+				} else {
+					mus_rep_depth3--;
 				}
 				break;
 			case T_EOF:
@@ -400,17 +420,20 @@ void mus_update4() {
 				mus_loop4 = mus_data4;
 				break;
 			case T_REP_START:
-				mus_rep4 = mus_data4;
+				mus_rep_depth4++;
+				mus_rep4[mus_rep_depth4] = mus_data4;
 				break;
 			case T_REP_END:
 				note = *mus_data4++;
-				if(!mus_repeats4) {
-					mus_repeats4 = note;
-					mus_data4 = mus_rep4;
+				if(!mus_repeats4[mus_rep_depth4]) {
+					mus_repeats4[mus_rep_depth4] = note;
+					mus_data4 = mus_rep4[mus_rep_depth4];
 				}
-				mus_repeats4--;
-				if(mus_repeats4) {
-					mus_data4 = mus_rep4;
+				mus_repeats4[mus_rep_depth4]--;
+				if(mus_repeats4[mus_rep_depth4]) {
+					mus_data4 = mus_rep4[mus_rep_depth4];
+				} else {
+					mus_rep_depth4--;
 				}
 				break;
 			case T_EOF:
