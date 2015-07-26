@@ -1,7 +1,6 @@
 #include <gb/gb.h>
 #include <string.h>
 #include "music.h"
-#include "binconst.h"
 #include "notes.h"
 #include "freq.h"
 #include "noisefreq.h"
@@ -129,7 +128,7 @@ void mus_update1() {
 				break;
 			case T_PAN:
 				note = *mus_data1++;
-				NR51_REG = (NR51_REG & B8(11101110)) | note;
+				NR51_REG = (NR51_REG & 0xEEU) | note; // 11101110
 				break;
 			case T_LOOP:
 				mus_loop1 = mus_data1;
@@ -226,7 +225,7 @@ void mus_update2() {
 				break;
 			case T_PAN:
 				note = *mus_data2++;
-				NR51_REG = (NR51_REG & B8(11011101)) | (note << 1);
+				NR51_REG = (NR51_REG & 0xDDU) | (note << 1); // 11011101
 				break;
 			case T_LOOP:
 				mus_loop2 = mus_data2;
@@ -324,7 +323,7 @@ void mus_update3() {
 				break;
 			case T_PAN:
 				note = *mus_data3++;
-				NR51_REG = (NR51_REG & B8(10111011)) | (note << 2);
+				NR51_REG = (NR51_REG & 0xBBU) | (note << 2); // 10111011
 				break;
 			case T_LOOP:
 				mus_loop3 = mus_data3;
@@ -414,7 +413,7 @@ void mus_update4() {
 				break;
 			case T_PAN:
 				note = *mus_data4++;
-				NR51_REG = (NR51_REG & B8(01110111)) | (note << 3);
+				NR51_REG = (NR51_REG & 0x77U) | (note << 3); // 01110111
 				break;
 			case T_LOOP:
 				mus_loop4 = mus_data4;
