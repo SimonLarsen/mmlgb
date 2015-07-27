@@ -17,7 +17,15 @@ public class MMLGB {
 
 		song.setFileName(outpath.getFileName().toString());
 		PrintWriter pw = new PrintWriter(outpath.toFile());
-		pw.print(song.emitASM());
+
+		if(args[1].endsWith(".asm") || args[1].endsWith(".ASM")
+		|| args[1].endsWith(".s") || args[1].endsWith(".S")) {
+			pw.print(song.emitASM());
+		}
+		if(args[1].endsWith(".h") || args[1].endsWith(".H")) {
+			pw.print(song.emitC());
+		}
+
 		pw.flush();
 		pw.close();
 	}

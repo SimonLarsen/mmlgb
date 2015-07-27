@@ -122,7 +122,8 @@ public class Song {
 	}
 
 	public String emitC() {
-		String id = filename.replaceAll("[^a-zA-Z0-9]", "_");
+		String[] parts = filename.split("\\.");
+		String id = parts[0];
 		String id_upper = id.toUpperCase();
 		StringBuilder sb = new StringBuilder();
 
@@ -142,7 +143,8 @@ public class Song {
 	}
 
 	public String emitASM() {
-		String id = filename.replaceAll("[^a-zA-Z0-9]", "_");
+		String[] parts = filename.split("\\.");
+		String id = parts[0];
 		String id_lower = id.toLowerCase();
 		StringBuilder sb = new StringBuilder();
 

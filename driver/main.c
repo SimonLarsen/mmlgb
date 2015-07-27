@@ -2,7 +2,7 @@
 #include "music.h"
 #include "background.h"
 
-extern UBYTE song_asm_data;
+extern UBYTE song_data;
 UBYTE joystate, oldjoystate;
 
 #define CLICKED(x) ((joystate & x) && (joystate & x) != (oldjoystate & x))
@@ -15,7 +15,7 @@ void main() {
 	DISPLAY_OFF;
 
 	// Install music interrupt
-	mus_init(&song_asm_data);
+	mus_init(&song_data);
 	add_TIM(mus_update);
 
 	// Load background
