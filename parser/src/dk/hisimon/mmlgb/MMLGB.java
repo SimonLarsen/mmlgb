@@ -20,6 +20,10 @@ public class MMLGB {
 
 		if(args[1].endsWith(".asm") || args[1].endsWith(".ASM")
 		|| args[1].endsWith(".s") || args[1].endsWith(".S")) {
+			if(args.length == 3) {
+				int bank = Integer.parseInt(args[2]);
+				pw.print(String.format(".area _CODE_%d\n", bank));
+			}
 			pw.print(song.emitASM());
 		}
 		if(args[1].endsWith(".h") || args[1].endsWith(".H")) {
