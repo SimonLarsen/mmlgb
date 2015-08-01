@@ -335,8 +335,8 @@ public class Parser {
 					}
 
 					int speed = parseInt(next.data);
-					if(speed < 0 || speed > 15) {
-						throw new ParserException(String.format("Invalid portamento speed. Expected 0-15.", speed), next);
+					if(speed < 0 || speed > 128) {
+						throw new ParserException(String.format("Invalid portamento speed. Expected 0-128.", speed), next);
 					}
 					eat();
 
