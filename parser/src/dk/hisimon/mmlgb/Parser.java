@@ -259,6 +259,19 @@ public class Parser {
 					song.addData(active, Song.CMD.T_LOOP.ordinal());
 				}
 			}
+			else if(next.type == Lexer.TokenType.TIE) {
+				// Parse dangling tie as wait command
+				eat();
+
+				int length = parseLength(false);
+
+				if(length == 0) {
+					song.addData(active, Song.CMD.T_WAIT.ordinal());
+				} else {
+					song.addData(active, Song.CMD.T_WAIT.ordinal() | 0x80);
+					song.addData(active, length);
+				}
+			}
 			else if(next.type == Lexer.TokenType.MACRO) {
 				if(next.data.equals("@wave")) {
 					eat();
