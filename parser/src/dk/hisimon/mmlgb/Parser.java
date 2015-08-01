@@ -327,6 +327,22 @@ public class Parser {
 					song.addData(active, Song.CMD.T_WAVEDUTY.ordinal());
 					song.addData(active, duty);
 				}
+				else if(next.data.equals("@p")) {
+					eat();
+
+					if(next.type != Lexer.TokenType.NUMBER) {
+						throw new ParserException("Expected speed after @p macro.", next);
+					}
+
+					int speed = parseInt(next.data);
+					if(speed < 0 || speed > 15) {
+						throw new ParserException(String.format("Invalid portamento speed. Expected 0-15.", speed), next);
+					}
+					eat();
+
+					song.addData(active, Song.CMD.T_PORTAMENTO.ordinal());
+					song.addData(active, speed);
+				}
 			}
 			else if(next.type == Lexer.TokenType.LBRACKET) {
 				eat();
