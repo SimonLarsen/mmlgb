@@ -318,6 +318,9 @@ void mus_update2() {
 					mus_rep_depth2--;
 				}
 				break;
+			case T_PORTAMENTO:
+				mus_slide2 = *mus_data2++;
+				break;
 			case T_EOF:
 				mus_data2 = mus_loop2;
 				if(*mus_data2 == T_EOF) {
@@ -416,6 +419,9 @@ void mus_update3() {
 				} else {
 					mus_rep_depth3--;
 				}
+				break;
+			case T_PORTAMENTO:
+				mus_data3++;
 				break;
 			case T_EOF:
 				mus_data3 = mus_loop3;
@@ -525,6 +531,9 @@ void mus_update4() {
 				} else {
 					mus_rep_depth4--;
 				}
+				break;
+			case T_PORTAMENTO:
+				mus_slide4 = *mus_data4++;
 				break;
 			case T_EOF:
 				mus_data4 = mus_loop4;
