@@ -274,6 +274,9 @@ public class Parser {
 			}
 			else if(next.type == Lexer.TokenType.MACRO) {
 				if(next.data.equals("@wave")) {
+					if(active[0] || active[1] || active[3]) {
+						throw new ParserException("@wave only allowed in channel 3.", next);
+					}
 					eat();
 
 					if(next.type != Lexer.TokenType.NUMBER) {
@@ -322,11 +325,10 @@ public class Parser {
 						throw new ParserException("Invalid wave duty. Expected number.", next);
 					}
 					int duty = parseInt(next.data);
-					eat();
-
 					if(duty < 0 || duty > 3) {
 						throw new ParserException("Invalid wave duty. Expected values 0-3.", next);
 					}
+					eat();
 
 					song.addData(active, Song.CMD.T_WAVEDUTY.ordinal());
 					song.addData(active, duty);
@@ -360,6 +362,9 @@ public class Parser {
 						throw new ParserException("Expected vibrato speed after @v macro.", next);
 					}
 					int speed = parseInt(next.data);
+					if(speed < 0 || speed > 15) {
+						throw new ParserException("Invalid vibrato speed. Expected values 0-15.", next);
+					}
 					eat();
 
 					eat(Lexer.TokenType.COMMA, "comma");
@@ -368,6 +373,9 @@ public class Parser {
 						throw new ParserException("Expected vibrato depth after @v macro.", next);
 					}
 					int depth = parseInt(next.data);
+					if(depth < 0 || depth > 7) {
+						throw new ParserException("Invalid vibrato depth. Expected values 0-7.", next);
+					}
 					eat();
 
 					song.addData(active, Song.CMD.T_VIBRATO.ordinal());
