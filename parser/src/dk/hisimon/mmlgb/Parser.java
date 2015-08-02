@@ -312,6 +312,10 @@ public class Parser {
 					song.addData(active, envelope);
 				}
 				else if(next.data.equals("@wd")) {
+					if(active[2] || active[3]) {
+						throw new ParserException("@wd only allowed in channel 1 and 2.", next);
+					}
+
 					eat();
 
 					if(next.type != Lexer.TokenType.NUMBER) {
@@ -328,6 +332,9 @@ public class Parser {
 					song.addData(active, duty);
 				}
 				else if(next.data.equals("@p")) {
+					if(active[2]) {
+						throw new ParserException("@p only allowed in channel 1, 2 and 4.", next);
+					}
 					eat();
 
 					if(next.type != Lexer.TokenType.NUMBER) {
@@ -342,6 +349,29 @@ public class Parser {
 
 					song.addData(active, Song.CMD.T_PORTAMENTO.ordinal());
 					song.addData(active, speed);
+				}
+				else if(next.data.equals("@v")) {
+					if(active[2] || active[3]) {
+						throw new ParserException("@v only allowed in channel 1 and 2.", next);
+					}
+					eat();
+
+					if(next.type != Lexer.TokenType.NUMBER) {
+						throw new ParserException("Expected vibrato speed after @v macro.", next);
+					}
+					int speed = parseInt(next.data);
+					eat();
+
+					eat(Lexer.TokenType.COMMA, "comma");
+
+					if(next.type != Lexer.TokenType.NUMBER) {
+						throw new ParserException("Expected vibrato depth after @v macro.", next);
+					}
+					int depth = parseInt(next.data);
+					eat();
+
+					song.addData(active, Song.CMD.T_VIBRATO.ordinal());
+					song.addData(active, speed | (depth << 4));
 				}
 			}
 			else if(next.type == Lexer.TokenType.LBRACKET) {

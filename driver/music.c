@@ -11,8 +11,6 @@ UBYTE mus_paused;
 UBYTE *mus_song;
 UWORD mus_freq1, mus_freq2, mus_freq3;
 UBYTE mus_freq4;
-UWORD mus_target1, mus_target2, mus_target4;
-UBYTE mus_slide1, mus_slide2, mus_slide4;
 UBYTE *mus_data1, *mus_data2, *mus_data3, *mus_data4;
 UBYTE *mus_loop1, *mus_loop2, *mus_loop3, *mus_loop4;
 UBYTE mus_octave1, mus_octave2, mus_octave3, mus_octave4;
@@ -20,9 +18,25 @@ UBYTE mus_length1, mus_length2, mus_length3, mus_length4;
 UBYTE mus_volume1, mus_volume2, mus_volume3, mus_volume4;
 UBYTE mus_env1, mus_env2, mus_env4;
 UBYTE mus_wait1, mus_wait2, mus_wait3, mus_wait4;
+UWORD mus_target1, mus_target2, mus_target4;
+UBYTE mus_slide1, mus_slide2, mus_slide4;
+UBYTE mus_vib_speed1, mus_vib_speed2;
+UBYTE mus_vib_shift1, mus_vib_shift2;
+UBYTE mus_vib_pos1, mus_vib_pos2;
 UBYTE *mus_rep1[MAX_REPEATS], *mus_rep2[MAX_REPEATS], *mus_rep3[MAX_REPEATS], *mus_rep4[MAX_REPEATS];
 UBYTE mus_repeats1[MAX_REPEATS], mus_repeats2[MAX_REPEATS], mus_repeats3[MAX_REPEATS], mus_repeats4[MAX_REPEATS];
 UBYTE mus_rep_depth1, mus_rep_depth2, mus_rep_depth3, mus_rep_depth4;
+
+const UBYTE cos256_64[64] = {
+	128U, 141U, 153U, 165U, 177U, 188U, 199U, 209U,
+	219U, 227U, 234U, 241U, 246U, 250U, 254U, 255U,
+	256U, 255U, 254U, 250U, 246U, 241U, 234U, 227U,
+	219U, 209U, 199U, 188U, 177U, 165U, 153U, 141U,
+	128U, 115U, 103U, 91U, 79U, 68U, 57U, 47U,
+	37U, 29U, 22U, 15U, 10U, 6U, 2U, 1U,
+	0U, 1U, 2U, 6U, 10U, 15U, 22U, 29U,
+	37U, 47U, 57U, 68U, 79U, 91U, 103U, 115U
+};
 
 void mus_init(UBYTE *song_data) {
 	UBYTE i;
@@ -60,6 +74,8 @@ void mus_init(UBYTE *song_data) {
 	mus_env1 = mus_env2 = mus_env4 = 3U;
 	mus_rep_depth1 = mus_rep_depth2 = mus_rep_depth3 = mus_rep_depth4 = 255U;
 	mus_slide1 = mus_slide2 = mus_slide4 = 0U;
+	mus_vib_speed1 = mus_vib_speed2 = 0U;
+
 	for(i = 0U; i != MAX_REPEATS; ++i) {
 		mus_repeats1[i] = 0U;
 		mus_repeats2[i] = 0U;
@@ -92,6 +108,7 @@ void mus_update() {
 
 void mus_update1() {
 	UBYTE note;
+	UWORD vib_freq;
 
 	if(mus_slide1) {
 		if(mus_target1 > mus_freq1) {
@@ -108,6 +125,14 @@ void mus_update1() {
 		}
 		NR13_REG = (UBYTE)mus_freq1;
 		NR14_REG = mus_freq1 >> 8;
+	}
+
+	if(mus_vib_speed1) {
+		mus_vib_pos1 = (mus_vib_pos1 + mus_vib_speed1) & 63U;
+		vib_freq = mus_freq1 - (128U >> mus_vib_shift1) + (cos256_64[mus_vib_pos1] >> mus_vib_shift1);
+
+		NR13_REG = (UBYTE)vib_freq;
+		NR14_REG = vib_freq >> 8;
 	}
 
 	if(mus_wait1) {
@@ -166,9 +191,6 @@ void mus_update1() {
 			case T_WAVE:
 				mus_data1++;
 				break;
-			case T_TEMPO:
-				TMA_REG = *mus_data1++;
-				break;
 			case T_WAVEDUTY:
 				note = *mus_data1++;
 				NR11_REG = (note << 5);
@@ -200,6 +222,15 @@ void mus_update1() {
 			case T_PORTAMENTO:
 				mus_slide1 = *mus_data1++;
 				break;
+			case T_VIBRATO:
+				mus_vib_pos1 = 0U;
+				note = *mus_data1++;
+				mus_vib_speed1 = note & 15U;
+				mus_vib_shift1 = 7U - (note >> 4);
+				break;
+			case T_TEMPO:
+				TMA_REG = *mus_data1++;
+				break;
 			case T_EOF:
 				mus_data1 = mus_loop1;
 				if(*mus_data1 == T_EOF) {
@@ -213,6 +244,7 @@ void mus_update1() {
 
 void mus_update2() {
 	UBYTE note;
+	UWORD vib_freq;
 
 	if(mus_slide2) {
 		if(mus_target2 > mus_freq2) {
@@ -229,6 +261,14 @@ void mus_update2() {
 		}
 		NR23_REG = (UBYTE)mus_freq2;
 		NR24_REG = mus_freq2 >> 8;
+	}
+
+	if(mus_vib_speed2) {
+		mus_vib_pos2 = (mus_vib_pos2 + mus_vib_speed2) & 63U;
+		vib_freq = mus_freq2 - (128U >> mus_vib_shift2) + (cos256_64[mus_vib_pos2] >> mus_vib_shift2);
+
+		NR23_REG = (UBYTE)vib_freq;
+		NR24_REG = vib_freq >> 8;
 	}
 
 	if(mus_wait2) {
@@ -287,9 +327,6 @@ void mus_update2() {
 			case T_WAVE:
 				mus_data2++;
 				break;
-			case T_TEMPO:
-				TMA_REG = *mus_data2++;
-				break;
 			case T_WAVEDUTY:
 				note = *mus_data2++;
 				NR21_REG = note << 5;
@@ -320,6 +357,15 @@ void mus_update2() {
 				break;
 			case T_PORTAMENTO:
 				mus_slide2 = *mus_data2++;
+				break;
+			case T_VIBRATO:
+				mus_vib_pos2 = 0U;
+				note = *mus_data2++;
+				mus_vib_speed2 = note & 15U; // 0b1111
+				mus_vib_shift2 = 7U - (note >> 4);
+				break;
+			case T_TEMPO:
+				TMA_REG = *mus_data2++;
 				break;
 			case T_EOF:
 				mus_data2 = mus_loop2;
@@ -390,9 +436,6 @@ void mus_update3() {
 				memcpy(0xFF30, mus_song + WAVE_OFFSET + (note << 4), 16U);
 				NR30_REG = 0x80U;
 				break;
-			case T_TEMPO:
-				TMA_REG = *mus_data3++;
-				break;
 			case T_WAVEDUTY:
 				mus_data3++;
 				break;
@@ -422,6 +465,12 @@ void mus_update3() {
 				break;
 			case T_PORTAMENTO:
 				mus_data3++;
+				break;
+			case T_VIBRATO:
+				mus_data3++;
+				break;
+			case T_TEMPO:
+				TMA_REG = *mus_data3++;
 				break;
 			case T_EOF:
 				mus_data3 = mus_loop3;
@@ -505,9 +554,6 @@ void mus_update4() {
 				mus_env4 = *mus_data4++;
 				NR42_REG = (mus_volume4 << 4) | mus_env4;
 				break;
-			case T_TEMPO:
-				TMA_REG = *mus_data4++;
-				break;
 			case T_PAN:
 				note = *mus_data4++;
 				NR51_REG = (NR51_REG & 0x77U) | (note << 3); // 01110111
@@ -534,6 +580,12 @@ void mus_update4() {
 				break;
 			case T_PORTAMENTO:
 				mus_slide4 = *mus_data4++;
+				break;
+			case T_VIBRATO:
+				mus_data4++;
+				break;
+			case T_TEMPO:
+				TMA_REG = *mus_data4++;
 				break;
 			case T_EOF:
 				mus_data4 = mus_loop4;

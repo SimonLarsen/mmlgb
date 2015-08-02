@@ -31,6 +31,7 @@ enum E_CMD {
 	T_REP_START,
 	T_REP_END,
 	T_PORTAMENTO,
+	T_VIBRATO,
 	T_EOF
 };
 

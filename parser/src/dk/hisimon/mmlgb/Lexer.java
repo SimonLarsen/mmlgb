@@ -17,8 +17,9 @@ public  class Lexer {
 		DASH("-"),
 		COMMAND("[rwo<>lvtysL]"),
 		DOT("\\."),
+		COMMA(","),
 		TIE("\\^"),
-		MACRO("(@wave|@ve|@wd|@p)"),
+		MACRO("(@wave|@ve|@wd|@p|@v)"),
 		ASSIGN("="),
 		LCURLY("\\{"),
 		RCURLY("\\}"),
@@ -108,6 +109,10 @@ public  class Lexer {
 			}
 			else if(matcher.group(TokenType.DOT.name()) != null) {
 				tokens.add(new Token(TokenType.DOT, matcher.group(TokenType.DOT.name()), line, pos));
+				continue;
+			}
+			else if(matcher.group(TokenType.COMMA.name()) != null) {
+				tokens.add(new Token(TokenType.COMMA, matcher.group(TokenType.COMMA.name()), line, pos));
 				continue;
 			}
 			else if(matcher.group(TokenType.TIE.name()) != null) {
