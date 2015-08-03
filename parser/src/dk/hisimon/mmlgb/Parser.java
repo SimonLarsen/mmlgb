@@ -242,10 +242,10 @@ public class Parser {
 						throw new ParserException("Invalid volume. Expected number.", next);
 					}
 					int volume = parseInt(next.data);
-					if(active[2] && volume > 3) {
+					if(active[2] && (volume < 0 || volume > 3)) {
 						throw new ParserException("Invalid volume for wave channel. Expected 0-3.", next);
 					}
-					if(volume > 15) {
+					if(volume < 0 || volume > 15) {
 						throw new ParserException("Invalid volume value. Expected 0-15.", next);
 					}
 					eat();
