@@ -12,6 +12,18 @@ UBYTE joystate, oldjoystate;
 
 UBYTE selection, paused;
 
+void togglePaused() {
+	paused = !paused;
+	mus_setPaused(paused);
+	if(paused) {
+		set_sprite_tile(2U, 12U);
+		set_sprite_tile(3U, 14U);
+	} else {
+		set_sprite_tile(2U, 8U);
+		set_sprite_tile(3U, 10U);
+	}
+}
+
 void main() {
 	disable_interrupts();
 
@@ -70,7 +82,7 @@ void main() {
 		joystate = joypad();
 
 		if(CLICKED(J_START)) {
-			mus_togglePaused();
+			togglePaused();
 		}
 
 		if(CLICKED(J_LEFT)) {
@@ -98,22 +110,19 @@ void main() {
 				disable_interrupts();
 				mus_init(&song_data);
 				enable_interrupts();
+				paused = 1U;
+				togglePaused();
 			}
 			else if(selection == 1U) {
-				paused = !paused;
-				mus_setPaused(paused);
-				if(paused) {
-					set_sprite_tile(2U, 12U);
-					set_sprite_tile(3U, 14U);
-				} else {
-					set_sprite_tile(2U, 8U);
-					set_sprite_tile(3U, 10U);
-				}
+				togglePaused();
 			}
 		}
 
 		if(ISDOWN(J_A) && selection == 2U) {
 			disable_interrupts();
+			if(paused) {
+				togglePaused();
+			}
 			mus_update();
 			enable_interrupts();
 		}
