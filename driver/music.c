@@ -39,6 +39,10 @@ const UBYTE cos128_64[64] = {
 	 19U,  23U,  28U,  34U,  40U,  45U,  52U,  58U
 };
 
+const UBYTE wave_volume[4] = {
+	0U, 96U, 64U, 32U
+};
+
 void mus_init(UBYTE *song_data) {
 	UBYTE i;
 
@@ -418,7 +422,7 @@ void mus_update3() {
 				NR32_REG = 0U;
 			} else {
 				mus_freq3 = freq[((mus_octave3-MUS_FIRST_OCTAVE) << 4) + note];
-				NR32_REG = mus_volume3 << 5;
+				NR32_REG = mus_volume3;
 			}
 			NR30_REG = 0x0U;
 			NR30_REG = 0x80U;
@@ -440,8 +444,8 @@ void mus_update3() {
 				mus_octave3--;
 				break;
 			case T_VOL:
-				mus_volume3 = *mus_data3++;
-				NR32_REG = mus_volume3 << 5;
+				note = *mus_data3++;
+				mus_volume3 = wave_volume[note];
 				break;
 			case T_WAVE:
 				note = *mus_data3++;
