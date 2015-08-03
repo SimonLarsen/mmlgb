@@ -19,7 +19,7 @@ public  class Lexer {
 		DOT("\\."),
 		COMMA(","),
 		TIE("\\^"),
-		MACRO("(@wave|@ve|@wd|@p|@v)"),
+		MACRO("(@wave|@ve|@wd|@p|@v|@@)"),
 		ASSIGN("="),
 		LCURLY("\\{"),
 		RCURLY("\\}"),
@@ -51,6 +51,10 @@ public  class Lexer {
 			this.data = data;
 			this.line = line;
 			this.pos = pos;
+		}
+
+		public Token(Token o) {
+			this(o.type, o.data, o.line, o.pos);
 		}
 
 		public String toString() {

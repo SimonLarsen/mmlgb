@@ -1,9 +1,12 @@
 package dk.hisimon.mmlgb;
 
 import java.util.List;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Parser {
 	private List<Lexer.Token> tokens;
+	private HashMap<Integer, ArrayList<Lexer.Token>> macros;
 	private Lexer.Token next;
 
 	private Song song;
@@ -18,6 +21,7 @@ public class Parser {
 
 	public Parser(List<Lexer.Token> tokens) {
 		this.tokens = tokens;
+		macros = new HashMap<Integer, ArrayList<Lexer.Token>>();
 
 		position = 0;
 		next = tokens.get(position);
@@ -51,6 +55,12 @@ public class Parser {
 	private void parseDefinition() throws ParserException {
 		if(next.data.equals("@wave")) {
 			parseWaveData();
+		} 
+		else if(next.data.equals("@@")) {
+			parseMacroData();
+		}
+		else {
+			throw new ParserException(String.format("Unexpected token %s.", next), next);
 		}
 	}
 
@@ -62,6 +72,9 @@ public class Parser {
 			throw new ParserException("Expected wave data id.", next);
 		}
 		int id = parseInt(next.data);
+		if(id < 0) {
+			throw new ParserException("Invalid wave data id. Must be nonnegative integer.", next);
+		}
 		eat();
 
 		eat(Lexer.TokenType.ASSIGN, "=");
@@ -87,8 +100,37 @@ public class Parser {
 		eat(Lexer.TokenType.RCURLY, "}");
 		eat(Lexer.TokenType.NEWLINE, "Line break");
 
-		WaveData waveData = new WaveData(samples);
-		song.addWaveData(id, waveData);
+		song.addWaveData(id, samples);
+	}
+
+	private void parseMacroData() throws ParserException {
+		eat();
+
+		if(next.type != Lexer.TokenType.NUMBER) {
+			throw new ParserException("Expected macro id.", next);
+		}
+
+		int id = parseInt(next.data);
+		if(id < 0) {
+			throw new ParserException("Invalid macro id. Must be nonnegative integer.", next);
+		}
+		eat();
+
+		eat(Lexer.TokenType.ASSIGN, "=");
+		eat(Lexer.TokenType.LCURLY, "{");
+
+		ArrayList<Lexer.Token> macro = new ArrayList<Lexer.Token>();
+		while(next.type != Lexer.TokenType.RCURLY) {
+			while(next.type == Lexer.TokenType.NEWLINE) eat();
+			macro.add(new Lexer.Token(next));
+			eat();
+			while(next.type == Lexer.TokenType.NEWLINE) eat();
+		}
+
+		eat(Lexer.TokenType.RCURLY, "}");
+		eat(Lexer.TokenType.NEWLINE, "Line break");
+
+		macros.put(id, macro);
 	}
 
 	private void parseCommands() throws ParserException {
@@ -393,6 +435,22 @@ public class Parser {
 						song.addData(active, Song.CMD.T_VIBRATO.ordinal());
 						song.addData(active, speed | (depth << 4));
 					}
+				} else if(next.data.equals("@@")) {
+					eat();
+
+					if(next.type != Lexer.TokenType.NUMBER) {
+						throw new ParserException("Expected macro id.", next);
+					}
+
+					int id = parseInt(next.data);
+					eat();
+					ArrayList<Lexer.Token> macro = macros.get(id);
+					if(macro == null) {
+						throw new ParserException(String.format("Macro @@%d not found.", id), next);
+					}
+
+					tokens.addAll(position, macro);
+					next = tokens.get(position);
 				}
 			}
 			else if(next.type == Lexer.TokenType.LBRACKET) {

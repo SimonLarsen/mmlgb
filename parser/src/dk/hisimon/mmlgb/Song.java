@@ -5,13 +5,11 @@ import java.util.ArrayList;
 
 public class Song {
 	private String filename;
-	private int waveDataCount;
 
-	private WaveData[] waveData;
+	private List<WaveData> waveData;
 	private List<List<Integer>> channel;
 
 	private static final int HEADER_SIZE = 8;
-	private static final int MAX_WAVE_DATA = 8;
 	private static final int MAX_ENV_DATA = 16;
 
 	public enum CMD {
@@ -50,8 +48,7 @@ public class Song {
 	};
 
 	public Song() {
-		waveData = new WaveData[MAX_WAVE_DATA];
-		waveDataCount = 0;
+		waveData = new ArrayList<WaveData>();
 
 		channel = new ArrayList<List<Integer>>();
 		for(int i = 0; i < 4; ++i) {
@@ -59,12 +56,12 @@ public class Song {
 		}
 	}
 
-	public void addWaveData(int id, WaveData data) throws ParserException {
-		if(id >= MAX_WAVE_DATA) {
-			throw new ParserException(String.format("You can only define %d wave data blocks.", MAX_WAVE_DATA));
+	public void addWaveData(int id, int[] data) throws ParserException {
+		while(waveData.size()-1 < id) {
+			waveData.add(new WaveData());
 		}
-		waveData[id] = data;
-		waveDataCount = Math.max(waveDataCount, id+1);
+
+		waveData.get(id).setData(data);
 	}
 
 	public void addData(int chan, int value) {
@@ -83,7 +80,7 @@ public class Song {
 		List<Integer> data = new ArrayList<Integer>();
 
 		// Generate header
-		int c1Start = HEADER_SIZE + waveDataCount * 16;
+		int c1Start = HEADER_SIZE + waveData.size() * 16;
 		int c2Start = c1Start + channel.get(0).size();
 		int c3Start = c2Start + channel.get(1).size();
 		int c4Start = c3Start + channel.get(2).size();
@@ -98,8 +95,8 @@ public class Song {
 		data.add(c4Start >> 8);
 
 		// Generate wave data
-		for(int i = 0; i < waveDataCount; ++i) {
-			int[] samples = waveData[i].getData();
+		for(int i = 0; i < waveData.size(); ++i) {
+			int[] samples = waveData.get(i).getData();
 			if(samples != null) {
 				for(int j = 0; j < 32; j += 2) {
 					int value = (samples[j] << 4) | samples[j+1];
