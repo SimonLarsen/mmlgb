@@ -378,8 +378,21 @@ public class Parser {
 					}
 					eat();
 
-					song.addData(active, Song.CMD.T_VIBRATO.ordinal());
-					song.addData(active, speed | (depth << 4));
+					int delay = 0;
+					if(next.type == Lexer.TokenType.COMMA) {
+						eat();
+
+						delay = parseLength(true);
+					}
+
+					if(delay > 0) {
+						song.addData(active, Song.CMD.T_VIBRATO_DELAY.ordinal());
+						song.addData(active, speed | (depth << 4));
+						song.addData(active, delay);
+					} else {
+						song.addData(active, Song.CMD.T_VIBRATO.ordinal());
+						song.addData(active, speed | (depth << 4));
+					}
 				}
 			}
 			else if(next.type == Lexer.TokenType.LBRACKET) {
