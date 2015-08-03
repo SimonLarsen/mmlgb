@@ -28,14 +28,14 @@ UBYTE mus_repeats1[MAX_REPEATS], mus_repeats2[MAX_REPEATS], mus_repeats3[MAX_REP
 UBYTE mus_rep_depth1, mus_rep_depth2, mus_rep_depth3, mus_rep_depth4;
 
 const UBYTE cos128_64[64] = {
-	64U, 70U, 76U, 83U, 88U, 94U, 100U, 105U,
+	 64U,  70U,  76U,  83U,  88U,  94U, 100U, 105U,
 	109U, 113U, 117U, 120U, 123U, 125U, 127U, 128U,
 	128U, 128U, 127U, 125U, 123U, 120U, 117U, 113U,
-	109U, 105U, 100U, 94U, 88U, 83U, 76U, 70U,
-	64U, 58U, 52U, 45U, 40U, 34U, 28U, 23U,
-	19U, 15U, 11U, 8U, 5U, 3U, 1U, 0U,
-	0U, 0U, 1U, 3U, 5U, 8U, 11U, 15U,
-	19U, 23U, 28U, 34U, 40U, 45U, 52U, 58U
+	109U, 105U, 100U,  94U,  88U,  83U,  76U,  70U,
+	 64U,  58U,  52U,  45U,  40U,  34U,  28U,  23U,
+	 19U,  15U,  11U,   8U,   5U,   3U,   1U,   0U,
+	  0U,   0U,   1U,   3U,   5U,   8U,  11U,  15U,
+	 19U,  23U,  28U,  34U,  40U,  45U,  52U,  58U
 };
 
 void mus_init(UBYTE *song_data) {
