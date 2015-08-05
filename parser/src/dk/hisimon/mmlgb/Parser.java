@@ -178,7 +178,11 @@ public class Parser {
 					song.addData(active, note);
 				} else {
 					song.addData(active, note | 0x80);
-					song.addData(active, length);
+					song.addData(active, length % 255);
+					for(int i = 0; i < length / 255; ++i) {
+						song.addData(active, Song.CMD.T_WAIT.ordinal() | 0x80);
+						song.addData(active, 255);
+					}
 				}
 			}
 			else if(next.type == Lexer.TokenType.COMMAND) {
@@ -192,6 +196,10 @@ public class Parser {
 					} else {
 						song.addData(active, Song.CMD.T_REST.ordinal() | 0x80);
 						song.addData(active, length);
+						for(int i = 0; i < length / 255; ++i) {
+							song.addData(active, Song.CMD.T_WAIT.ordinal() | 0x80);
+							song.addData(active, 255);
+						}
 					}
 				}
 				else if(next.data.equals("w")) {
@@ -204,6 +212,10 @@ public class Parser {
 					} else {
 						song.addData(active, Song.CMD.T_WAIT.ordinal() | 0x80);
 						song.addData(active, length);
+						for(int i = 0; i < length / 255; ++i) {
+							song.addData(active, Song.CMD.T_WAIT.ordinal() | 0x80);
+							song.addData(active, 255);
+						}
 					}
 				}
 				else if(next.data.equals("o")) {
@@ -230,7 +242,11 @@ public class Parser {
 				else if(next.data.equals("l")) {
 					eat();
 
+					Lexer.Token length_token = next;
 					int length = parseLength(true);
+					if(length > 255) {
+						throw new ParserException("Length overflow. Lengths more than 255 frames not allowed for l command.", length_token);
+					}
 
 					song.addData(active, Song.CMD.T_LENGTH.ordinal());
 					song.addData(active, length);

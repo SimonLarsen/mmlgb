@@ -1,7 +1,7 @@
 @echo off
 PATH=%PATH%;%~dp0\gbdk\bin
 
-java.exe -jar parser\MMLGB.jar %1 driver\song.asm
+java.exe -jar parser\MMLGB.jar music\%1 driver\song.asm
 if %errorlevel% neq 0 (
 	pause
 	exit /b %errorlevel%
