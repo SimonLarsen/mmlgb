@@ -431,8 +431,8 @@ public class Parser {
 						throw new ParserException("Expected vibrato depth after @v macro.", next);
 					}
 					int depth = parseInt(next.data);
-					if(depth < 0 || depth > 15) {
-						throw new ParserException("Invalid vibrato depth. Expected values 0-15.", next);
+					if(depth < 0 || depth > 4) {
+						throw new ParserException("Invalid vibrato depth. Expected values 0-4.", next);
 					}
 					eat();
 
