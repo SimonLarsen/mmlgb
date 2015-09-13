@@ -27,6 +27,7 @@ UBYTE mus_vib_speed1, mus_vib_speed2;
 UBYTE *mus_vib_table1, *mus_vib_table2;
 UBYTE mus_vib_pos1, mus_vib_pos2;
 UBYTE mus_vib_delay1, mus_vib_delay2;
+UBYTE mus_noise_step;
 
 UBYTE *mus_rep1[MAX_REPEATS], *mus_rep2[MAX_REPEATS], *mus_rep3[MAX_REPEATS], *mus_rep4[MAX_REPEATS];
 UBYTE mus_repeats1[MAX_REPEATS], mus_repeats2[MAX_REPEATS], mus_repeats3[MAX_REPEATS], mus_repeats4[MAX_REPEATS];
@@ -102,6 +103,7 @@ void mus_init(UBYTE *song_data) {
 	mus_rep_depth1 = mus_rep_depth2 = mus_rep_depth3 = mus_rep_depth4 = 255U;
 	mus_slide1 = mus_slide2 = mus_slide4 = 0U;
 	mus_vib_speed1 = mus_vib_speed2 = 0U;
+	mus_noise_step = 0U;
 
 	for(i = 0U; i != MAX_REPEATS; ++i) {
 		mus_repeats1[i] = 0U;
@@ -566,7 +568,7 @@ void mus_update4() {
 				mus_freq4 = mus_target4;
 			}
 		}
-		NR43_REG = mus_freq4;
+		NR43_REG = mus_freq4 | mus_noise_step;
 	}
 
 	if(mus_wait4) {
@@ -596,7 +598,7 @@ void mus_update4() {
 				}
 				NR42_REG = (mus_volume4 << 4) | mus_env4;
 			}
-			NR43_REG = mus_freq4;
+			NR43_REG = mus_freq4 | mus_noise_step;
 			NR44_REG = mus_enabled4;
 			return;
 		}
@@ -650,6 +652,9 @@ void mus_update4() {
 				break;
 			case T_TEMPO:
 				TMA_REG = *mus_data4++;
+				break;
+			case T_NOISE_STEP:
+				mus_noise_step = (*mus_data4++) << 3;
 				break;
 			case T_EOF:
 				mus_data4 = mus_loop4;

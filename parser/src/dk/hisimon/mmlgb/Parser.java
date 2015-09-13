@@ -451,6 +451,23 @@ public class Parser {
 						song.addData(active, Song.CMD.T_VIBRATO.ordinal());
 						song.addData(active, speed | (depth << 4));
 					}
+				} else if(next.data.equals("@ns")) {
+					if(active[0] || active[1] || active[2]) {
+						throw new ParserException("@ns only allowed in channel 4.", next);
+					}
+					eat();
+
+					if(next.type != Lexer.TokenType.NUMBER) {
+						throw new ParserException("Expected 0 or 1 after @ns macro.", next);
+					}
+					int state = parseInt(next.data);
+					if(state < 0 || state > 1) {
+						throw new ParserException("Expected 0 or 1 after @ns macro.", next);
+					}
+					eat();
+
+					song.addData(active, Song.CMD.T_NOISE_STEP.ordinal());
+					song.addData(active, state);
 				} else if(next.data.equals("@@")) {
 					eat();
 

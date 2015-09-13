@@ -44,6 +44,7 @@ public class Song {
 		T_PORTAMENTO,
 		T_VIBRATO,
 		T_VIBRATO_DELAY,
+		T_NOISE_STEP,
 		T_EOF
 	};
 
