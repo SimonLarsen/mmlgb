@@ -17,4 +17,4 @@ zip -r "dist/mmlgb-$(date '+%F-%H%M%S').zip" \
 	compile.bat compile.sh \
 	parser/MMLGB.jar \
 	gbdk \
-	driver/main.asm driver/music.asm driver/div.asm
+	driver/main.asm driver/music.asm driver/freq.asm driver/noisefreq.asm
