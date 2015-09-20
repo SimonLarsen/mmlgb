@@ -410,6 +410,33 @@ public class Parser {
 					song.addData(active, Song.CMD.T_PORTAMENTO.ordinal());
 					song.addData(active, speed);
 				}
+				else if(next.data.equals("@po")) {
+					if(active[3]) {
+						throw new ParserException("@po only allowed in channel 1, 2 and 3.", next);
+					}
+					eat();
+
+					boolean negative = false;
+					if(next.type == Lexer.TokenType.DASH) {
+						negative = true;
+						eat();
+					}
+
+					if(next.type != Lexer.TokenType.NUMBER) {
+						throw new ParserException("Expected number after @po macro.", next);
+					}
+
+					int offset = parseInt(next.data);
+					if(offset < 0 || offset > 127) {
+						throw new ParserException("Invalid pitch offset. Expacted values 0-127.", next);
+					}
+					eat();
+
+					if(negative) offset = -offset;
+
+					song.addData(active, Song.CMD.T_PITCH_OFFSET.ordinal());
+					song.addData(active, offset + 128);
+				}
 				else if(next.data.equals("@v")) {
 					if(active[2] || active[3]) {
 						throw new ParserException("@v only allowed in channel 1 and 2.", next);

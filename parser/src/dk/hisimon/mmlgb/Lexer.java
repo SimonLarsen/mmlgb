@@ -19,7 +19,7 @@ public  class Lexer {
 		DOT("\\."),
 		COMMA(","),
 		TIE("\\^"),
-		MACRO("(@wave|@ve|@wd|@p|@v|@ns|@@)"),
+		MACRO("(@@|@po|@p|@ns|@ve|@v|@wave|@wd)"),
 		ASSIGN("="),
 		LCURLY("\\{"),
 		RCURLY("\\}"),

@@ -45,6 +45,7 @@ public class Song {
 		T_VIBRATO,
 		T_VIBRATO_DELAY,
 		T_NOISE_STEP,
+		T_PITCH_OFFSET,
 		T_EOF
 	};
 
