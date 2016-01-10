@@ -12,7 +12,8 @@ lcc.exe -c driver\music.asm -o driver\music.o
 lcc.exe -c driver\song.asm -o driver\song.o
 lcc.exe -c driver\freq.asm -o driver\freq.o
 lcc.exe -c driver\noisefreq.asm -o driver\noisefreq.o
-lcc.exe driver\main.o driver\music.o driver\song.o driver\freq.o driver\noisefreq.o -o rom.gb
+lcc.exe -c driver\vib.asm -o driver\vib.o
+lcc.exe driver\main.o driver\music.o driver\song.o driver\freq.o driver\noisefreq.o driver\vib.o -o rom.gb
 
 if %errorlevel% neq 0 (
 	echo Error compiling rom!
