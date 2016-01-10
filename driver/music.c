@@ -4,6 +4,7 @@
 #include "notes.h"
 #include "freq.h"
 #include "noisefreq.h"
+#include "vib.h"
 
 #define MAX_REPEATS 4
 
@@ -33,38 +34,6 @@ UBYTE mus_po1, mus_po2, mus_po3;
 UBYTE *mus_rep1[MAX_REPEATS], *mus_rep2[MAX_REPEATS], *mus_rep3[MAX_REPEATS], *mus_rep4[MAX_REPEATS];
 UBYTE mus_repeats1[MAX_REPEATS], mus_repeats2[MAX_REPEATS], mus_repeats3[MAX_REPEATS], mus_repeats4[MAX_REPEATS];
 UBYTE mus_rep_depth1, mus_rep_depth2, mus_rep_depth3, mus_rep_depth4;
-
-const UBYTE vib1[64] = {
-	1U, 1U, 1U, 1U, 1U, 1U, 2U, 2U, 2U, 2U, 2U, 2U, 2U, 2U, 2U, 2U, 2U, 2U, 2U,
-	2U, 2U, 2U, 2U, 2U, 2U, 2U, 2U, 1U, 1U, 1U, 1U, 1U, 1U, 1U, 1U, 1U, 1U, 1U,
-	0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U,
-	0U, 0U, 1U, 1U, 1U, 1U, 1U
-};
-
-const UBYTE vib2[64] = {
-	2U, 2U, 2U, 3U, 3U, 3U, 3U, 3U, 3U, 4U, 4U, 4U, 4U, 4U, 4U, 4U, 4U, 4U, 4U,
-	4U, 4U, 4U, 4U, 4U, 3U, 3U, 3U, 3U, 3U, 3U, 2U, 2U, 2U, 2U, 2U, 1U, 1U, 1U,
-	1U, 1U, 1U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 1U,
-	1U, 1U, 1U, 1U, 1U, 2U, 2U
-};
-
-const UBYTE vib3[64] = {
-	4U, 4U, 5U, 5U, 6U, 6U, 6U, 7U, 7U, 7U, 7U, 8U, 8U, 8U, 8U, 8U, 8U, 8U, 8U,
-	8U, 8U, 8U, 7U, 7U, 7U, 7U, 6U, 6U, 6U, 5U, 5U, 4U, 4U, 4U, 3U, 3U, 2U, 2U,
-	2U, 1U, 1U, 1U, 1U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 0U, 1U, 1U, 1U,
-	1U, 2U, 2U, 2U, 3U, 3U, 4U
-};
-
-const UBYTE vib4[64] = {
-	8U, 9U, 10U, 10U, 11U, 12U, 12U, 13U, 14U, 14U, 15U, 15U, 15U, 16U, 16U,
-	16U, 16U, 16U, 16U, 16U, 15U, 15U, 15U, 14U, 14U, 13U, 12U, 12U, 11U, 10U,
-	10U, 9U, 8U, 7U, 6U, 6U, 5U, 4U, 4U, 3U, 2U, 2U, 1U, 1U, 1U, 0U, 0U, 0U,
-	0U, 0U, 0U, 0U, 1U, 1U, 1U, 2U, 2U, 3U, 4U, 4U, 5U, 6U, 6U, 7U
-};
-
-const UBYTE wave_volume[4] = {
-	0U, 96U, 64U, 32U
-};
 
 void mus_init(UBYTE *song_data) {
 	UBYTE i;
