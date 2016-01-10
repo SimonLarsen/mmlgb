@@ -64,7 +64,7 @@ void mus_init(UBYTE *song_data) {
 	mus_data3 = mus_loop3 = mus_song + ((UWORD*)mus_song)[CHN3_OFFSET];
 	mus_data4 = mus_loop4 = mus_song + ((UWORD*)mus_song)[CHN4_OFFSET];
 
-	mus_enabled1 = mus_enabled4 = 0x80U;
+	mus_enabled1 = mus_enabled4 = 1U;
 	mus_wait1 = mus_wait2 = mus_wait3 = mus_wait4 = 0U;
 	mus_octave1 = mus_octave2 = mus_octave3 = mus_octave4 = 4U;
 	mus_length1 = mus_length2 = mus_length3 = mus_length4 = 48U;
@@ -107,18 +107,11 @@ void mus_disable4() {
 }
 
 void mus_restore1() {
-	mus_enabled1 = 0x80U;
-	NR10_REG = 0U;
-	NR11_REG = mus_duty1 << 5;
-	NR12_REG = 0U;
-	NR13_REG = 0U;
-	NR14_REG = 0x80U;
+	mus_enabled1 = 1U;
 }
 
 void mus_restore4() {
-	mus_enabled4 = 0x80U;
-	NR42_REG = 0U;
-	NR44_REG = 0x80U;
+	mus_enabled4 = 1U;
 }
 
 void mus_update() {
@@ -169,7 +162,7 @@ void mus_update1() {
 
 	while(1U) {
 		note = *mus_data1++;
-		if(note & MUS_HAS_LENGTH || note <= T_WAIT) {
+		if(note <= T_WAIT || note & MUS_HAS_LENGTH) {
 			if(note & MUS_HAS_LENGTH) {
 				note ^= MUS_HAS_LENGTH;
 				mus_wait1 = *mus_data1++;
@@ -326,7 +319,7 @@ void mus_update2() {
 
 	while(1U) {
 		note = *mus_data2++;
-		if(note & MUS_HAS_LENGTH || note <= T_WAIT) {
+		if(note <= T_WAIT || note & MUS_HAS_LENGTH) {
 			if(note & MUS_HAS_LENGTH) {
 				note ^= MUS_HAS_LENGTH;
 				mus_wait2 = *mus_data2++;
@@ -452,7 +445,7 @@ void mus_update3() {
 
 	while(1U) {
 		note = *mus_data3++;
-		if(note & MUS_HAS_LENGTH || note <= T_WAIT) {
+		if(note <= T_WAIT || note & MUS_HAS_LENGTH) {
 			if(note & MUS_HAS_LENGTH) {
 				note ^= MUS_HAS_LENGTH;
 				mus_wait3 = *mus_data3++;
@@ -564,7 +557,7 @@ void mus_update4() {
 
 	while(1U) {
 		note = *mus_data4++;
-		if(note & MUS_HAS_LENGTH || note <= T_WAIT) {
+		if(note <= T_WAIT || note & MUS_HAS_LENGTH) {
 			if(note & MUS_HAS_LENGTH) {
 				note ^= MUS_HAS_LENGTH;
 				mus_wait4 = *mus_data4++;
