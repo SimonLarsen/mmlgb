@@ -20,6 +20,7 @@ UBYTE mus_octave1, mus_octave2, mus_octave3, mus_octave4;
 UBYTE mus_length1, mus_length2, mus_length3, mus_length4;
 UBYTE mus_volume1, mus_volume2, mus_volume3, mus_volume4;
 UBYTE mus_env1, mus_env2, mus_env4;
+UBYTE mus_pan1, mus_pan2, mus_pan3, mus_pan4;
 UBYTE mus_duty1, mus_duty2;
 UBYTE mus_wait1, mus_wait2, mus_wait3, mus_wait4;
 UWORD mus_target1, mus_target2, mus_target4;
@@ -221,8 +222,8 @@ void mus_update1() {
 				if(mus_enabled1) NR11_REG = mus_duty1 << 5;
 				break;
 			case T_PAN:
-				note = *mus_data1++;
-				if(mus_enabled1) NR51_REG = (NR51_REG & 0xEEU) | note; // 11101110
+				mus_pan1 = *mus_data1++;
+				if(mus_enabled1) NR51_REG = (NR51_REG & 0xEEU) | mus_pan1;
 				break;
 			case T_PORTAMENTO:
 				mus_slide1 = *mus_data1++;
@@ -376,8 +377,8 @@ void mus_update2() {
 				NR21_REG = mus_duty2 << 5;
 				break;
 			case T_PAN:
-				note = *mus_data2++;
-				NR51_REG = (NR51_REG & 0xDDU) | (note << 1); // 11011101
+				mus_pan2 = *mus_data2++;
+				NR51_REG = (NR51_REG & 0xDDU) | (mus_pan2 << 1);
 				break;
 			case T_PORTAMENTO:
 				mus_slide2 = *mus_data2++;
@@ -497,8 +498,8 @@ void mus_update3() {
 				NR30_REG = 0x80U;
 				break;
 			case T_PAN:
-				note = *mus_data3++;
-				NR51_REG = (NR51_REG & 0xBBU) | (note << 2); // 10111011
+				mus_pan3 = *mus_data3++;
+				NR51_REG = (NR51_REG & 0xBBU) | (mus_pan3 << 2);
 				break;
 			case T_REP_START:
 				mus_rep_depth3++;
@@ -611,8 +612,8 @@ void mus_update4() {
 				if(mus_enabled4) NR42_REG = (mus_volume4 << 4) | mus_env4;
 				break;
 			case T_PAN:
-				note = *mus_data4++;
-				if(mus_enabled4) NR51_REG = (NR51_REG & 0x77U) | (note << 3); // 01110111
+				mus_pan4 = *mus_data4++;
+				if(mus_enabled4) NR51_REG = (NR51_REG & 0x77U) | (mus_pan4 << 3);
 				break;
 			case T_PORTAMENTO:
 				mus_slide4 = *mus_data4++;
