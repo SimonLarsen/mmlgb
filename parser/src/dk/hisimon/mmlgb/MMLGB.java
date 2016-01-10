@@ -6,6 +6,12 @@ import java.util.List;
 
 public class MMLGB {
 	public static void main (String[] args) throws Exception {
+		if(args.length < 2 || args.length > 3) {
+			System.err.println("error: Wrong number of arguments.");
+			System.err.println("Usage: java -jar MMLGB.jar MMLFILE OUTFILE [BANK]");
+			System.exit(1);
+		}
+
 		Path inpath = FileSystems.getDefault().getPath(args[0]);
 		String input = new String(Files.readAllBytes(inpath));
 
