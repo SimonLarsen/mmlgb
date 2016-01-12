@@ -129,8 +129,8 @@ public class Song {
 		String id_upper = id.toUpperCase();
 		StringBuilder sb = new StringBuilder();
 
-		sb.append(String.format("#ifndef %s\n", id_upper));
-		sb.append(String.format("#define %s\n", id_upper));
+		sb.append(String.format("#ifndef %s_H\n", id_upper));
+		sb.append(String.format("#define %s_H\n", id_upper));
 
 		sb.append(String.format("\nconst UBYTE %s_data[] = {\n", id));
 
@@ -139,7 +139,7 @@ public class Song {
 		}
 		sb.append("};\n\n");
 
-		sb.append("#endif");
+		sb.append("#endif\n");
 
 		return sb.toString();
 	}
