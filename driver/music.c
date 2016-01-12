@@ -100,18 +100,27 @@ void mus_togglePaused() {
 
 void mus_disable1() {
 	mus_enabled1 = 0U;
+	NR12_REG = 0U;
+	NR14_REG = 0x80U;
 }
 
 void mus_disable4() {
 	mus_enabled4 = 0U;
+	NR42_REG = 0U;
+	NR44_REG = 0x80U;
 }
 
 void mus_restore1() {
 	mus_enabled1 = 1U;
+	NR11_REG = mus_duty1 << 5;
+	NR12_REG = (mus_volume1 << 4) | mus_env1;
+	NR51_REG = (NR51_REG & 0xEEU) | mus_pan1;
 }
 
 void mus_restore4() {
 	mus_enabled4 = 1U;
+	NR42_REG = (mus_volume4 << 4) | mus_env4;
+	NR51_REG = (NR51_REG & 0x77U) | (mus_pan4 << 3);
 }
 
 void mus_update() {
