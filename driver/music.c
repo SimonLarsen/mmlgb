@@ -76,6 +76,10 @@ void mus_init(UBYTE *song_data) {
 	mus_vib_speed1 = mus_vib_speed2 = 0U;
 	mus_noise_step = 0U;
 	mus_po1 = mus_po2 = mus_po3 = 128U;
+	mus_pan1 = 0x11U;
+	mus_pan2 = 0x11U << 1;
+	mus_pan2 = 0x11U << 2;
+	mus_pan2 = 0x11U << 3;
 
 	for(i = 0U; i != MAX_REPEATS; ++i) {
 		mus_repeats1[i] = 0U;
@@ -100,13 +104,13 @@ void mus_togglePaused() {
 
 void mus_disable1() {
 	mus_enabled1 = 0U;
-	NR12_REG = 0U;
+	NR13_REG = 0U;
 	NR14_REG = 0x80U;
 }
 
 void mus_disable4() {
 	mus_enabled4 = 0U;
-	NR42_REG = 0U;
+	NR43_REG = 0U;
 	NR44_REG = 0x80U;
 }
 
