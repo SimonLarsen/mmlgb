@@ -152,8 +152,10 @@ void mus_update1() {
 				mus_freq1 = mus_target1;
 			}
 		}
-		NR13_REG = (UBYTE)mus_freq1;
-		NR14_REG = mus_freq1 >> 8;
+		if(mus_enabled1) {
+			NR13_REG = (UBYTE)mus_freq1;
+			NR14_REG = mus_freq1 >> 8;
+		}
 	}
 
 	if(mus_vib_delay1) {
@@ -163,8 +165,10 @@ void mus_update1() {
 		mus_vib_pos1 = (mus_vib_pos1 + mus_vib_speed1) & 63U;
 		vib_freq = mus_freq1 - *mus_vib_table1 + mus_vib_table1[mus_vib_pos1];
 
-		NR13_REG = (UBYTE)vib_freq;
-		NR14_REG = vib_freq >> 8;
+		if(mus_enabled1) {
+			NR13_REG = (UBYTE)vib_freq;
+			NR14_REG = vib_freq >> 8;
+		}
 	}
 
 	if(mus_wait1) {
@@ -563,7 +567,7 @@ void mus_update4() {
 				mus_freq4 = mus_target4;
 			}
 		}
-		NR43_REG = mus_freq4 | mus_noise_step;
+		if(mus_enabled4) NR43_REG = mus_freq4 | mus_noise_step;
 	}
 
 	if(mus_wait4) {
