@@ -12,6 +12,7 @@ UBYTE mus_paused;
 UBYTE *mus_song;
 
 UBYTE mus_enabled1, mus_enabled4;
+UBYTE mus_done1, mus_done2, mus_done3, mus_done4;
 UWORD mus_freq1, mus_freq2, mus_freq3;
 UBYTE mus_freq4;
 UBYTE *mus_data1, *mus_data2, *mus_data3, *mus_data4;
@@ -65,6 +66,7 @@ void mus_init(UBYTE *song_data) {
 	mus_data4 = mus_loop4 = mus_song + ((UWORD*)mus_song)[CHN4_OFFSET];
 
 	mus_enabled1 = mus_enabled4 = 1U;
+	mus_done1 = mus_done2 = mus_done3 = mus_done4 = 0U;
 	mus_wait1 = mus_wait2 = mus_wait3 = mus_wait4 = 0U;
 	mus_octave1 = mus_octave2 = mus_octave3 = mus_octave4 = 4U;
 	mus_length1 = mus_length2 = mus_length3 = mus_length4 = 48U;
@@ -124,6 +126,10 @@ void mus_restore4() {
 	NR51_REG = (NR51_REG & 0x77U) | (mus_pan4 << 3);
 	NR42_REG = 0U;
 	NR44_REG = 0x80U;
+}
+
+UBYTE mus_is_done() {
+	return mus_done1 && mus_done2 && mus_done3 && mus_done4;
 }
 
 void mus_update() {
@@ -291,6 +297,7 @@ void mus_update1() {
 				break;
 			case T_EOF:
 				mus_data1 = mus_loop1;
+				mus_done1 = 1U;
 				if(*mus_data1 == T_EOF) {
 					mus_wait1 = 255U;
 					return;
@@ -446,6 +453,7 @@ void mus_update2() {
 				break;
 			case T_EOF:
 				mus_data2 = mus_loop2;
+				mus_done2 = 1U;
 				if(*mus_data2 == T_EOF) {
 					mus_wait2 = 255U;
 					return;
@@ -542,6 +550,7 @@ void mus_update3() {
 				break;
 			case T_EOF:
 				mus_data3 = mus_loop3;
+				mus_done3 = 1U;
 				if(*mus_data3 == T_EOF) {
 					mus_wait3 = 255U;
 					return;
@@ -663,6 +672,7 @@ void mus_update4() {
 				break;
 			case T_EOF:
 				mus_data4 = mus_loop4;
+				mus_done4 = 1U;
 				if(*mus_data4 == T_EOF) {
 					mus_wait4 = 255U;
 					return;

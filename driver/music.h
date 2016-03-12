@@ -15,6 +15,7 @@ void mus_disable1();
 void mus_disable4();
 void mus_restore1();
 void mus_restore4();
+UBYTE mus_is_done();
 void mus_update();
 void mus_update1();
 void mus_update2();
