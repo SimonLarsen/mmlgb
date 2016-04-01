@@ -11,7 +11,7 @@ enum E_CMD {
 	T_Fs,
 	T_G,
 	T_Gs,
-	T_A2,
+	T_A,
 	T_As,
 	T_B,
 	T_REST,
