@@ -148,12 +148,15 @@ public class Parser {
 		// Parse commands
 		while(next.type != Lexer.TokenType.NEWLINE) {
 			if(next.type == Lexer.TokenType.NOTE) {
+				final int FIRST_NOTE = Song.CMD.T_C.ordinal();
+				final int LAST_NOTE = Song.CMD.T_B.ordinal();
+
 				int note = 0;
 
 				// Read note
 				for(int i = 0; i < 12; ++i) {
 					if(next.data.equals(NOTE_NAMES[i])) {
-						note = i;
+						note = FIRST_NOTE + i;
 						break;
 					}
 				}
@@ -168,8 +171,8 @@ public class Parser {
 					note--;
 					eat();
 				}
-				if(note == -1) note = 11;
-				else if(note == 12) note = 0;
+				if(note == FIRST_NOTE-1) note = LAST_NOTE;
+				else if(note == LAST_NOTE+1) note = FIRST_NOTE;
 
 				int length = parseLength(false);
 

@@ -184,7 +184,7 @@ void mus_update1() {
 
 	while(1U) {
 		note = *mus_data1++;
-		if(note <= T_WAIT || note & MUS_HAS_LENGTH) {
+		if(note >= MUS_FIRST_NOTE) {
 			if(note & MUS_HAS_LENGTH) {
 				note ^= MUS_HAS_LENGTH;
 				mus_wait1 = *mus_data1++;
@@ -199,9 +199,9 @@ void mus_update1() {
 				if(mus_enabled1) NR12_REG = 0U;
 			} else {
 				if(mus_slide1) {
-					mus_target1 = freq[((mus_octave1-MUS_FIRST_OCTAVE) << 4) + note] + mus_po1 - 128U;
+					mus_target1 = freq[((mus_octave1-MUS_FIRST_OCTAVE) << 4) + note - MUS_FIRST_NOTE] + mus_po1 - 128U;
 				} else {
-					mus_freq1 = freq[((mus_octave1-MUS_FIRST_OCTAVE) << 4) + note] + mus_po1 - 128U;
+					mus_freq1 = freq[((mus_octave1-MUS_FIRST_OCTAVE) << 4) + note - MUS_FIRST_NOTE] + mus_po1 - 128U;
 				}
 				if(mus_enabled1) NR12_REG = (mus_volume1 << 4) | mus_env1;
 			}
@@ -289,11 +289,15 @@ void mus_update1() {
 			case T_LOOP:
 				mus_loop1 = mus_data1;
 				break;
+			case T_PITCH_OFFSET:
+				mus_po1 = *mus_data1++;
+				break;
 			case T_TEMPO:
 				TMA_REG = *mus_data1++;
 				break;
-			case T_PITCH_OFFSET:
-				mus_po1 = *mus_data1++;
+			case T_NOISE_STEP:
+				break;
+			case T_WAVE:
 				break;
 			case T_EOF:
 				mus_data1 = mus_loop1;
@@ -346,7 +350,7 @@ void mus_update2() {
 
 	while(1U) {
 		note = *mus_data2++;
-		if(note <= T_WAIT || note & MUS_HAS_LENGTH) {
+		if(note >= MUS_FIRST_NOTE) {
 			if(note & MUS_HAS_LENGTH) {
 				note ^= MUS_HAS_LENGTH;
 				mus_wait2 = *mus_data2++;
@@ -361,9 +365,9 @@ void mus_update2() {
 				NR22_REG = 0U;
 			} else {
 				if(mus_slide2) {
-					mus_target2 = freq[((mus_octave2-MUS_FIRST_OCTAVE) << 4) + note] + mus_po2 - 128U;
+					mus_target2 = freq[((mus_octave2-MUS_FIRST_OCTAVE) << 4) + note - MUS_FIRST_NOTE] + mus_po2 - 128U;
 				} else {
-					mus_freq2 = freq[((mus_octave2-MUS_FIRST_OCTAVE) << 4) + note] + mus_po2 - 128U;
+					mus_freq2 = freq[((mus_octave2-MUS_FIRST_OCTAVE) << 4) + note - MUS_FIRST_NOTE] + mus_po2 - 128U;
 				}
 				NR22_REG = (mus_volume2 << 4) | mus_env2;
 			}
@@ -445,11 +449,15 @@ void mus_update2() {
 			case T_LOOP:
 				mus_loop2 = mus_data2;
 				break;
+			case T_PITCH_OFFSET:
+				mus_po2 = *mus_data2++;
+				break;
 			case T_TEMPO:
 				TMA_REG = *mus_data2++;
 				break;
-			case T_PITCH_OFFSET:
-				mus_po2 = *mus_data2++;
+			case T_NOISE_STEP:
+				break;
+			case T_WAVE:
 				break;
 			case T_EOF:
 				mus_data2 = mus_loop2;
@@ -473,7 +481,7 @@ void mus_update3() {
 
 	while(1U) {
 		note = *mus_data3++;
-		if(note <= T_WAIT || note & MUS_HAS_LENGTH) {
+		if(note >= MUS_FIRST_NOTE) {
 			if(note & MUS_HAS_LENGTH) {
 				note ^= MUS_HAS_LENGTH;
 				mus_wait3 = *mus_data3++;
@@ -486,7 +494,7 @@ void mus_update3() {
 				mus_freq3 = 0U;
 				NR32_REG = 0U;
 			} else {
-				mus_freq3 = freq[((mus_octave3-MUS_FIRST_OCTAVE) << 4) + note] + mus_po3 - 128U;
+				mus_freq3 = freq[((mus_octave3-MUS_FIRST_OCTAVE) << 4) + note - MUS_FIRST_NOTE] + mus_po3 - 128U;
 				NR32_REG = mus_volume3;
 			}
 			NR30_REG = 0x0U;
@@ -512,15 +520,19 @@ void mus_update3() {
 				note = *mus_data3++;
 				mus_volume3 = wave_volume[note];
 				break;
-			case T_WAVE:
-				note = *mus_data3++;
-				NR30_REG = 0x0U;
-				memcpy(0xFF30, mus_song + WAVE_OFFSET + (note << 4), 16U);
-				NR30_REG = 0x80U;
+			case T_ENV:
+				break;
+			case T_WAVEDUTY:
 				break;
 			case T_PAN:
 				mus_pan3 = *mus_data3++;
 				NR51_REG = (NR51_REG & 0xBBU) | (mus_pan3 << 2);
+				break;
+			case T_PORTAMENTO:
+				break;
+			case T_VIBRATO:
+				break;
+			case T_VIBRATO_DELAY:
 				break;
 			case T_REP_START:
 				mus_rep_depth3++;
@@ -542,11 +554,19 @@ void mus_update3() {
 			case T_LOOP:
 				mus_loop3 = mus_data3;
 				break;
+			case T_PITCH_OFFSET:
+				mus_po3 = *mus_data3++;
+				break;
 			case T_TEMPO:
 				TMA_REG = *mus_data3++;
 				break;
-			case T_PITCH_OFFSET:
-				mus_po3 = *mus_data3++;
+			case T_NOISE_STEP:
+				break;
+			case T_WAVE:
+				note = *mus_data3++;
+				NR30_REG = 0x0U;
+				memcpy(0xFF30, mus_song + WAVE_OFFSET + (note << 4), 16U);
+				NR30_REG = 0x80U;
 				break;
 			case T_EOF:
 				mus_data3 = mus_loop3;
@@ -586,7 +606,7 @@ void mus_update4() {
 
 	while(1U) {
 		note = *mus_data4++;
-		if(note <= T_WAIT || note & MUS_HAS_LENGTH) {
+		if(note >= MUS_FIRST_NOTE) {
 			if(note & MUS_HAS_LENGTH) {
 				note ^= MUS_HAS_LENGTH;
 				mus_wait4 = *mus_data4++;
@@ -600,9 +620,9 @@ void mus_update4() {
 				if(mus_enabled4) NR42_REG = 0U;
 			} else {
 				if(mus_slide4) {
-					mus_target4 = noise_freq[((mus_octave4-MUS_NOISE_FIRST_OCTAVE) << 4) + note];
+					mus_target4 = noise_freq[((mus_octave4-MUS_NOISE_FIRST_OCTAVE) << 4) + note - MUS_FIRST_NOTE];
 				} else {
-					mus_freq4 = noise_freq[((mus_octave4-MUS_NOISE_FIRST_OCTAVE) << 4) + note];
+					mus_freq4 = noise_freq[((mus_octave4-MUS_NOISE_FIRST_OCTAVE) << 4) + note - MUS_FIRST_NOTE];
 				}
 				if(mus_enabled4) NR42_REG = (mus_volume4 << 4) | mus_env4;
 			}
@@ -637,12 +657,18 @@ void mus_update4() {
 				mus_env4 = *mus_data4++;
 				if(mus_enabled4) NR42_REG = (mus_volume4 << 4) | mus_env4;
 				break;
+			case T_WAVEDUTY:
+				break;
 			case T_PAN:
 				mus_pan4 = *mus_data4++;
 				if(mus_enabled4) NR51_REG = (NR51_REG & 0x77U) | (mus_pan4 << 3);
 				break;
 			case T_PORTAMENTO:
 				mus_slide4 = *mus_data4++;
+				break;
+			case T_VIBRATO:
+				break;
+			case T_VIBRATO_DELAY:
 				break;
 			case T_REP_START:
 				mus_rep_depth4++;
@@ -664,11 +690,15 @@ void mus_update4() {
 			case T_LOOP:
 				mus_loop4 = mus_data4;
 				break;
+			case T_PITCH_OFFSET:
+				break;
 			case T_TEMPO:
 				TMA_REG = *mus_data4++;
 				break;
 			case T_NOISE_STEP:
 				mus_noise_step = (*mus_data4++) << 3;
+				break;
+			case T_WAVE:
 				break;
 			case T_EOF:
 				mus_data4 = mus_loop4;
