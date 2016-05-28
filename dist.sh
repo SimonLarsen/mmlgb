@@ -3,7 +3,7 @@ echo -e "Compiling driver..."
 
 cd driver
 lcc -S freq.c
-lcc -S main.c
+lcc -S player.c
 lcc -S music.c
 lcc -S noisefreq.c
 lcc -S vib.c
@@ -20,4 +20,4 @@ zip -r "dist/mmlgb-$(date '+%F-%H%M%S').zip" \
 	compile.bat compile.sh \
 	parser/MMLGB.jar \
 	gbdk \
-	driver/main.asm driver/music.asm driver/freq.asm driver/noisefreq.asm driver/vib.asm
+	driver/player.asm driver/music.asm driver/freq.asm driver/noisefreq.asm driver/vib.asm
