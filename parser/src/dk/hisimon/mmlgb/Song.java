@@ -72,7 +72,7 @@ public class Song {
 	public void addData(boolean[] active, int value) {
 		for(int i = 0; i < 4; ++i) {
 			if(active[i]) {
-				channel.get(i).add(value);
+				addData(i, value);
 			}
 		}
 	}
