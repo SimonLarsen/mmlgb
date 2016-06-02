@@ -70,8 +70,8 @@ void mus_init(UBYTE *song_data) {
 	mus_wait1 = mus_wait2 = mus_wait3 = mus_wait4 = 0U;
 	mus_octave1 = mus_octave2 = mus_octave3 = mus_octave4 = 4U;
 	mus_length1 = mus_length2 = mus_length3 = mus_length4 = 48U;
-	mus_volume1 = mus_volume2 = mus_volume4 = 15U;
-	mus_volume3 = 1U;
+	mus_volume1 = mus_volume2 = mus_volume4 = 0xF0U;
+	mus_volume3 = 32U;
 	mus_env1 = mus_env2 = mus_env4 = 3U;
 	mus_rep_depth1 = mus_rep_depth2 = mus_rep_depth3 = mus_rep_depth4 = 255U;
 	mus_slide1 = mus_slide2 = mus_slide4 = 0U;
@@ -203,12 +203,12 @@ void mus_update1() {
 				} else {
 					mus_freq1 = freq[((mus_octave1-MUS_FIRST_OCTAVE) << 4) + note - MUS_FIRST_NOTE] + mus_po1 - 128U;
 				}
-				if(mus_enabled1) NR12_REG = (mus_volume1 << 4) | mus_env1;
+				if(mus_enabled1) NR12_REG = mus_volume1 | mus_env1;
 			}
 			if(mus_enabled1) {
 				if(mus_enabled1 == 2U) {
 					mus_enabled1--;
-					NR12_REG = (mus_volume1 << 4) | mus_env1;
+					NR12_REG = mus_volume1 | mus_env1;
 				}
 				NR13_REG = (UBYTE)mus_freq1;
 				NR14_REG = (mus_freq1 >> 8) | 0x80U;
@@ -230,11 +230,11 @@ void mus_update1() {
 				break;
 			case T_VOL:
 				mus_volume1 = *mus_data1++;
-				if(mus_enabled1) NR12_REG = (mus_volume1 << 4) | mus_env1;
+				if(mus_enabled1) NR12_REG = mus_volume1 | mus_env1;
 				break;
 			case T_ENV:
 				mus_env1 = *mus_data1++;
-				if(mus_enabled1) NR12_REG = (mus_volume1 << 4) | mus_env1;
+				if(mus_enabled1) NR12_REG = mus_volume1 | mus_env1;
 				break;
 			case T_WAVEDUTY:
 				mus_duty1 = *mus_data1++;
@@ -369,7 +369,7 @@ void mus_update2() {
 				} else {
 					mus_freq2 = freq[((mus_octave2-MUS_FIRST_OCTAVE) << 4) + note - MUS_FIRST_NOTE] + mus_po2 - 128U;
 				}
-				NR22_REG = (mus_volume2 << 4) | mus_env2;
+				NR22_REG = mus_volume2 | mus_env2;
 			}
 			NR23_REG = (UBYTE)mus_freq2;
 			NR24_REG = 0x80U | (mus_freq2 >> 8);
@@ -390,11 +390,11 @@ void mus_update2() {
 				break;
 			case T_VOL:
 				mus_volume2 = *mus_data2++;
-				NR22_REG = (mus_volume2 << 4) | mus_env2;
+				NR22_REG = mus_volume2 | mus_env2;
 				break;
 			case T_ENV:
 				mus_env2 = *mus_data2++;
-				NR22_REG = (mus_volume2 << 4) | mus_env2;
+				NR22_REG = mus_volume2 | mus_env2;
 				break;
 			case T_WAVEDUTY:
 				mus_duty2 = *mus_data2++;
@@ -517,8 +517,7 @@ void mus_update3() {
 				mus_octave3--;
 				break;
 			case T_VOL:
-				note = *mus_data3++;
-				mus_volume3 = wave_volume[note];
+				mus_volume3 = *mus_data3++;
 				break;
 			case T_ENV:
 				break;
@@ -624,12 +623,12 @@ void mus_update4() {
 				} else {
 					mus_freq4 = noise_freq[((mus_octave4-MUS_NOISE_FIRST_OCTAVE) << 4) + note - MUS_FIRST_NOTE];
 				}
-				if(mus_enabled4) NR42_REG = (mus_volume4 << 4) | mus_env4;
+				if(mus_enabled4) NR42_REG = mus_volume4 | mus_env4;
 			}
 			if(mus_enabled4) {
 				if(mus_enabled4 == 2U) {
 					mus_enabled4--;
-					NR42_REG = (mus_volume4 << 4) | mus_env4;
+					NR42_REG = mus_volume4 | mus_env4;
 				}
 				NR43_REG = mus_freq4 | mus_noise_step;
 				NR44_REG = 0x80U;
@@ -651,11 +650,11 @@ void mus_update4() {
 				break;
 			case T_VOL:
 				mus_volume4 = *mus_data4++;
-				if(mus_enabled4) NR42_REG = (mus_volume4 << 4) | mus_env4;
+				if(mus_enabled4) NR42_REG = mus_volume4 | mus_env4;
 				break;
 			case T_ENV:
 				mus_env4 = *mus_data4++;
-				if(mus_enabled4) NR42_REG = (mus_volume4 << 4) | mus_env4;
+				if(mus_enabled4) NR42_REG = mus_volume4 | mus_env4;
 				break;
 			case T_WAVEDUTY:
 				break;

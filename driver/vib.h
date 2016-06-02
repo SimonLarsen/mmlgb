@@ -7,6 +7,5 @@ extern const UBYTE vib1[64];
 extern const UBYTE vib2[64];
 extern const UBYTE vib3[64];
 extern const UBYTE vib4[64];
-extern const UBYTE wave_volume[4];
 
 #endif

@@ -27,7 +27,3 @@ const UBYTE vib4[64] = {
 	10U, 9U, 8U, 7U, 6U, 6U, 5U, 4U, 4U, 3U, 2U, 2U, 1U, 1U, 1U, 0U, 0U, 0U,
 	0U, 0U, 0U, 0U, 1U, 1U, 1U, 2U, 2U, 3U, 4U, 4U, 5U, 6U, 6U, 7U
 };
-
-const UBYTE wave_volume[4] = {
-	0U, 96U, 64U, 32U
-};

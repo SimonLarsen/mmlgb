@@ -14,6 +14,7 @@ public class Parser {
 
 	private static final String[] CHANNEL_NAMES = {"A","B","C","D"};
 	private static final String[] NOTE_NAMES = {"c","cs","d","ds","e","f","fs","g","gs","a","as","b"};
+	private static final int[] WAVE_VOLUMES = {0, 96, 64, 32};
 
 	private static final int BEAT_STEPS = 48;
 	private static final int BAR_STEPS = 4*BEAT_STEPS;
@@ -269,8 +270,17 @@ public class Parser {
 					}
 					eat();
 
-					song.addData(active, Song.CMD.T_VOL.ordinal());
-					song.addData(active, volume);
+					for(int i = 0; i < 4; ++i) {
+						if(active[i]) {
+							if(i == 2) {
+								song.addData(i, Song.CMD.T_VOL.ordinal());
+								song.addData(i, WAVE_VOLUMES[volume]);
+							} else {
+								song.addData(i, Song.CMD.T_VOL.ordinal());
+								song.addData(i, volume << 4);
+							}
+						}
+					}
 				}
 				else if(next.data.equals("t")) {
 					eat();
