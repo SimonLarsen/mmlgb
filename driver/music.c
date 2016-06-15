@@ -199,9 +199,9 @@ void mus_update1() {
 				if(mus_enabled1) NR12_REG = 0U;
 			} else {
 				if(mus_slide1) {
-					mus_target1 = freq[((mus_octave1-MUS_FIRST_OCTAVE) << 4) + note - MUS_FIRST_NOTE] + mus_po1 - 128U;
+					mus_target1 = freq[(mus_octave1 << 4) + note - MUS_FIRST_NOTE] + mus_po1 - 128U;
 				} else {
-					mus_freq1 = freq[((mus_octave1-MUS_FIRST_OCTAVE) << 4) + note - MUS_FIRST_NOTE] + mus_po1 - 128U;
+					mus_freq1 = freq[(mus_octave1 << 4) + note - MUS_FIRST_NOTE] + mus_po1 - 128U;
 				}
 				if(mus_enabled1) NR12_REG = mus_volume1 | mus_env1;
 			}
@@ -365,9 +365,9 @@ void mus_update2() {
 				NR22_REG = 0U;
 			} else {
 				if(mus_slide2) {
-					mus_target2 = freq[((mus_octave2-MUS_FIRST_OCTAVE) << 4) + note - MUS_FIRST_NOTE] + mus_po2 - 128U;
+					mus_target2 = freq[(mus_octave2 << 4) + note - MUS_FIRST_NOTE] + mus_po2 - 128U;
 				} else {
-					mus_freq2 = freq[((mus_octave2-MUS_FIRST_OCTAVE) << 4) + note - MUS_FIRST_NOTE] + mus_po2 - 128U;
+					mus_freq2 = freq[(mus_octave2 << 4) + note - MUS_FIRST_NOTE] + mus_po2 - 128U;
 				}
 				NR22_REG = mus_volume2 | mus_env2;
 			}
@@ -494,7 +494,7 @@ void mus_update3() {
 				mus_freq3 = 0U;
 				NR32_REG = 0U;
 			} else {
-				mus_freq3 = freq[((mus_octave3-MUS_FIRST_OCTAVE) << 4) + note - MUS_FIRST_NOTE] + mus_po3 - 128U;
+				mus_freq3 = freq[(mus_octave3 << 4) + note - MUS_FIRST_NOTE] + mus_po3 - 128U;
 				NR32_REG = mus_volume3;
 			}
 			NR30_REG = 0x0U;
