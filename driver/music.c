@@ -129,7 +129,7 @@ void mus_restore4() {
 }
 
 UBYTE mus_is_done() {
-	return mus_done1 && mus_done2 && mus_done3 && mus_done4;
+	return mus_paused || (mus_done1 && mus_done2 && mus_done3 && mus_done4);
 }
 
 void mus_update() {
