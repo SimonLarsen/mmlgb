@@ -9,6 +9,7 @@
 #define MAX_REPEATS 4
 
 UBYTE mus_paused;
+UBYTE mus_step;
 UBYTE *mus_song;
 
 UBYTE mus_enabled1, mus_enabled4;
@@ -26,6 +27,7 @@ UBYTE mus_duty1, mus_duty2;
 UBYTE mus_wait1, mus_wait2, mus_wait3, mus_wait4;
 UWORD mus_target1, mus_target2, mus_target4;
 UBYTE mus_slide1, mus_slide2, mus_slide4;
+UBYTE mus_porta1, mus_porta2, mus_porta4;
 UBYTE mus_vib_speed1, mus_vib_speed2;
 UBYTE *mus_vib_table1, *mus_vib_table2;
 UBYTE mus_vib_pos1, mus_vib_pos2;
@@ -58,6 +60,7 @@ void mus_init(UBYTE *song_data) {
 
 	// Setup data
 	mus_paused = 0U;
+	mus_step = 0U;
 
 	mus_song = song_data;
 	mus_data1 = mus_loop1 = mus_song + ((UWORD*)mus_song)[CHN1_OFFSET];
@@ -75,6 +78,7 @@ void mus_init(UBYTE *song_data) {
 	mus_env1 = mus_env2 = mus_env4 = 3U;
 	mus_rep_depth1 = mus_rep_depth2 = mus_rep_depth3 = mus_rep_depth4 = 255U;
 	mus_slide1 = mus_slide2 = mus_slide4 = 0U;
+	mus_porta1 = mus_porta2 = mus_porta4 = 0U;
 	mus_vib_speed1 = mus_vib_speed2 = 0U;
 	mus_noise_step = 0U;
 	mus_po1 = mus_po2 = mus_po3 = 128U;
@@ -145,7 +149,7 @@ void mus_update1() {
 	UBYTE note;
 	UWORD vib_freq;
 
-	if(mus_slide1) {
+	if(mus_slide1 && !(mus_step & 3U)) {
 		if(mus_target1 > mus_freq1) {
 			mus_freq1 += mus_slide1;
 			if(mus_freq1 > mus_target1) {
@@ -198,7 +202,7 @@ void mus_update1() {
 				mus_freq1 = 0U;
 				if(mus_enabled1) NR12_REG = 0U;
 			} else {
-				if(mus_slide1) {
+				if(mus_porta1) {
 					mus_target1 = freq[(mus_octave1 << 4) + note - MUS_FIRST_NOTE] + mus_po1 - 128U;
 				} else {
 					mus_freq1 = freq[(mus_octave1 << 4) + note - MUS_FIRST_NOTE] + mus_po1 - 128U;
@@ -245,7 +249,18 @@ void mus_update1() {
 				if(mus_enabled1) NR51_REG = (NR51_REG & 0xEEU) | mus_pan1;
 				break;
 			case T_PORTAMENTO:
+				mus_slide1 = mus_porta1 = *mus_data1++;
+				break;
+			case T_SLIDE:
 				mus_slide1 = *mus_data1++;
+				mus_porta1 = 0U;
+				if(mus_slide1 >= 128U) {
+					mus_target1 = 0xFFFFU;
+					mus_slide1 = mus_slide1 - 128U;
+				} else {
+					mus_target1 = 0U;
+					mus_slide1 = 128U - mus_slide1;
+				}
 				break;
 			case T_VIBRATO:
 				mus_vib_pos1 = 0U;
@@ -309,13 +324,15 @@ void mus_update1() {
 				break;
 		}
 	}
+
+	mus_step++;
 }
 
 void mus_update2() {
 	UBYTE note;
 	UWORD vib_freq;
 
-	if(mus_slide2) {
+	if(mus_slide2 && !(mus_step & 3U)) {
 		if(mus_target2 > mus_freq2) {
 			mus_freq2 += mus_slide2;
 			if(mus_freq2 > mus_target2) {
@@ -364,7 +381,7 @@ void mus_update2() {
 				mus_freq2 = 0U;
 				NR22_REG = 0U;
 			} else {
-				if(mus_slide2) {
+				if(mus_porta2) {
 					mus_target2 = freq[(mus_octave2 << 4) + note - MUS_FIRST_NOTE] + mus_po2 - 128U;
 				} else {
 					mus_freq2 = freq[(mus_octave2 << 4) + note - MUS_FIRST_NOTE] + mus_po2 - 128U;
@@ -405,7 +422,18 @@ void mus_update2() {
 				NR51_REG = (NR51_REG & 0xDDU) | (mus_pan2 << 1);
 				break;
 			case T_PORTAMENTO:
+				mus_slide2 = mus_porta2 = *mus_data2++;
+				break;
+			case T_SLIDE:
 				mus_slide2 = *mus_data2++;
+				mus_porta2 = 0U;
+				if(mus_slide2 >= 128U) {
+					mus_target2 = 0xFFFFU;
+					mus_slide2 = mus_slide2 - 128U;
+				} else {
+					mus_target2 = 0U;
+					mus_slide2 = 128U - mus_slide2;
+				}
 				break;
 			case T_VIBRATO:
 				mus_vib_pos2 = 0U;
@@ -529,6 +557,8 @@ void mus_update3() {
 				break;
 			case T_PORTAMENTO:
 				break;
+			case T_SLIDE:
+				break;
 			case T_VIBRATO:
 				break;
 			case T_VIBRATO_DELAY:
@@ -582,7 +612,7 @@ void mus_update3() {
 void mus_update4() {
 	UBYTE note;
 
-	if(mus_slide4) {
+	if(mus_slide4 & !(mus_step & 3U)) {
 		if(mus_target4 > mus_freq4) {
 			mus_freq4 += mus_slide4;
 			if(mus_freq4 > mus_target4) {
@@ -618,7 +648,7 @@ void mus_update4() {
 				mus_freq4 = 0U;
 				if(mus_enabled4) NR42_REG = 0U;
 			} else {
-				if(mus_slide4) {
+				if(mus_porta4) {
 					mus_target4 = noise_freq[((mus_octave4-MUS_NOISE_FIRST_OCTAVE) << 4) + note - MUS_FIRST_NOTE];
 				} else {
 					mus_freq4 = noise_freq[((mus_octave4-MUS_NOISE_FIRST_OCTAVE) << 4) + note - MUS_FIRST_NOTE];
@@ -663,7 +693,18 @@ void mus_update4() {
 				if(mus_enabled4) NR51_REG = (NR51_REG & 0x77U) | (mus_pan4 << 3);
 				break;
 			case T_PORTAMENTO:
+				mus_slide4 = mus_porta4 = *mus_data4++;
+				break;
+			case T_SLIDE:
 				mus_slide4 = *mus_data4++;
+				mus_porta4 = 0U;
+				if(mus_slide4 >= 128U) {
+					mus_target4 = 0xFFFFU;
+					mus_slide4 = mus_slide4 - 128U;
+				} else {
+					mus_target4 = 0U;
+					mus_slide4 = 128U - mus_slide4;
+				}
 				break;
 			case T_VIBRATO:
 				break;

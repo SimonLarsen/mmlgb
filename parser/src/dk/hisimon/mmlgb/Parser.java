@@ -415,13 +415,40 @@ public class Parser {
 					}
 
 					int speed = parseInt(next.data);
-					if(speed < 0 || speed > 128) {
-						throw new ParserException(String.format("Invalid portamento speed. Expected 0-128.", speed), next);
+					if(speed > 127) {
+						throw new ParserException(String.format("Invalid portamento speed %d. Expected 0-127.", speed), next);
 					}
 					eat();
 
 					song.addData(active, Song.CMD.T_PORTAMENTO.ordinal());
 					song.addData(active, speed);
+				}
+				else if(next.data.equals("@s")) {
+					if(active[2]) {
+						throw new ParserException("@s only allowed in channel 1, 2 and 4.", next);
+					}
+					eat();
+
+					boolean negative = false;
+					if(next.type == Lexer.TokenType.DASH) {
+						negative = true;
+						eat();
+					}
+
+					if(next.type != Lexer.TokenType.NUMBER) {
+						throw new ParserException("Expected number after @s macro.", next);
+					}
+
+					int speed = parseInt(next.data);
+					if(speed > 127) {
+						throw new ParserException(String.format("Invalid pitch slide speed %d. Expected 0-127.", speed), next);
+					}
+					eat();
+
+					if(negative) speed = -speed;
+
+					song.addData(active, Song.CMD.T_SLIDE.ordinal());
+					song.addData(active, speed + 128);
 				}
 				else if(next.data.equals("@po")) {
 					if(active[3]) {
@@ -440,7 +467,7 @@ public class Parser {
 					}
 
 					int offset = parseInt(next.data);
-					if(offset < 0 || offset > 127) {
+					if(offset < 1 || offset > 127) {
 						throw new ParserException("Invalid pitch offset. Expacted values 0-127.", next);
 					}
 					eat();
