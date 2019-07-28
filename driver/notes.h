@@ -21,6 +21,7 @@ enum E_CMD {
 	T_TEMPO,
 	T_NOISE_STEP,
 	T_WAVE,
+	T_MACRO,
 	T_EOF,
 	T_C,
 	T_Cs,

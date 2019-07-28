@@ -6,11 +6,11 @@ import java.util.HashMap;
 
 public class Parser {
 	private List<Lexer.Token> tokens;
-	private HashMap<Integer, ArrayList<Lexer.Token>> macros;
-	private Lexer.Token next;
+	private Song song, song_root;
 
-	private Song song;
 	private int position;
+	private boolean in_macro;
+	private Lexer.Token next;
 
 	private static final String[] CHANNEL_NAMES = {"A","B","C","D"};
 	private static final String[] NOTE_NAMES = {"c","cs","d","ds","e","f","fs","g","gs","a","as","b"};
@@ -22,18 +22,17 @@ public class Parser {
 
 	public Parser(List<Lexer.Token> tokens) {
 		this.tokens = tokens;
-		macros = new HashMap<Integer, ArrayList<Lexer.Token>>();
-
+		song = new Song();
+		song_root = song;
 		position = 0;
-		next = tokens.get(position);
+		in_macro = false;
+		next = tokens.get(0);
 	}
 
 	public Song parse() throws ParserException {
-		song = new Song();
-
 		while(next.type != Lexer.TokenType.EOF) {
 			if(next.type == Lexer.TokenType.CHANNEL) {
-				parseCommands();
+				parseChannel();
 			}
 			else if(next.type == Lexer.TokenType.MACRO) {
 				parseDefinition();
@@ -82,7 +81,7 @@ public class Parser {
 		eat(Lexer.TokenType.LCURLY, "{");
 
 		// Parse samples
-		int samples[] = new int[32];
+		List<Integer> samples = new ArrayList<Integer>(32);
 		for(int i = 0; i < 32; ++i) {
 			while(next.type == Lexer.TokenType.NEWLINE) eat();
 			if(next.type != Lexer.TokenType.NUMBER) {
@@ -90,10 +89,10 @@ public class Parser {
 			}
 			int sample = parseInt(next.data);
 			eat();
-			if(sample < 0 || sample > 15) {
-				throw new ParserException(String.format("Invalid wave sample %d. Expected 0-15.", sample), next);
+			if(sample > 15) {
+				throw new ParserException(String.format("Invalid wave sample %d. Expected 0 to 15.", sample), next);
 			}
-			samples[i] = sample;
+			samples.add(sample);
 
 			while(next.type == Lexer.TokenType.NEWLINE) eat();
 		}
@@ -123,18 +122,40 @@ public class Parser {
 		ArrayList<Lexer.Token> macro = new ArrayList<Lexer.Token>();
 		while(next.type != Lexer.TokenType.RCURLY) {
 			while(next.type == Lexer.TokenType.NEWLINE) eat();
+
 			macro.add(new Lexer.Token(next));
 			eat();
+
 			while(next.type == Lexer.TokenType.NEWLINE) eat();
 		}
+		macro.add(new Lexer.Token(Lexer.TokenType.NEWLINE, "\n"));
 
 		eat(Lexer.TokenType.RCURLY, "}");
 		eat(Lexer.TokenType.NEWLINE, "Line break");
 
-		macros.put(id, macro);
+		List<Lexer.Token> tokens_bak = tokens;
+		song = new Song();
+		int position_bak = position;
+
+		tokens = macro;
+		position = 0;
+		in_macro = true;
+		next = tokens.get(0);
+
+		boolean active[] = {true, false, false, false};
+		parseCommands(active);
+		List<Integer> macro_data = song.getChannel(0);
+
+		tokens = tokens_bak;
+		song = song_root;
+		position = position_bak;
+		in_macro = false;
+		next = tokens.get(position);
+
+		song.addMacroData(id, macro_data);
 	}
 
-	private void parseCommands() throws ParserException {
+	private void parseChannel() throws ParserException {
 		boolean active[] = new boolean[4];
 		// Parse active channels
 		while(next.type == Lexer.TokenType.CHANNEL) {
@@ -146,6 +167,11 @@ public class Parser {
 			}
 			eat();
 		}
+
+		parseCommands(active);
+	}
+
+	private void parseCommands(boolean active[]) throws ParserException {
 		// Parse commands
 		while(next.type != Lexer.TokenType.NEWLINE) {
 			if(next.type == Lexer.TokenType.NOTE) {
@@ -262,11 +288,11 @@ public class Parser {
 						throw new ParserException("Invalid volume. Expected number.", next);
 					}
 					int volume = parseInt(next.data);
-					if(active[2] && (volume < 0 || volume > 3)) {
-						throw new ParserException("Invalid volume for wave channel. Expected 0-3.", next);
+					if(active[2] && volume > 3) {
+						throw new ParserException("Invalid volume for wave channel. Expected 0 to 3.", next);
 					}
-					if(volume < 0 || volume > 15) {
-						throw new ParserException("Invalid volume value. Expected 0-15.", next);
+					if(volume > 15) {
+						throw new ParserException("Invalid volume value. Expected 0 to 15.", next);
 					}
 					eat();
 
@@ -353,7 +379,8 @@ public class Parser {
 					if(next.type != Lexer.TokenType.NUMBER) {
 						throw new ParserException("Expected wave data id.", next);
 					}
-					int id = parseInt(next.data);
+					Integer id = song.getWaveIndex(parseInt(next.data));
+					if(id == null) throw new ParserException(String.format("Wave \"%s\" not defined.", next.data), next);
 					eat();
 
 					song.addData(active, Song.CMD.T_WAVE.ordinal());
@@ -402,7 +429,7 @@ public class Parser {
 					eat();
 
 					song.addData(active, Song.CMD.T_WAVEDUTY.ordinal());
-					song.addData(active, duty);
+					song.addData(active, duty << 6);
 				}
 				else if(next.data.equals("@p")) {
 					if(active[2]) {
@@ -416,7 +443,7 @@ public class Parser {
 
 					int speed = parseInt(next.data);
 					if(speed > 127) {
-						throw new ParserException(String.format("Invalid portamento speed %d. Expected 0-127.", speed), next);
+						throw new ParserException(String.format("Invalid portamento speed %d. Expected -127 to 127.", speed), next);
 					}
 					eat();
 
@@ -428,7 +455,7 @@ public class Parser {
 						throw new ParserException("@s only allowed in channel 1, 2 and 4.", next);
 					}
 					eat();
-
+					
 					boolean negative = false;
 					if(next.type == Lexer.TokenType.DASH) {
 						negative = true;
@@ -467,7 +494,7 @@ public class Parser {
 					}
 
 					int offset = parseInt(next.data);
-					if(offset < 1 || offset > 127) {
+					if(offset > 127) {
 						throw new ParserException("Invalid pitch offset. Expacted values 0-127.", next);
 					}
 					eat();
@@ -542,15 +569,19 @@ public class Parser {
 						throw new ParserException("Expected macro id.", next);
 					}
 
-					int id = parseInt(next.data);
-					eat();
-					ArrayList<Lexer.Token> macro = macros.get(id);
-					if(macro == null) {
+					Integer id = parseInt(next.data);
+					if(id == null) {
 						throw new ParserException(String.format("Macro @@%d not found.", id), next);
 					}
+					eat();
 
-					tokens.addAll(position, macro);
-					next = tokens.get(position);
+					if(in_macro) {
+						List<Integer> macro_data = song_root.getMacroData(id);
+						song.addData(active, macro_data);
+					} else {
+						song.addData(active, Song.CMD.T_MACRO.ordinal());
+						song.addData(active, song_root.getMacroIndex(id));
+					}
 				}
 			}
 			else if(next.type == Lexer.TokenType.LBRACKET) {

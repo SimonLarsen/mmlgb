@@ -2,15 +2,21 @@ package dk.hisimon.mmlgb;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Arrays;
+import java.util.Collection;
 
 public class Song {
 	private String filename;
 
-	private List<WaveData> waveData;
 	private List<List<Integer>> channel;
 
-	private static final int HEADER_SIZE = 8;
-	private static final int MAX_ENV_DATA = 16;
+	private List<List<Integer>> waveData;
+	private Map<Integer,Integer> waveMap;
+
+	private List<List<Integer>> macroData;
+	private Map<Integer,Integer> macroMap;
 
 	public enum CMD {
 		T_LENGTH,
@@ -32,6 +38,7 @@ public class Song {
 		T_TEMPO,
 		T_NOISE_STEP,
 		T_WAVE,
+		T_MACRO,
 		T_EOF,
 		T_C,
 		T_Cs,
@@ -50,7 +57,11 @@ public class Song {
 	};
 
 	public Song() {
-		waveData = new ArrayList<WaveData>();
+		waveData = new ArrayList<List<Integer>>();
+		waveMap = new HashMap<Integer,Integer>();
+
+		macroData = new ArrayList<List<Integer>>();
+		macroMap = new HashMap<Integer,Integer>();
 
 		channel = new ArrayList<List<Integer>>();
 		for(int i = 0; i < 4; ++i) {
@@ -58,16 +69,34 @@ public class Song {
 		}
 	}
 
-	public void addWaveData(int id, int[] data) throws ParserException {
-		while(waveData.size()-1 < id) {
-			waveData.add(new WaveData());
-		}
+	public void addWaveData(int id, List<Integer> data) {
+		waveMap.put(id, waveData.size());
+		waveData.add(data);
+	}
 
-		waveData.get(id).setData(data);
+	public Integer getWaveIndex(int id) {
+		return waveMap.get(id);
+	}
+
+	public void addMacroData(int id, List<Integer> data) {
+		macroMap.put(id, macroData.size());
+		macroData.add(data);
+	}
+
+	public List<Integer> getMacroData(int id) {
+		return macroData.get(getMacroIndex(id));
+	}
+
+	public Integer getMacroIndex(int id) {
+		return macroMap.get(id);
 	}
 
 	public void addData(int chan, int value) {
 		channel.get(chan).add(value);
+	}
+
+	public void addData(int chan, Collection<Integer> values) {
+		channel.get(chan).addAll(values);
 	}
 
 	public void addData(boolean[] active, int value) {
@@ -78,15 +107,36 @@ public class Song {
 		}
 	}
 
+	public void addData(boolean[] active, Collection<Integer> values) {
+		for(int i = 0; i < 4; ++i) {
+			if(active[i]) {
+				addData(i, values);
+			}
+		}
+	}
+
+	public List<Integer> getChannel(int i) {
+		return channel.get(i);
+	}
+
 	public List<Integer> getData() {
 		List<Integer> data = new ArrayList<Integer>();
 
+		int wave_start = (4 + 1 + macroData.size()) * 2;
+		int pos = wave_start + waveData.size() * 16;
+		int[] macro_start = new int[macroData.size()];
+		for(int i = 0; i < macro_start.length; ++i) {
+			macro_start[i] = pos;
+			pos += macroData.get(i).size() + 1;
+		}
+
 		// Generate header
-		int c1Start = HEADER_SIZE + waveData.size() * 16;
+		int c1Start = pos;
 		int c2Start = c1Start + channel.get(0).size();
 		int c3Start = c2Start + channel.get(1).size();
 		int c4Start = c3Start + channel.get(2).size();
 
+		// Channel data start values
 		data.add(c1Start & 0xFF);
 		data.add(c1Start >> 8);
 		data.add(c2Start & 0xFF);
@@ -96,19 +146,27 @@ public class Song {
 		data.add(c4Start & 0xFF);
 		data.add(c4Start >> 8);
 
+		data.add(wave_start & 0xFF);
+		data.add(wave_start >> 8);
+
+		for(int i = 0; i < macro_start.length; ++i) {
+			data.add(macro_start[i] & 0xFF);
+			data.add(macro_start[i] >> 8);
+		}
+
 		// Generate wave data
 		for(int i = 0; i < waveData.size(); ++i) {
-			int[] samples = waveData.get(i).getData();
-			if(samples != null) {
-				for(int j = 0; j < 32; j += 2) {
-					int value = (samples[j] << 4) | samples[j+1];
-					data.add(value);
-				}
-			} else {
-				for(int j = 0; j < 16; ++j) {
-					data.add(0);
-				}
+			List<Integer> samples = waveData.get(i);
+			for(int j = 0; j < 32; j += 2) {
+				int value = (samples.get(j) << 4) | samples.get(j+1);
+				data.add(value);
 			}
+		}
+
+		// Generate macro data
+		for(int i = 0; i < macroData.size(); ++i) {
+			data.addAll(macroData.get(i));
+			data.add(Song.CMD.T_EOF.ordinal());
 		}
 
 		// Output channel data
