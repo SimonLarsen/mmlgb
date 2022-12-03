@@ -1,6 +1,7 @@
 #include "noisefreq.h"
 
 const unsigned char noise_freq[] = {
+	// o1:
 	247U,
 	231U,
 	215U,
@@ -14,6 +15,7 @@ const unsigned char noise_freq[] = {
 	87U,
 	71U,
 	0U, 0U, 0U, 0U,
+	// o2:
 	246U,
 	230U,
 	214U,
@@ -27,6 +29,7 @@ const unsigned char noise_freq[] = {
 	86U,
 	70U,
 	0U, 0U, 0U, 0U,
+	// o3:
 	245U,
 	229U,
 	213U,
@@ -40,6 +43,7 @@ const unsigned char noise_freq[] = {
 	85U,
 	69U,
 	0U, 0U, 0U, 0U,
+	// o4:
 	244U,
 	228U,
 	212U,
@@ -53,6 +57,7 @@ const unsigned char noise_freq[] = {
 	84U,
 	68U,
 	0U, 0U, 0U, 0U,
+	// o5:
 	243U,
 	227U,
 	211U,
@@ -66,6 +71,7 @@ const unsigned char noise_freq[] = {
 	83U,
 	67U,
 	0U, 0U, 0U, 0U,
+	// o6:
 	242U,
 	226U,
 	210U,
@@ -79,6 +85,7 @@ const unsigned char noise_freq[] = {
 	82U,
 	66U,
 	0U, 0U, 0U, 0U,
+	// o7:
 	241U,
 	225U,
 	209U,
@@ -92,6 +99,7 @@ const unsigned char noise_freq[] = {
 	81U,
 	65U,
 	0U, 0U, 0U, 0U,
+	// o8:
 	240U,
 	224U,
 	208U,
@@ -104,5 +112,33 @@ const unsigned char noise_freq[] = {
 	96U,
 	80U,
 	64U,
+	0U, 0U, 0U, 0U,
+	// o9:
+	55U,
+	54U,
+	53U,
+	52U,
+	39U,
+	38U,
+	37U,
+	36U,
+	23U,
+	22U,
+	21U,
+	20U,
+	0U, 0U, 0U, 0U,
+	// o10:
+	7U,
+	6U,
+	5U,
+	4U,
+	3U,
+	2U,
+	1U,
+	1U,
+	1U,
+	1U,
+	1U,
+	1U,
 	0U, 0U, 0U, 0U,
 };

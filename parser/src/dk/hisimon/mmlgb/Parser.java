@@ -225,7 +225,7 @@ public class Parser {
 						song.addData(active, Song.CMD.T_REST.ordinal());
 					} else {
 						song.addData(active, Song.CMD.T_REST.ordinal() | 0x80);
-						song.addData(active, length);
+						song.addData(active, length % 255);
 						for(int i = 0; i < length / 255; ++i) {
 							song.addData(active, Song.CMD.T_WAIT.ordinal() | 0x80);
 							song.addData(active, 255);
